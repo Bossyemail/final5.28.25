@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        const subscription = await stripe.subscriptions.retrieve(
+        const subscription: Stripe.Subscription = await stripe.subscriptions.retrieve(
           session.subscription as string
         );
 
@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
           customerId: subscription.customer as string,
           subscriptionId: subscription.id,
           priceId: subscription.items.data[0].price.id,
-          currentPeriodEnd: subscription.current_period_end,
-          cancelAtPeriodEnd: subscription.cancel_at_period_end,
+          currentPeriodEnd: (subscription as any).current_period_end,
+          cancelAtPeriodEnd: (subscription as any).cancel_at_period_end,
         };
 
         // Get user ID from metadata
@@ -82,8 +82,8 @@ export async function POST(req: NextRequest) {
           customerId: subscription.customer as string,
           subscriptionId: subscription.id,
           priceId: subscription.items.data[0].price.id,
-          currentPeriodEnd: subscription.current_period_end,
-          cancelAtPeriodEnd: subscription.cancel_at_period_end,
+          currentPeriodEnd: (subscription as any).current_period_end,
+          cancelAtPeriodEnd: (subscription as any).cancel_at_period_end,
         };
 
         await updateUserSubscription(userId, subscriptionData);
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
           customerId: subscription.customer as string,
           subscriptionId: subscription.id,
           priceId: subscription.items.data[0].price.id,
-          currentPeriodEnd: subscription.current_period_end,
+          currentPeriodEnd: (subscription as any).current_period_end,
           cancelAtPeriodEnd: true,
         };
 
