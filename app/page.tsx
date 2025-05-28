@@ -1,103 +1,107 @@
-import Image from "next/image";
+"use client"
+
+import { Hero } from "@/components/hero"
+import { Features } from "@/components/features"
+import { Pricing } from "@/components/pricing"
+import { Process } from "@/components/process"
+import { Footer } from "@/components/footer"
+import { FAQ } from "@/components/faq"
+import { CredibilityBanner } from "@/components/credibility-banner"
+import { Why } from "@/components/why"
+import { About } from "@/components/about"
+import { Star, CheckCircle } from "lucide-react"
+import { useEffect } from "react"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  useEffect(() => {
+    if (window.location.hash) {
+      const el = document.getElementById(window.location.hash.replace("#", ""))
+      if (el) el.scrollIntoView({ behavior: "smooth" })
+    }
+  }, [])
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  return (
+    <div className="flex min-h-screen flex-col">
+      <main className="flex-1">
+        <Hero />
+        <CredibilitySection />
+        <Features />
+        <Pricing />
+        <FAQ />
+        <Process />
+        <Why />
+        <About />
+        <FinalCTA />
+        <Footer />
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
+  )
+}
+
+export function CredibilitySection() {
+  return (
+    <section className="w-full pt-0 pb-8 px-0 mt-8 md:mt-16">
+      <div className="w-full flex flex-col items-center">
+        {/* 5 Stars */}
+        <div className="flex gap-0.5 mb-2 animate-fade-in">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className="w-7 h-7 text-black"
+              fill="currentColor"
+            />
+          ))}
+        </div>
+        {/* Main Statement */}
+        <h3 className="text-xl md:text-2xl font-bold text-center text-black mb-1 animate-fade-in">
+          Built by a Real Estate Pro, Not a Tech Bro
+        </h3>
+        {/* Divider */}
+        <div className="w-16 h-0.5 bg-gradient-to-r from-black to-zinc-400 opacity-70 my-2 animate-divider-grow" />
+        
+        {/* Feature Bullets - News Ticker */}
+        <div className="relative w-full overflow-x-hidden py-2 mt-0.5">
+          <div className="animate-ticker whitespace-nowrap flex items-center gap-24 text-black font-medium text-base md:text-lg">
+            {[...Array(2)].map((_, repeatIdx) => (
+              <>
+                <span className="inline-flex items-center gap-0" key={`template-${repeatIdx}`}>
+                  <span className="mx-2"><CheckCircle className="w-5 h-5 text-[#734b6d]" /></span>
+                  100+ pre-written templates
+                </span>
+                <span className="inline-flex items-center gap-0" key={`agents-${repeatIdx}`}>
+                  <span className="mx-2"><CheckCircle className="w-5 h-5 text-[#734b6d]" /></span>
+                  Works for agents and TCs
+                </span>
+                <span className="inline-flex items-center gap-0" key={`prompts-${repeatIdx}`}>
+                  <span className="mx-2"><CheckCircle className="w-5 h-5 text-[#734b6d]" /></span>
+                  Real estate-specific prompts
+                </span>
+                <span className="inline-flex items-center gap-0" key={`writeslikeyou-${repeatIdx}`}>
+                  <span className="mx-2"><CheckCircle className="w-5 h-5 text-[#734b6d]" /></span>
+                  Writes like you — if you weren't tired
+                </span>
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function FinalCTA() {
+  return (
+    <section className="w-full py-16 md:py-24 bg-gray-50 dark:bg-zinc-900 flex items-center justify-center font-sans">
+      <div className="max-w-2xl w-full flex flex-col items-center text-center px-4">
+        <h2 className="text-3xl md:text-4xl font-extrabold text-black mb-4">Ready to stop rewriting the same email 12 times?</h2>
+        <p className="text-lg md:text-xl text-black/80 mb-8">Start your free trial and let BossyEmail do the talking.</p>
+        <a
+          href="#"
+          className="inline-block rounded-full bg-gradient-to-r from-[#42275a] to-[#734b6d] text-white font-bold px-10 py-4 text-lg shadow-lg hover:brightness-110 transition focus:outline-none focus:ring-2 focus:ring-offset-2"
+        >
+          Just Try It.
+        </a>
+      </div>
+    </section>
   );
 }
