@@ -4,7 +4,7 @@ import { SubscriptionData } from '@/types/subscription';
 export function useSubscription() {
   const { user } = useUser();
   
-  const subscription = user?.privateMetadata?.subscription as SubscriptionData | undefined;
+  const subscription = user?.publicMetadata?.subscription as SubscriptionData | undefined;
   
   const isSubscribed = subscription?.status === 'active' || subscription?.status === 'trialing';
   const isTrialing = subscription?.status === 'trialing';
