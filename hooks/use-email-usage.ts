@@ -7,7 +7,7 @@ export function useEmailUsage() {
 
   useEffect(() => {
     // Get usage count from user metadata
-    const count = user?.publicMetadata?.emailUsageCount as number || 0;
+    const count = user?.unsafeMetadata?.emailUsageCount as number || 0;
     setUsageCount(count);
   }, [user]);
 
@@ -15,8 +15,8 @@ export function useEmailUsage() {
     try {
       const newCount = usageCount + 1;
       await user?.update({
-        publicMetadata: {
-          ...user.publicMetadata,
+        unsafeMetadata: {
+          ...user.unsafeMetadata,
           emailUsageCount: newCount,
         },
       });
