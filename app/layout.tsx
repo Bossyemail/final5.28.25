@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import { Header } from "@/components/header"
 import { ClerkProvider } from "@clerk/nextjs"
-import { Toaster } from "sonner"
 import * as Sentry from "@sentry/nextjs"
 import Script from "next/script"
+import React from "react"
+import AppShell from "@/components/AppShell"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -68,7 +68,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
         <head>
           <link rel="icon" href="/logo.png" type="image/png" />
           <Script
@@ -84,12 +84,8 @@ export default function RootLayout({
             `}
           </Script>
         </head>
-        <body className={inter.className}>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Toaster position="top-center" richColors />
-          </div>
+        <body className={inter.className} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+          <AppShell>{children}</AppShell>
         </body>
       </html>
     </ClerkProvider>

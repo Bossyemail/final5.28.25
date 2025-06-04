@@ -9,7 +9,6 @@ import { motion } from "framer-motion"
 
 export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSection, onCollapseChange }: { mobileOpen?: boolean, onClose?: () => void, onSectionChange?: (section: string) => void, activeSection?: string, onCollapseChange?: (collapsed: boolean) => void }) {
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
-  const [collapsed, setCollapsed] = useState(false);
 
   // Close on ESC for accessibility
   useEffect(() => {
@@ -21,81 +20,79 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
     return () => window.removeEventListener("keydown", handleKey);
   }, [mobileOpen, onClose]);
 
-  // Persist sidebar state
-  useEffect(() => {
-    const stored = localStorage.getItem("bossyemail_sidebar_collapsed");
-    if (stored) setCollapsed(stored === "true");
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("bossyemail_sidebar_collapsed", String(collapsed));
-    if (onCollapseChange) onCollapseChange(collapsed);
-  }, [collapsed, onCollapseChange]);
-
   // Overlay for mobile drawer
   if (mobileOpen) {
     return (
-      <div className="fixed inset-0 z-40 flex" aria-label="Sidebar Drawer" role="dialog">
-        <div className="fixed inset-0 bg-black/40" onClick={onClose} aria-label="Close sidebar overlay" tabIndex={0} />
-        <aside className="relative w-56 h-full bg-sidebar border-r border-border shadow-lg flex flex-col justify-between z-50 transition-all" tabIndex={-1}>
-          <nav className="flex-1 py-8 px-4">
+      <div 
+        className="fixed inset-0 z-40" 
+        aria-label="Sidebar Drawer" 
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Overlay */}
+        <div 
+          className="fixed inset-0 bg-black/40 z-40" 
+          onClick={onClose} 
+          aria-label="Close sidebar overlay" 
+          tabIndex={0}
+        />
+        {/* Sidebar Drawer */}
+        <aside
+          className="fixed left-0 top-0 h-full w-64 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-[#383838] text-[#bdbdbd] backdrop-blur-sm"
+          tabIndex={-1}
+        >
+          <nav className="flex-1 py-0.5 px-1">
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/dashboard"
-                  className={`flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group ${
-                    pathname === "/dashboard" 
-                      ? "bg-sidebar-primary/10 text-sidebar-primary font-semibold" 
-                      : "text-sidebar-foreground"
-                  }`}
-                  aria-current={pathname === "/dashboard" ? "page" : undefined}
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                  className="flex items-center px-2 py-0.5 rounded-lg text-[#bdbdbd] hover:bg-[#616161] transition-colors group" 
+                  aria-label="Email Generator"
+                  aria-current={activeSection === 'generator' ? 'page' : undefined}
                   >
-                    <LayoutDashboard className="w-5 h-5" aria-hidden="true" />
-                  </motion.div>
+                  <LayoutDashboard className="w-5 h-5 text-black dark:text-[#e0e0e0] mr-3" aria-hidden="true" strokeWidth={2} />
                   <span className="text-sm font-medium">Email Generator</span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#favorites"
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group text-sidebar-foreground"
-                  aria-label="Favorites"
-                >
-                  <Star className="w-5 h-5" aria-hidden="true" />
-                  <span className="text-sm font-medium">Favorites</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#templates"
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group text-sidebar-foreground"
+                  href="#templates" 
+                  className="flex items-center px-2 py-0.5 rounded-lg text-[#bdbdbd] hover:bg-[#616161] transition-colors group" 
                   aria-label="Templates"
+                  aria-current={activeSection === 'templates' ? 'page' : undefined}
                 >
-                  <FileText className="w-5 h-5" aria-hidden="true" />
+                  <FileText className="w-5 h-5 text-black dark:text-[#e0e0e0] mr-3" aria-hidden="true" strokeWidth={2} />
                   <span className="text-sm font-medium">Templates</span>
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#history"
-                  className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group text-sidebar-foreground"
-                  aria-label="History"
+                  href="#favorites" 
+                  className="flex items-center px-2 py-0.5 rounded-lg text-[#bdbdbd] hover:bg-[#616161] transition-colors group" 
+                  aria-label="Favorites"
+                  aria-current={activeSection === 'favorites' ? 'page' : undefined}
                 >
-                  <History className="w-5 h-5" aria-hidden="true" />
+                  <Star className="w-5 h-5 text-black dark:text-[#e0e0e0] mr-3" aria-hidden="true" strokeWidth={2} />
+                  <span className="text-sm font-medium">Favorites</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="#history"
+                  className="flex items-center px-2 py-0.5 rounded-lg text-[#bdbdbd] hover:bg-[#616161] transition-colors group" 
+                  aria-label="History"
+                  aria-current={activeSection === 'history' ? 'page' : undefined}
+                >
+                  <History className="w-5 h-5 text-black dark:text-[#e0e0e0] mr-3" aria-hidden="true" strokeWidth={2} />
                   <span className="text-sm font-medium">History</span>
                 </Link>
               </li>
             </ul>
           </nav>
-          <div className="flex flex-col gap-4 border-t border-border py-4 px-4">
-            <div className="flex items-center justify-between">
-              <SidebarIcon icon={LifeBuoy} label="Support" />
-              <SidebarIcon icon={CreditCard} label="Subscription" />
-              <SidebarIcon icon={User} label="Account" />
-            </div>
+          <div className="flex flex-col gap-2 py-4 px-2 border-t border-zinc-200">
+            <SidebarIcon icon={LifeBuoy} label="Support" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
+            <SidebarIcon icon={CreditCard} label="Subscription" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
+            <SidebarIcon icon={User} label="Account" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
           </div>
         </aside>
       </div>
@@ -106,167 +103,125 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
     <>
       {/* Mobile hamburger toggle */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-sidebar text-sidebar-foreground p-2 rounded-full shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-[#424242] text-zinc-700 dark:text-[#e0e0e0] p-2 rounded-full shadow-lg"
         onClick={() => onClose && onClose()}
         aria-label="Toggle Sidebar"
         tabIndex={0}
       >
-        <LayoutDashboard className="w-6 h-6" />
+        <LayoutDashboard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
       </button>
       {/* Desktop sidebar */}
       <aside
-        className={`hidden md:flex fixed top-16 left-0 h-[calc(100vh-4rem)] ${collapsed ? 'w-16' : 'w-56'} bg-sidebar border-r border-border shadow-none flex-col justify-between z-20 transition-all duration-200`}
+        className="hidden md:flex fixed top-16 left-0 h-[calc(100vh-4rem)] w-16 shadow-none flex-col justify-start z-20 transition-all duration-200 p-0 bg-[#e0e0e0] dark:bg-[#757575] text-zinc-700 dark:text-[#e0e0e0]"
         aria-label="Sidebar"
         role="navigation"
       >
-        <div className="flex flex-col h-full w-full py-4">
-          {/* Collapse/Expand toggle and nav icons grouped at the top */}
-          <div className={`flex flex-col items-start ${collapsed ? 'gap-y-4 px-2' : 'gap-y-4 w-full px-2'}`}>
+        {/* Logo at the top */}
+        <div className="flex items-center justify-center w-full pt-2 pb-0.5">
+          <img src="/transparent 1.png" alt="Logo" className="h-8 w-auto" />
+        </div>
+        {activeSection && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-black dark:bg-[#757575] z-10" />}
+        <div className="flex flex-col h-full w-full">
+          <nav className="w-full mt-10" role="navigation" aria-label="Main navigation">
+            <ul className="flex flex-col items-center gap-4 w-full">
+              <li className="w-full">
+                <button
+                  type="button"
+                  onClick={() => onSectionChange && onSectionChange('generator')}
+                  className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'generator' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  aria-label="Email Generator"
+                  aria-current={activeSection === 'generator' ? 'page' : undefined}
+                  tabIndex={0}
+                >
+                  <LayoutDashboard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                </button>
+              </li>
+              <li className="w-full">
+                <button
+                  type="button"
+                  onClick={() => onSectionChange && onSectionChange('templates')}
+                  className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'templates' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  aria-label="Templates"
+                  aria-current={activeSection === 'templates' ? 'page' : undefined}
+                  tabIndex={0}
+                >
+                  <FileText className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                </button>
+              </li>
+              <li className="w-full">
+                <button
+                  type="button"
+                  onClick={() => onSectionChange && onSectionChange('favorites')}
+                  className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'favorites' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  aria-label="Favorites"
+                  aria-current={activeSection === 'favorites' ? 'page' : undefined}
+                  tabIndex={0}
+                >
+                  <Star className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                </button>
+              </li>
+              <li className="w-full">
+                <button
+                  type="button"
+                  onClick={() => onSectionChange && onSectionChange('history')}
+                  className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'history' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  aria-label="History"
+                  aria-current={activeSection === 'history' ? 'page' : undefined}
+                  tabIndex={0}
+                >
+                  <History className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                </button>
+              </li>
+            </ul>
+          </nav>
+          {/* Bottom icons */}
+          <div className="flex flex-col gap-2 py-4 w-full items-center px-0 mt-auto border-t border-zinc-200 dark:border-[#616161]" role="navigation" aria-label="Secondary navigation">
             <button
-              className="w-9 h-9 bg-sidebar border border-border rounded-full shadow flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-              onClick={() => setCollapsed(c => !c)}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              type="button"
+              onClick={() => onSectionChange && onSectionChange("support")}
+              className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "support" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              aria-label="Support"
               tabIndex={0}
+              title="Support"
             >
-              {collapsed ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
+              <LifeBuoy className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
             </button>
-            <nav className="w-full">
-              <ul className={`flex flex-col items-start ${collapsed ? 'gap-y-4' : 'gap-y-4 w-full'}`}>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => onSectionChange && onSectionChange("generator")}
-                    className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group ${
-                      activeSection === "generator"
-                        ? "bg-sidebar-primary/10 text-sidebar-primary font-semibold"
-                        : "text-sidebar-foreground"
-                    }`}
-                    aria-current={activeSection === "generator" ? "page" : undefined}
-                    tabIndex={0}
-                    title={collapsed ? "Email Generator" : undefined}
-                  >
-                    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                      <LayoutDashboard className="w-5 h-5" aria-hidden="true" />
-                    </motion.div>
-                    {!collapsed && <span className="text-sm font-medium">Email Generator</span>}
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => onSectionChange && onSectionChange("favorites")}
-                    className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group ${
-                      activeSection === "favorites"
-                        ? "bg-sidebar-primary/10 text-sidebar-primary font-semibold"
-                        : "text-sidebar-foreground"
-                    }`}
-                    aria-label="Favorites"
-                    aria-current={activeSection === "favorites" ? "page" : undefined}
-                    tabIndex={0}
-                    title={collapsed ? "Favorites" : undefined}
-                  >
-                    <Star className="w-5 h-5" aria-hidden="true" />
-                    {!collapsed && <span className="text-sm font-medium">Favorites</span>}
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => onSectionChange && onSectionChange("templates")}
-                    className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group ${
-                      activeSection === "templates"
-                        ? "bg-sidebar-primary/10 text-sidebar-primary font-semibold"
-                        : "text-sidebar-foreground"
-                    }`}
-                    aria-label="Templates"
-                    aria-current={activeSection === "templates" ? "page" : undefined}
-                    tabIndex={0}
-                    title={collapsed ? "Templates" : undefined}
-                  >
-                    <FileText className="w-5 h-5" aria-hidden="true" />
-                    {!collapsed && <span className="text-sm font-medium">Templates</span>}
-                  </button>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => onSectionChange && onSectionChange("history")}
-                    className={`flex w-full items-center gap-3 px-2 py-2 rounded-lg hover:bg-sidebar-accent transition-colors group ${
-                      activeSection === "history"
-                        ? "bg-sidebar-primary/10 text-sidebar-primary font-semibold"
-                        : "text-sidebar-foreground"
-                    }`}
-                    aria-label="History"
-                    aria-current={activeSection === "history" ? "page" : undefined}
-                    tabIndex={0}
-                    title={collapsed ? "History" : undefined}
-                  >
-                    <History className="w-5 h-5" aria-hidden="true" />
-                    {!collapsed && <span className="text-sm font-medium">History</span>}
-                  </button>
-                </li>
-              </ul>
-            </nav>
-          </div>
-          {/* Bottom icons at the bottom */}
-          <div className={`flex flex-col gap-6 border-t border-border py-4 w-full items-center ${collapsed ? 'px-0' : 'px-4'} mt-auto`}>
-            <div className={`flex ${collapsed ? 'flex-col items-center gap-6' : 'items-center justify-between'}`}>
-              <button
-                type="button"
-                onClick={() => onSectionChange && onSectionChange("support")}
-                className={`flex items-center justify-center rounded-full p-2 ${activeSection === "support" ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-sidebar-foreground/60 hover:text-sidebar-primary"}`}
-                aria-label="Support"
-                tabIndex={0}
-                title={collapsed ? "Support" : undefined}
-              >
-                <LifeBuoy className="w-6 h-6" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={() => onSectionChange && onSectionChange("subscription")}
-                className={`flex items-center justify-center rounded-full p-2 ${activeSection === "subscription" ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-sidebar-foreground/60 hover:text-sidebar-primary"}`}
-                aria-label="Subscription"
-                tabIndex={0}
-                title={collapsed ? "Subscription" : undefined}
-              >
-                <CreditCard className="w-6 h-6" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                onClick={() => onSectionChange && onSectionChange("account")}
-                className={`flex items-center justify-center rounded-full p-2 ${activeSection === "account" ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-sidebar-foreground/60 hover:text-sidebar-primary"}`}
-                aria-label="Account"
-                tabIndex={0}
-                title={collapsed ? "Account" : undefined}
-              >
-                <User className="w-6 h-6" aria-hidden="true" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => onSectionChange && onSectionChange("subscription")}
+              className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "subscription" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              aria-label="Subscription"
+              tabIndex={0}
+              title="Subscription"
+            >
+              <CreditCard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onSectionChange && onSectionChange("account")}
+              className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "account" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              aria-label="Account"
+              tabIndex={0}
+              title="Account"
+            >
+              <User className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+            </button>
           </div>
         </div>
       </aside>
     </>
-  )
+  );
 }
 
-function SidebarIcon({ icon: Icon, label }: { icon: any; label: string }) {
+function SidebarIcon({ icon: Icon, label, iconClass, strokeWidth = 1.5 }: { icon: React.ElementType, label: string, iconClass: string, strokeWidth?: number }) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="group relative flex items-center justify-center cursor-pointer"
-      tabIndex={0}
+    <button
+      className="flex items-center px-3 py-2 w-full rounded-lg hover:bg-zinc-100 transition-colors group focus:outline-none focus:ring-2 focus:ring-primary"
       aria-label={label}
-      role="button"
+      tabIndex={0}
     >
-      <Icon className="w-6 h-6 text-sidebar-foreground/60 group-hover:text-sidebar-primary transition-colors duration-200" aria-hidden="true" />
-      <motion.span
-        initial={{ opacity: 0, y: 5 }}
-        whileHover={{ opacity: 1, y: 0 }}
-        className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-sidebar-foreground px-2 py-1 text-xs text-sidebar pointer-events-none"
-      >
-        {label}
-      </motion.span>
-    </motion.div>
-  )
-} 
+      <Icon className={`w-5 h-5 ${iconClass} mr-3`} aria-hidden="true" strokeWidth={strokeWidth} />
+      <span className="text-sm font-medium">{label}</span>
+    </button>
+  );
+}

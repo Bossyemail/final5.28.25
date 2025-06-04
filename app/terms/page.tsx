@@ -2,8 +2,8 @@ import React from "react";
 
 export default function TermsOfService() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center py-12 px-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-auto">
+    <main className="min-h-screen bg-[#EFE1E1] flex items-center justify-center pt-16 md:pt-24 pb-16 md:pb-24 px-4 md:px-6">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-auto border border-zinc-100">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-sidebar-foreground">Terms of Service</h1>
         <p className="mb-6 text-base text-sidebar-foreground/90">
           Welcome to BossyEmail — where real estate pros stop guessing and start sending emails that actually get responses.
@@ -75,7 +75,7 @@ export default function TermsOfService() {
         </section>
         <section className="mb-6">
           <h2 className="text-xl font-bold mb-2">Questions?</h2>
-          <p>Reach out. We don't bite.<br />📩 <a href="mailto:contact@bossyemail.com" className="underline text-[#734b6d]">contact@bossyemail.com</a></p>
+          <p>Reach out. We don't bite.<br />📩 <a href="mailto:aylen@bossyemail.com" className="underline text-[#734b6d]">aylen@bossyemail.com</a></p>
         </section>
         <div className="mt-8 text-base font-semibold text-sidebar-foreground">Because real estate doesn't need more chaos — just better emails.</div>
       </div>

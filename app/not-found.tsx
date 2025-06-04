@@ -9,7 +9,7 @@ export default function NotFound() {
           We looked everywhere — inbox, spam folder, even behind the drywall. No luck.<br />
           Let's try a better address.
         </p>
-        <Link href="/" className="inline-block px-8 py-3 rounded-full bg-black text-white font-semibold text-base transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2">
+        <Link href="/" className="inline-block px-8 py-3 rounded-full bg-black text-white font-semibold text-base transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]">
           👉 Take me home
         </Link>
       </div>

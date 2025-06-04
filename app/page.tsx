@@ -1,6 +1,6 @@
 "use client"
 
-import { Hero } from "@/components/hero"
+import { Hero, SocialProofAndTestimonials } from "@/components/hero"
 import { Features } from "@/components/features"
 import { Pricing } from "@/components/pricing"
 import { Process } from "@/components/process"
@@ -12,6 +12,7 @@ import { About } from "@/components/about"
 import { Star, CheckCircle } from "lucide-react"
 import { useEffect } from "react"
 import { CredibilitySection, FinalCTA } from "@/components/credibility-section"
+import { motion } from "framer-motion"
 
 export default function Home() {
   useEffect(() => {
@@ -25,12 +26,67 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <Hero />
-        <CredibilitySection />
+        <SocialProofAndTestimonials />
+        <section className="w-full pt-16 md:pt-24 border-b border-zinc-100">
+          <div className="max-w-4xl mx-auto px-4 md:px-6 flex flex-col items-center text-center">
+            <h2 className="text-5xl font-normal mb-6 text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '48px', fontWeight: 400 }}>
+              Built by a Real Estate Pro,<br />
+              <span className="block">Not a Tech Bro.</span>
+            </h2>
+            <p className="text-center mb-14" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px', color: '#000' }}>
+              Made for the Whole Deal-Making Crew. If your job involves contracts, clients, or chaos,<br />
+              <span>This tool was built with you in mind. BossyEmail is ideal for:</span>
+            </p>
+          </div>
+          {/* Bleeding pastel shapes row */}
+          <motion.div
+            className="flex w-full z-10"
+            style={{ height: '240px', pointerEvents: 'none' }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.13 } },
+              hidden: {}
+            }}
+          >
+            {[
+              { color: '#EFE1E1', label: "Agents" },
+              { color: '#F0D2DA', label: "TC's" },
+              { color: '#E0C1C6', label: "Brokerages" },
+              { color: '#D1B4C6', label: "Lenders" },
+              { color: '#CBC4D6', label: "Closers" },
+            ].map(({ color, label }, i) => (
+              <motion.div
+                key={i}
+                className="flex-1 flex flex-col items-center justify-end relative"
+                style={{ height: '100%', minWidth: 0 }}
+                variants={{
+                  hidden: { opacity: 0, y: 40 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, type: "spring" } }
+                }}
+                whileHover={{
+                  y: -10,
+                  scale: 1.04,
+                  boxShadow: '0 8px 32px 0 rgba(80, 60, 80, 0.16)'
+                }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              >
+                <div
+                  className="w-full h-[240px] flex items-end justify-center"
+                  style={{ background: color, borderRadius: '18px 18px 0 0', boxShadow: '0 2px 12px 0 rgba(80, 60, 80, 0.08)' }}
+                >
+                  <span className="mb-6 text-zinc-700 text-lg font-medium" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>{label}</span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </section>
         <Features />
+        <Why />
         <Pricing />
         <FAQ />
         <Process />
-        <Why />
         <About />
         <FinalCTA />
         <Footer />

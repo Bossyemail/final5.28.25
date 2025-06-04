@@ -53,6 +53,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    margin: 0;
+  }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #f5f5f5 !important;
   }
 }
 
@@ -78,6 +82,32 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    --footer-bg: #CBC4D6;
+    --footer-text: #232326;
+  }
+  .dark {
+    /* Remove or comment out the --background and --foreground overrides to avoid interfering with dashboard explicit styles */
+    /* --background: 0 0% 46%; */
+    /* --foreground: 300 20% 98%; */
+    --card: 270 10% 14%;
+    --card-foreground: 300 20% 98%;
+    --popover: 270 10% 14%;
+    --popover-foreground: 300 20% 98%;
+    --primary: 300 20% 98%;
+    --primary-foreground: 270 10% 14%;
+    --secondary: 270 10% 18%;
+    --secondary-foreground: 300 20% 98%;
+    --muted: 270 10% 18%;
+    --muted-foreground: 300 10% 80%;
+    --accent: 270 10% 18%;
+    --accent-foreground: 300 20% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 10% 30%;
+    --input: 270 10% 30%;
+    --ring: 300 20% 98%;
+    --footer-bg: #2D223A;
+    --footer-text: #F3EAF7;
   }
 }
 
@@ -89,4 +119,23 @@
   display: inline-block;
   min-width: 200%;
   animation: ticker 18s linear infinite;
+}
+
+@keyframes marquee-ltr {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+@keyframes marquee-rtl {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee-ltr {
+  animation: marquee-ltr 32s linear infinite;
+}
+.animate-marquee-rtl {
+  animation: marquee-rtl 32s linear infinite;
+}
+.animate-marquee-ltr:hover,
+.animate-marquee-rtl:hover {
+  animation-play-state: paused;
 }

@@ -231,7 +231,10 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6" style={{ fontFamily: 'Inter, Roboto, SF Pro, Arial, sans-serif' }}>
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, Roboto, SF Pro, Arial, sans-serif' }}>
+      <h2 className="text-3xl font-bold mb-6 text-[#232326] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, WebkitFontSmoothing: 'antialiased' }}>
+        Smart Email Generator
+      </h2>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -320,13 +323,13 @@ export function EmailGenerator() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="min-w-[180px] rounded-xl ring-0 border-0 p-1 !shadow-none !border-0 bg-white">
-                {TONES.map(tone => (
+                {TONES.map(toneOpt => (
                   <DropdownMenuItem
-                    key={tone}
-                    onClick={() => setTone(tone)}
-                    className={`py-1 px-2 text-sm rounded transition-colors ${tone === tone ? 'bg-zinc-100 text-black' : ''} hover:bg-zinc-100 focus:bg-zinc-100`}
+                    key={toneOpt}
+                    onClick={() => setTone(toneOpt)}
+                    className={`py-1 px-2 text-sm rounded transition-colors ${tone === toneOpt ? 'bg-zinc-100 text-black' : ''} hover:bg-zinc-100 focus:bg-zinc-100`}
                   >
-                    <span>{tone}</span>
+                    <span>{toneOpt}</span>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

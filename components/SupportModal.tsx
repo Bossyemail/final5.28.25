@@ -35,7 +35,7 @@ export function SupportModal({ open, onClose }: { open: boolean; onClose: () => 
           </div>
           <div className="flex items-center gap-2 text-sm">
             <Mail className="w-4 h-4 text-zinc-500" />
-            <a href="mailto:contact@bossyemail.com" className="font-semibold text-zinc-700 underline hover:text-blue-600">contact@bossyemail.com</a>
+            <a href="mailto:aylen@bossyemail.com" className="font-semibold text-zinc-700 underline hover:text-blue-600">aylen@bossyemail.com</a>
           </div>
         </div>
         <p className="text-sm text-zinc-500 mb-4">Have feedback or need help? Fill out the form below and our team will get back to you soon.</p>

@@ -1,6 +1,6 @@
 "use client"
 
-import { AlertCircle, Clock, FileText, MessageSquare, Home, Users, FileCheck } from "lucide-react"
+import { AlertCircle, Clock, FileText, MessageSquare, Home, Users, FileCheck, ArrowUpRight } from "lucide-react"
 import { motion } from "framer-motion"
 
 const painPoints = [
@@ -41,96 +41,163 @@ const useCases = [
 ]
 
 export function Why() {
+  // Combine all sales copy points into a single array of card texts
+  const cardTexts = [
+    "Quick replies between showings. Boss-level emails on the fly.",
+    "Follow-ups that get replies. Clear. Firm. Effective.",
+    "Your team, same voice. No more chaos in the inbox.",
+    "Sent the same follow-up 14x? Yeah, we've been there.",
+    "'Just checking in' fatigue? We've rewritten it 27 ways.",
+    "Addendum request #97. Cue internal screaming.",
+    "More email than closings? Let's fix that.",
+    "Built by a TC, not a tech bro. Real chaos. Real solution.",
+    "Not a pretty inbox tool. It's a get-it-done tool.",
+    "You do more than push paper. You keep deals alive.",
+    "We're your shortcut. One damn good email at a time.",
+    "Stop typing. Start closing. Let BossyEmail handle the follow-up."
+  ]
+
+  // Split cardTexts into 4 rows with 3 boxes per row
+  const rows = [
+    cardTexts.slice(0, 3),
+    cardTexts.slice(3, 6),
+    cardTexts.slice(6, 9),
+    cardTexts.slice(9, 12)
+  ];
+
   return (
-    <section id="why" className="w-full py-16 md:py-24 px-4 bg-gradient-to-r from-[#42275a] to-[#734b6d] text-white relative overflow-hidden">
-      <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-      <div className="max-w-4xl mx-auto flex flex-col gap-12 relative z-10">
-        <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold tracking-tighter mb-4 relative">
+    <section id="why" className="w-full py-16 md:py-24 px-4 bg-[#CBC4D6] text-white dark:bg-[#616161]">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="text-5xl font-normal text-black mb-6 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
             Why BossyEmail Exists
-            <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-white/30 rounded-full"></span>
           </h2>
-          <p className="text-lg text-white/80">
-            (Besides Saving Your Sanity)
-          </p>
+        <div className="mb-10 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px', color: '#000' }}>
+          <div>We built this for the agents doing the real work.</div>
+          <div>if you've ever screamed into the void over an addendum request — this is for you.</div>
         </div>
-
-        {/* Use Cases Carousel */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {useCases.map((useCase, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 hover:bg-white/15 transition-colors"
-            >
-              <useCase.icon className="w-8 h-8 mb-4 text-white" />
-              <h3 className="text-xl font-bold mb-2">{useCase.title}</h3>
-              <p className="text-white/80">{useCase.description}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Pain Points */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {painPoints.map((point, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 transition-transform hover:scale-105"
-            >
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0">
-                  <point.icon className="w-6 h-6 text-white" />
+        {/* Hide scrollbar utility */}
+        <style>{`
+          .hide-scrollbar::-webkit-scrollbar { display: none; }
+          .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        `}</style>
+        {/* Marquee effect for each row */}
+        {/* Add the following CSS to your global stylesheet:
+@keyframes marquee-ltr {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+@keyframes marquee-rtl {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee-ltr {
+  animation: marquee-ltr 32s linear infinite;
+}
+.animate-marquee-rtl {
+  animation: marquee-rtl 32s linear infinite;
+}
+.animate-marquee-ltr:hover,
+.animate-marquee-rtl:hover {
+  animation-play-state: paused;
+}
+*/}
+        <div className="w-full hide-scrollbar overflow-x-auto pb-2 flex flex-col gap-y-6">
+          <div className="overflow-x-hidden w-full mb-1">
+            <div className="flex animate-marquee-ltr whitespace-nowrap gap-x-6">
+              {[
+                // Row 1 boxes
+                [
+                  ["Quick replies between showings.", "Boss-level emails on the fly."],
+                  ["Follow-ups that get replies.", "Clear. Firm. Effective."],
+                  ["Your team, same voice.", "No more chaos in the inbox."],
+                  ["Sent the same follow-up 14x?", "Yeah, we've been there."]
+                ],
+                // Duplicate for seamless loop
+                [
+                  ["Quick replies between showings.", "Boss-level emails on the fly."],
+                  ["Follow-ups that get replies.", "Clear. Firm. Effective."],
+                  ["Your team, same voice.", "No more chaos in the inbox."],
+                  ["Sent the same follow-up 14x?", "Yeah, we've been there."]
+                ]
+              ].flat().map(([line1, line2], idx) => (
+                <div
+                  key={"row1-" + idx}
+                  className="flex items-center bg-white/70 backdrop-blur-md rounded-lg px-6 py-5 shadow-md min-w-[320px] max-w-xs text-left hover:bg-white/90 transition-colors border border-black/10"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', color: '#232326' }}
+                >
+                  <div className="flex flex-col mr-4">
+                    <span className="leading-snug">{line1}</span>
+                    <span className="leading-snug">{line2}</span>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-[#42275a] flex-shrink-0 ml-auto" />
                 </div>
-                <p className="text-lg font-medium">{point.text}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Empathy Section */}
-        <div className="bg-white/10 backdrop-blur-sm p-8 rounded-xl border border-white/20">
-          <h3 className="text-2xl font-bold mb-6 text-center">
-            Built by someone who's lived the chaos — not just coded it.
-          </h3>
-          
-          <div className="space-y-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-lg">✓</span>
-              </div>
-              <p className="text-base md:text-lg text-white/90">
-                BossyEmail was built by a real estate pro who spent two decades chasing signatures, smoothing over chaos, and writing more emails than a campaign manager in an election year.
-              </p>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-lg">✓</span>
-              </div>
-              <p className="text-base md:text-lg text-white/90">
-                This tool isn't about making your inbox pretty.<br />
-                It's about giving you the right words, at the right time, to get the job done — and maybe even clock out on time for once.
-              </p>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <span className="text-lg">✓</span>
-              </div>
-              <p className="text-base md:text-lg text-white/90">
-                Because you're not just pushing paper. You're running deals, managing people, and keeping everything from falling apart.
-              </p>
+              ))}
             </div>
           </div>
-
-          <p className="text-lg md:text-xl font-bold mt-8 text-center">
-            We're here to help make that easier. One damn good email at a time.
-          </p>
+          <div className="overflow-x-hidden w-full mb-1">
+            <div className="flex animate-marquee-rtl whitespace-nowrap gap-x-6">
+              {[
+                // Row 2 boxes
+                [
+                  ["'Just checking in' fatigue?", "We've rewritten it 27 ways."],
+                  ["Addendum request #97.", "Cue internal screaming."],
+                  ["More email than closings?", "Let's fix that."],
+                  ["Built by a TC, not a tech bro.", "Real chaos. Real solution."]
+                ],
+                // Duplicate for seamless loop
+                [
+                  ["'Just checking in' fatigue?", "We've rewritten it 27 ways."],
+                  ["Addendum request #97.", "Cue internal screaming."],
+                  ["More email than closings?", "Let's fix that."],
+                  ["Built by a TC, not a tech bro.", "Real chaos. Real solution."]
+                ]
+              ].flat().map(([line1, line2], idx) => (
+                <div
+                  key={"row2-" + idx}
+                  className="flex items-center bg-white/70 backdrop-blur-md rounded-lg px-6 py-5 shadow-md min-w-[320px] max-w-xs text-left hover:bg-white/90 transition-colors border border-black/10"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', color: '#232326' }}
+                >
+                  <div className="flex flex-col mr-4">
+                    <span className="leading-snug">{line1}</span>
+                    <span className="leading-snug">{line2}</span>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-[#42275a] flex-shrink-0 ml-auto" />
+              </div>
+              ))}
+            </div>
+          </div>
+          <div className="overflow-x-hidden w-full">
+            <div className="flex animate-marquee-ltr whitespace-nowrap gap-x-6">
+              {[
+                // Row 3 boxes
+                [
+                  ["Not a pretty inbox tool.", "It's a get-it-done tool."],
+                  ["You do more than push paper.", "You keep deals alive."],
+                  ["We're your shortcut.", "One damn good email at a time."],
+                  ["Stop typing. Start closing.", "Let BossyEmail handle the follow-up."]
+                ],
+                // Duplicate for seamless loop
+                [
+                  ["Not a pretty inbox tool.", "It's a get-it-done tool."],
+                  ["You do more than push paper.", "You keep deals alive."],
+                  ["We're your shortcut.", "One damn good email at a time."],
+                  ["Stop typing. Start closing.", "Let BossyEmail handle the follow-up."]
+                ]
+              ].flat().map(([line1, line2], idx) => (
+                <div
+                  key={"row3-" + idx}
+                  className="flex items-center bg-white/70 backdrop-blur-md rounded-lg px-6 py-5 shadow-md min-w-[320px] max-w-xs text-left hover:bg-white/90 transition-colors border border-black/10"
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', color: '#232326' }}
+                >
+                  <div className="flex flex-col mr-4">
+                    <span className="leading-snug">{line1}</span>
+                    <span className="leading-snug">{line2}</span>
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-[#42275a] flex-shrink-0 ml-auto" />
+            </div>
+          ))}
+        </div>
+          </div>
         </div>
       </div>
     </section>

@@ -22,14 +22,14 @@ const steps = [
 
 export function Process() {
   return (
-    <section id="process" className="py-16 md:py-24 bg-gray-50 dark:bg-gray-900">
+    <section id="process" className="py-16 md:py-24 bg-[#F0D2DA] dark:bg-[#757575] dark:text-black">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tighter text-center">
+            <h2 className="text-5xl font-normal text-black dark:text-black text-center mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
               How It Works
             </h2>
-            <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+            <p className="mx-auto max-w-[700px] text-center mb-8 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
               Three simple steps to professional real estate emails
             </p>
           </div>
@@ -39,11 +39,11 @@ export function Process() {
             {steps.map((step, index) => (
               <div key={index} className="relative">
                 <div className="flex flex-col items-center space-y-4 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#42275a] to-[#734b6d] text-white shadow-lg">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-white shadow-lg">
                     <step.icon className="h-8 w-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-[#42275a]">{step.title}</h3>
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <h3 className="text-xl font-bold text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif' }}>{step.title}</h3>
+                  <p className="text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }}>
                     {step.description}
                   </p>
                 </div>

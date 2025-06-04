@@ -2,8 +2,8 @@ import React from "react";
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center py-12 px-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-auto">
+    <main className="min-h-screen bg-[#EFE1E1] flex items-center justify-center pt-16 md:pt-24 pb-16 md:pb-24 px-4 md:px-6">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-auto border border-zinc-100">
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-sidebar-foreground">Privacy Policy</h1>
         <p className="mb-6 text-base text-sidebar-foreground/90">
           Absolutely — here's a <span className="font-semibold">BossyEmail-style Privacy Policy</span>, keeping it witty, real-estate-savvy, and crystal clear, with just enough sass to keep readers awake (and compliant):
@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
             <li>Update it if it's wrong (we all make typos)</li>
             <li>Ask us to delete it (we'll be sad, but we'll do it)</li>
           </ul>
-          <div className="mt-2">Just email us at <a href="mailto:contact@bossyemail.com" className="underline text-[#734b6d]">contact@bossyemail.com</a> and we'll take care of it faster than an agent running to a cash buyer.</div>
+          <div className="mt-2">Just email us at <a href="mailto:aylen@bossyemail.com" className="underline text-[#734b6d]">aylen@bossyemail.com</a> and we'll take care of it faster than an agent running to a cash buyer.</div>
         </section>
         <section className="mb-6">
           <h2 className="text-xl font-bold mb-2">5. Cookies (No, Not the Chocolate Chip Kind)</h2>
@@ -52,7 +52,7 @@ export default function PrivacyPolicy() {
         </section>
         <section className="mb-6">
           <h2 className="text-xl font-bold mb-2">7. Questions?</h2>
-          <p>Need clarification? Want to nerd out about data policies? Just email us: <a href="mailto:contact@bossyemail.com" className="underline text-[#734b6d]">contact@bossyemail.com</a></p>
+          <p>Need clarification? Want to nerd out about data policies? Just email us: <a href="mailto:aylen@bossyemail.com" className="underline text-[#734b6d]">aylen@bossyemail.com</a></p>
         </section>
         <div className="mt-8 text-base font-semibold text-sidebar-foreground">Let's keep it professional, legal, and drama-free — the way real estate should be.</div>
       </div>

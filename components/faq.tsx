@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Wrench, Lock, MessageSquare, Zap, Star } from "lucide-react"
+import { CreditCard, Wrench, Lock, MessageSquare, Zap, Star, ArrowUpRight } from "lucide-react"
 
 const faqs = [
   {
@@ -62,27 +62,35 @@ const faqs = [
 
 const sortedFaqs = [...faqs].sort((a, b) => a.question.length - b.question.length);
 
+const iconColors = [
+  '#EFE1E1',
+  '#F0D2DA',
+  '#E0C1C6',
+  '#D1B4C6',
+  '#CBC4D6',
+];
+
 export function FAQ() {
   return (
-    <section id="faq" className="py-16 md:py-24 bg-white dark:bg-black">
-      <div className="container px-4 md:px-6 max-w-2xl mx-auto">
-        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tighter text-center mb-4">
+    <section id="faq" className="py-16 md:py-24 bg-white dark:bg-[#757575] dark:text-black">
+      <div className="container px-4 md:px-6 max-w-2xl mx-auto dark:bg-[#757575]">
+        <h2 className="text-5xl font-normal tracking-tight text-center mb-2 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
           Frequently Asked Questions
         </h2>
-        <p className="mx-auto max-w-xl text-gray-500 md:text-lg dark:text-gray-400 text-center mb-8">
-          Got questions? We've got snappy answers.<br />
-          No jargon, no fluff — just straight-up clarity about real estate emails, templates, billing, and everything in between.
+        <p className="text-center text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
+          Got questions? We've got real answers—no fluff, just facts.
         </p>
+        <div className="mb-8" />
         <Accordion type="single" collapsible className="divide-y divide-gray-200 dark:divide-zinc-800">
-          {sortedFaqs.map((faq) => (
+          {sortedFaqs.map((faq, idx) => (
             <AccordionItem key={faq.question} value={faq.question}>
-              <AccordionTrigger className="px-4 py-4 text-lg font-semibold text-left">
-                <div className="flex items-center gap-3">
-                  <faq.icon className="w-5 h-5 text-[#734b6d]" />
+              <AccordionTrigger className="px-2 py-2 text-base font-normal text-left text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
+                <div className="flex items-center gap-2">
+                  <faq.icon className="w-5 h-5" style={{ color: iconColors[idx % iconColors.length] }} />
                   {faq.question}
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="px-6 pb-4 text-gray-500 dark:text-gray-400 md:text-base">
+              <AccordionContent className="px-4 pb-2 text-zinc-700 dark:text-black text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
@@ -91,12 +99,14 @@ export function FAQ() {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <p className="text-lg font-semibold mb-4">Still not sure?</p>
+          <p className="text-lg font-normal mb-4 text-black dark:text-black">Still not sure?</p>
           <Button
             size="lg"
-            className="bg-gradient-to-r from-[#42275a] to-[#734b6d] text-white hover:brightness-110 rounded-full px-8 py-3 font-semibold shadow-lg"
+            className="mt-2 bg-black text-white rounded-full font-normal px-8 py-3 shadow-none border border-transparent hover:bg-zinc-900 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
+            style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem', fontWeight: 400 }}
           >
             Just Try It.
+            <ArrowUpRight size={18} />
           </Button>
         </div>
       </div>

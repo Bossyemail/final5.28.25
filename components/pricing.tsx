@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { TrialButton } from "@/components/trial-button"
-import { Check, X, Star } from "lucide-react"
+import { ArrowUpRight, X, Star } from "lucide-react"
 import { motion } from "framer-motion"
 
 const features = [
@@ -35,61 +35,66 @@ const features = [
 
 const planIncludes = {
   lite: [
-    "3 free emails to start",
-    "Basic email generation",
-    "Essential templates",
-    "Email history"
+    "3 Free Emails to Start",
+    "Unlimited Smart Email Generator"
   ],
   royalty: [
     "Everything in Lite, plus:",
-    "Full template library",
-    "Custom templates",
-    "Priority support",
-    "Early access to new features"
+    "Built-In Favorite Vault",
+    "Custom Template Builder",
+    "Full Email Template Library",
+    "TC Tools & South Florida Library"
   ]
 }
 
 export function Pricing() {
   return (
-    <section className="py-20 md:py-28 bg-zinc-50 dark:bg-zinc-900">
+    <section className="py-16 md:py-24 bg-[#e0e0e0] dark:bg-[#757575] dark:text-black" style={{ background: '#e0e0e0' }}>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
-          <p className="text-gray-500 md:text-xl dark:text-gray-400 max-w-2xl mx-auto">
-            Choose the plan that works for you. All plans include a 3-email free trial.
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            Includes 3 free emails. No credit card required. No strings.
+          <h2 className="text-5xl font-normal mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
+          <p className="text-center text-black dark:text-black mb-12" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
+            Choose the plan that works for you. Start with 3 free emails.<br />
+            Stay for the sanity-saving genius.
           </p>
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto items-start">
           {/* Inbox Lite */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-8"
+            className="rounded-2xl shadow-sm border border-black px-8 pt-8 pb-0 flex flex-col gap-6 dark:bg-[#757575]"
+            style={{ background: '#D1B4C6' }}
           >
-            <h3 className="text-2xl font-bold mb-2">Inbox Lite</h3>
-            <div className="mb-6">
-              <span className="text-4xl font-bold">$29</span>
-              <span className="text-gray-500 dark:text-gray-400">/month</span>
+            <h3 className="text-2xl font-normal mb-2 text-black dark:text-black">Inbox Lite</h3>
+            <div className="text-left" style={{ marginTop: '-8px', marginBottom: 0 }}>
+              <span className="text-4xl font-bold text-black">$29</span>
+              <span className="text-black dark:text-black">per month</span>
             </div>
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-2 mb-0 text-left">
               {planIncludes.lite.map((item, index) => (
                 <li key={index} className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600 dark:text-gray-300">{item}</span>
+                  <ArrowUpRight className="w-5 h-5 text-black" />
+                  <span className="text-black dark:text-black">{item}</span>
                 </li>
               ))}
             </ul>
-            <TrialButton
-              size="lg"
-              className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2"
-              label="Start Free Trial"
-            />
+            <button
+              className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', fontWeight: 400, marginTop: '-8px' }}
+    >
+              Start Free Trial
+              <ArrowUpRight className="w-5 h-5" />
+            </button>
+            <div className="pt-0 pb-8 w-full">
+              <div className="text-sm text-black text-left leading-snug italic text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, margin: 0, padding: 0 }}>
+                Just type what you need — like "ask for HOA docs" — and get a polished, real estate-ready email in seconds.<br />
+                Perfect for follow-ups, document chases, updates, and putting out fires without rewriting the same line 12 different ways.
+              </div>
+            </div>
           </motion.div>
 
           {/* Inbox Royalty */}
@@ -97,107 +102,58 @@ export function Pricing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-gradient-to-br from-[#42275a] to-[#734b6d] rounded-2xl shadow-lg border border-[#734b6d] p-8 text-white relative"
+            className="rounded-2xl shadow-lg border border-[#734b6d] p-8 relative dark:bg-[#757575]"
+            style={{ background: '#CBC4D6', color: '#232326' }}
           >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#734b6d] text-white px-4 py-1 rounded-full text-sm font-medium">
               Most Popular
-            </div>
-            <h3 className="text-2xl font-bold mb-2">Inbox Royalty</h3>
+        </div>
+            <h3 className="text-2xl font-normal mb-2 text-black dark:text-black">Inbox Royalty</h3>
             <div className="mb-6">
-              <span className="text-4xl font-bold">$59</span>
-              <span className="text-white/80">/month</span>
+              <span className="text-4xl font-bold" style={{ color: '#232326' }}>$59</span>
+              <span style={{ color: '#232326', opacity: 0.8 }} className="text-black dark:text-black">per month</span>
             </div>
-            <ul className="space-y-4 mb-8">
+            <ul className="space-y-2 mb-6 text-left">
               {planIncludes.royalty.map((item, index) => (
                 <li key={index} className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-white" />
-                  <span className="text-white/90">{item}</span>
+                  <ArrowUpRight className="w-5 h-5 text-black" />
+                  <span className="text-black dark:text-black">{item}</span>
                 </li>
               ))}
             </ul>
-            <TrialButton
-              size="lg"
-              className="w-full bg-white text-[#42275a] hover:bg-white/90 rounded-full px-8 py-3 font-semibold shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2"
-              label="Start Free Trial"
-            />
+            <button
+              className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 mb-3 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
+              style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', fontWeight: 400 }}
+            >
+              Start Free Trial
+              <ArrowUpRight className="w-5 h-5" />
+        </button>
             
             {/* Testimonial */}
-            <div className="mt-8 p-4 bg-white/10 rounded-xl">
+            <div className="mt-8 p-4 rounded-xl" style={{ background: '#F3F3F3' }}>
               <div className="flex items-center gap-2 mb-2">
-                <div className="flex text-yellow-400">
+                <div className="flex" style={{ color: '#7ED6A6' }}>
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-current" />
                   ))}
-                </div>
-              </div>
-              <p className="text-sm text-white/90 italic">
+      </div>
+    </div>
+              <p className="text-sm italic" style={{ color: '#232326', opacity: 0.9 }}>
                 "The template library alone is worth it. I've saved hours every week on follow-ups and document requests."
               </p>
-              <p className="text-sm text-white/80 mt-2">- Sarah K., Transaction Coordinator</p>
-            </div>
+              <p className="text-sm mt-2" style={{ color: '#232326', opacity: 0.8 }}>- Sarah K., Transaction Coordinator</p>
+          </div>
           </motion.div>
         </div>
 
         {/* Upgrade Note */}
-        <div className="text-center mt-8">
-          <p className="text-gray-500 dark:text-gray-400">
+        <div className="text-center mt-6">
+          <p className="mb-1 text-center mt-12 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }}>
             Start with Lite and upgrade anytime. No commitment required.
           </p>
-        </div>
-
-        {/* Feature Comparison Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-16 max-w-4xl mx-auto"
-        >
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-700">
-                  <th className="text-left font-semibold px-4 py-3">Feature</th>
-                  <th className="text-center font-semibold px-4 py-3">Inbox Lite</th>
-                  <th className="text-center font-semibold px-4 py-3">Inbox Royalty</th>
-                </tr>
-              </thead>
-              <tbody>
-                {features.map((feature, index) => (
-                  <tr key={index} className={index !== features.length - 1 ? "border-b border-zinc-200 dark:border-zinc-700" : ""}>
-                    <td className="text-gray-600 dark:text-gray-400 px-4 py-2 whitespace-nowrap">{feature.name}</td>
-                    <td className="text-center px-4 py-2">
-                      {feature.lite === true ? (
-                        <Check className="w-5 h-5 text-green-500 mx-auto" />
-                      ) : feature.lite === false ? (
-                        <X className="w-5 h-5 text-red-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-600 dark:text-gray-400">{feature.lite}</span>
-                      )}
-                    </td>
-                    <td className="text-center px-4 py-2">
-                      {feature.royalty === true ? (
-                        <Check className="w-5 h-5 text-green-500 mx-auto" />
-                      ) : feature.royalty === false ? (
-                        <X className="w-5 h-5 text-red-500 mx-auto" />
-                      ) : (
-                        <span className="text-gray-600 dark:text-gray-400">{feature.royalty}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-
-        {/* FAQ Link */}
-        <div className="text-center mt-12">
-          <p className="text-gray-500 dark:text-gray-400">
-            Have questions? Check out our{" "}
-            <a href="#faq" className="text-[#734b6d] hover:underline">
-              FAQ section
-            </a>
-          </p>
+          <span className="text-center text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', marginTop: 0 }}>
+            Have questions? Check out our <a href="#faq" className="text-[#734b6d] hover:underline">FAQ section</a>
+          </span>
         </div>
       </div>
     </section>

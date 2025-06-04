@@ -1328,220 +1328,223 @@ export function Templates() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Templates</h2>
-      
-      {/* View Selector */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setView('all')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-            ${view === 'all' ? 'bg-black text-white' : 'bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-100'}`}
-        >
-          All Templates
-        </button>
-        <button
-          onClick={() => setView('favorites')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2
-            ${view === 'favorites' ? 'bg-black text-white' : 'bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-100'}`}
-        >
-          <Star className="w-4 h-4" fill={view === 'favorites' ? 'white' : 'none'} />
-          Favorites
-        </button>
-        <button
-          onClick={() => setView('recent')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-            ${view === 'recent' ? 'bg-black text-white' : 'bg-white text-zinc-700 border border-zinc-300 hover:bg-zinc-100'}`}
-        >
-          Recently Used
-        </button>
-      </div>
-
-      {/* Category Selector */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-6" style={{ WebkitOverflowScrolling: 'touch' }}>
-        {[null,
-          CONTRACT_STAGES.LISTING,
-          CONTRACT_STAGES.OFFER_STAGE,
-          CONTRACT_STAGES.CONDO_HOA,
-          CONTRACT_STAGES.CONTRACT_SELLER,
-          CONTRACT_STAGES.CONTRACT_BUYER,
-          CONTRACT_STAGES.DEPOSITS,
-          CONTRACT_STAGES.DUE_DILIGENCE,
-          CONTRACT_STAGES.FINANCING,
-          CONTRACT_STAGES.TITLE,
-          CONTRACT_STAGES.PRE_CLOSING,
-          CONTRACT_STAGES.CLOSING,
-          CONTRACT_STAGES.POST_CLOSING,
-          CONTRACT_STAGES.SOUTH_FLORIDA,
-          CONTRACT_STAGES.TC_TOOLS
-        ].map(category => (
+    <div className="w-full font-sans pl-32 pr-32 sm:pl-8 sm:pr-8 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold mb-6 dark:text-[#f5f5f5]">Templates</h2>
+        {/* View Selector */}
+        <div className="flex gap-2 mb-6">
           <button
-            key={category || 'All'}
-            onClick={() => setSelectedCategory(category)}
-            className={`flex items-center justify-center px-6 py-2 rounded border text-sm font-medium transition-colors whitespace-nowrap
-              ${selectedCategory === category || (!selectedCategory && !category)
-                ? 'bg-black text-white border-black'
-                : 'bg-white text-zinc-700 border-zinc-300 hover:bg-zinc-100'}
-            `}
-            aria-pressed={selectedCategory === category || (!selectedCategory && !category)}
+            onClick={() => setView('all')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+              ${view === 'all' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
           >
-            {category || 'All'}
+            All Templates
           </button>
-        ))}
-      </div>
-      {/* Search Bar */}
-      <form onSubmit={handleSearch} className="flex items-center mb-6 relative" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
-        <input
-          type="text"
-          placeholder="Search away"
-          value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
-          className="flex-1 px-5 py-3 text-lg text-zinc-700 placeholder-zinc-400 border-none outline-none bg-transparent"
-        />
-        {searchInput && (
           <button
-            type="button"
-            onClick={() => { setSearchInput(""); setSearch(""); }}
-            className="absolute text-black hover:text-zinc-700 text-2xl focus:outline-none focus:ring-2 focus:ring-primary"
-            aria-label="Clear search"
-            tabIndex={0}
-            style={{ left: `calc(16px + ${searchInput.length}ch)`, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
+            onClick={() => setView('favorites')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2
+              ${view === 'favorites' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
           >
-            ×
+            <Star className="w-4 h-4" fill={view === 'favorites' ? 'white' : 'none'} />
+            Favorites
           </button>
-        )}
-        <button
-          type="submit"
-          className="px-8 py-3 bg-black text-white font-bold text-lg rounded-full"
-          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 9999, borderBottomRightRadius: 9999 }}
-        >
-          SEARCH
-        </button>
-      </form>
-      {filteredTemplates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400">
-          <Mail className="w-12 h-12 mb-4" />
-          <p className="text-lg font-medium mb-2">No templates found</p>
-          <p className="text-sm">Try a different search or create a new template.</p>
+          <button
+            onClick={() => setView('recent')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
+              ${view === 'recent' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
+          >
+            Recently Used
+          </button>
         </div>
-      ) : (
-        <ul className="divide-y divide-zinc-200">
-          {filteredTemplates.map(t => (
-            <li
-              key={t.id}
-              className="flex items-center group px-2 py-4 transition hover:bg-zinc-50 cursor-pointer"
-              onClick={() => openTemplateModal(t)}
+        {/* Category Selector */}
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
+          {[null,
+            CONTRACT_STAGES.LISTING,
+            CONTRACT_STAGES.OFFER_STAGE,
+            CONTRACT_STAGES.CONDO_HOA,
+            CONTRACT_STAGES.CONTRACT_SELLER,
+            CONTRACT_STAGES.CONTRACT_BUYER,
+            CONTRACT_STAGES.DEPOSITS,
+            CONTRACT_STAGES.DUE_DILIGENCE,
+            CONTRACT_STAGES.FINANCING,
+            CONTRACT_STAGES.TITLE,
+            CONTRACT_STAGES.PRE_CLOSING,
+            CONTRACT_STAGES.CLOSING,
+            CONTRACT_STAGES.POST_CLOSING,
+            CONTRACT_STAGES.SOUTH_FLORIDA,
+            CONTRACT_STAGES.TC_TOOLS
+          ].map(category => (
+            <button
+              key={category || 'All'}
+              onClick={() => setSelectedCategory(category)}
+              className={`flex items-center justify-center px-6 py-2 rounded border text-sm font-medium transition-colors whitespace-nowrap
+                ${selectedCategory === category || (!selectedCategory && !category)
+                  ? 'bg-black text-white'
+                  : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}
+              `}
+              aria-pressed={selectedCategory === category || (!selectedCategory && !category)}
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <div className="text-base font-semibold text-zinc-900 truncate">{t.title}</div>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600">
-                    {t.category}
-                  </span>
-                  <button
-                    className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${favorites.includes(t.id) ? 'text-yellow-400' : 'text-zinc-400 hover:text-yellow-400'}`}
-                    onClick={e => { e.stopPropagation(); handleFavorite(t.id); }}
-                    aria-label={favorites.includes(t.id) ? 'Unfavorite' : 'Favorite'}
-                  >
-                    <Star fill={favorites.includes(t.id) ? '#facc15' : 'none'} className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="text-sm text-zinc-500 truncate mt-1">{t.body}</div>
-              </div>
-              <div className="flex items-center gap-2 ml-4">
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={e => { e.stopPropagation(); handleCopy(t); }}
-                    className="copy-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 transition relative group/copy"
-                    aria-label="Copy Template"
-                  >
-                    <Clipboard className="w-5 h-5 text-zinc-700" />
-                    <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
-                      {copiedId === t.id ? "Copied!" : "Copy"}
-                    </span>
-                  </button>
-                  <a
-                    href={`mailto:?subject=${encodeURIComponent(t.title)}&body=${encodeURIComponent(t.body)}`}
-                    className="send-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 transition relative group/send"
-                    aria-label="Send Template"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <Mail className="w-5 h-5 text-zinc-700" />
-                    <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/send:opacity-100 pointer-events-none transition-opacity">
-                      Send
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-      {/* Modal for template preview */}
-      {showModal && selectedTemplate && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" 
-          onClick={closeTemplateModal}
-        >
-          <div 
-            className="bg-white rounded-xl shadow-xl w-full max-w-3xl p-6 relative" 
-            style={{ maxHeight: '80vh', overflowY: 'auto' }} 
-            onClick={e => e.stopPropagation()}
-          >
-            <button 
-              className="absolute top-3 right-3 text-zinc-400 hover:text-zinc-700 text-2xl" 
-              onClick={closeTemplateModal} 
-              aria-label="Close"
-            >
-              ×
+              {category || 'All'}
             </button>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="text-xl font-bold text-zinc-900">{selectedTemplate.title}</div>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600">
-                {selectedTemplate.category}
-              </span>
+          ))}
+        </div>
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="mb-6 w-full">
+          <div className="flex items-center w-full border border-zinc-300 bg-white dark:bg-[#616161] rounded-full h-12">
+            <input
+              type="text"
+              placeholder="Search away"
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+              className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
+              style={{ borderRight: 'none' }}
+            />
+            {searchInput && (
               <button
-                className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${
-                  favorites.includes(selectedTemplate.id) ? 'text-yellow-400' : 'text-zinc-400 hover:text-yellow-400'
-                }`}
-                onClick={() => handleFavorite(selectedTemplate.id)}
-                aria-label={favorites.includes(selectedTemplate.id) ? 'Unfavorite' : 'Favorite'}
+                type="button"
+                onClick={() => { setSearchInput(""); setSearch(""); }}
+                className="text-black dark:text-[#e0e0e0] hover:text-zinc-700 dark:hover:text-[#f5f5f5] text-2xl focus:outline-none focus:ring-2 focus:ring-primary px-2"
+                aria-label="Clear search"
+                tabIndex={0}
+                style={{ background: 'none', border: 'none', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
               >
-                <Star 
-                  fill={favorites.includes(selectedTemplate.id) ? '#facc15' : 'none'} 
-                  className="w-5 h-5" 
-                />
+                ×
               </button>
-            </div>
-            <div className="mb-6">
-              <div className="font-semibold text-zinc-800 mb-2">Subject:</div>
-              <div className="mb-4 text-base text-zinc-900 whitespace-pre-line">
-                {selectedTemplate.title}
+            )}
+            <button
+              type="submit"
+              className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none focus:outline-none hover:bg-zinc-800 dark:hover:bg-[#757575] transition-colors"
+              style={{ borderLeft: 'none' }}
+            >
+              SEARCH
+            </button>
+          </div>
+        </form>
+        {filteredTemplates.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
+            <Mail className="w-12 h-12 mb-4" />
+            <p className="text-lg font-medium mb-2">No templates found</p>
+            <p className="text-sm">Try a different search or create a new template.</p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-zinc-200 dark:divide-[#616161]">
+            {filteredTemplates.map(t => (
+              <li
+                key={t.id}
+                className="flex items-center group px-2 py-4 transition hover:bg-zinc-50 dark:hover:bg-[#616161] cursor-pointer"
+                onClick={() => openTemplateModal(t)}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] truncate">{t.title}</div>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
+                      {t.category}
+                    </span>
+                    <button
+                      className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${favorites.includes(t.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'}`}
+                      onClick={e => { e.stopPropagation(); handleFavorite(t.id); }}
+                      aria-label={favorites.includes(t.id) ? 'Unfavorite' : 'Favorite'}
+                    >
+                      <Star fill={favorites.includes(t.id) ? '#facc15' : 'none'} className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1">{t.body}</div>
+                </div>
+                <div className="flex items-center gap-2 ml-4">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={e => { e.stopPropagation(); handleCopy(t); }}
+                      className="copy-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/copy"
+                      aria-label="Copy Template"
+                    >
+                      <Clipboard className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
+                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 dark:bg-[#616161] px-2 py-1 text-xs text-white dark:text-[#e0e0e0] opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
+                        {copiedId === t.id ? "Copied!" : "Copy"}
+                      </span>
+                    </button>
+                    <a
+                      href={`mailto:?subject=${encodeURIComponent(t.title)}&body=${encodeURIComponent(t.body)}`}
+                      className="send-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/send"
+                      aria-label="Send Template"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <Mail className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
+                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 dark:bg-[#616161] px-2 py-1 text-xs text-white dark:text-[#e0e0e0] opacity-0 group-hover/send:opacity-100 pointer-events-none transition-opacity">
+                        Send
+                      </span>
+                    </a>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+        {/* Modal for template preview */}
+        {showModal && selectedTemplate && (
+          <div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" 
+            onClick={closeTemplateModal}
+          >
+            <div 
+              className="bg-white dark:bg-[#424242] rounded-xl shadow-xl w-full max-w-3xl p-6 relative" 
+              style={{ maxHeight: '80vh', overflowY: 'auto' }} 
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-3 right-3 text-zinc-400 dark:text-[#bdbdbd] hover:text-zinc-700 dark:hover:text-[#e0e0e0] text-2xl" 
+                onClick={closeTemplateModal} 
+                aria-label="Close"
+              >
+                ×
+              </button>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="text-xl font-bold text-zinc-900 dark:text-[#e0e0e0]">{selectedTemplate.title}</div>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
+                  {selectedTemplate.category}
+                </span>
+                <button
+                  className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${
+                    favorites.includes(selectedTemplate.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'
+                  }`}
+                  onClick={() => handleFavorite(selectedTemplate.id)}
+                  aria-label={favorites.includes(selectedTemplate.id) ? 'Unfavorite' : 'Favorite'}
+                >
+                  <Star 
+                    fill={favorites.includes(selectedTemplate.id) ? '#facc15' : 'none'} 
+                    className="w-5 h-5" 
+                  />
+                </button>
               </div>
-              <div className="font-semibold text-zinc-800 mb-2">Body:</div>
-              <div className="text-base text-zinc-900 whitespace-pre-line">
-                {selectedTemplate.body}
+              <div className="mb-6">
+                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Subject:</div>
+                <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
+                  {selectedTemplate.title}
+                </div>
+                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Body:</div>
+                <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
+                  {selectedTemplate.body}
+                </div>
               </div>
-            </div>
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => handleCopy(selectedTemplate)}
-                className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 transition"
-              >
-                <Clipboard className="w-4 h-4" /> Copy
-              </button>
-              <button
-                onClick={closeTemplateModal}
-                className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 text-zinc-700 hover:bg-zinc-300 transition"
-              >
-                Close
-              </button>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => handleCopy(selectedTemplate)}
+                  className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 dark:hover:bg-[#757575] transition"
+                >
+                  <Clipboard className="w-4 h-4" /> Copy
+                </button>
+                <button
+                  onClick={closeTemplateModal}
+                  className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 } 
