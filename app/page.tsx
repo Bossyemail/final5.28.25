@@ -11,7 +11,7 @@ import { Why } from "@/components/why"
 import { About } from "@/components/about"
 import { Star, CheckCircle } from "lucide-react"
 import { useEffect } from "react"
-import { CredibilitySection, FinalCTA } from "@/components/credibility-section"
+import { FinalCTA } from "@/components/credibility-section"
 import { motion } from "framer-motion"
 
 export default function Home() {
