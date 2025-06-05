@@ -82,13 +82,10 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <button
+            <TrialButton
               className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
-              style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', fontWeight: 400, marginTop: '-8px' }}
-    >
-              Start Free Trial
-              <ArrowUpRight className="w-5 h-5" />
-            </button>
+              label="Start Free Trial"
+            />
             <div className="pt-0 pb-8 w-full">
               <div className="text-sm text-black text-left leading-snug italic text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, margin: 0, padding: 0 }}>
                 Just type what you need — like "ask for HOA docs" — and get a polished, real estate-ready email in seconds.<br />
@@ -121,13 +118,10 @@ export function Pricing() {
                 </li>
               ))}
             </ul>
-            <button
+            <TrialButton
               className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 mb-3 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
-              style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', fontWeight: 400 }}
-            >
-              Start Free Trial
-              <ArrowUpRight className="w-5 h-5" />
-        </button>
+              label="Start Free Trial"
+            />
             
             {/* Testimonial */}
             <div className="mt-8 p-4 rounded-xl" style={{ background: '#F3F3F3' }}>
