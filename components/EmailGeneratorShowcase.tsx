@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Copy, Mail, RefreshCw, Save, Edit2, Trash2, ChevronDown, Star } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Copy, Mail, RefreshCw, Save, Edit2, Trash2, ChevronDown, Star, Send, CheckCircle2, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const showcasePromptFull = 'help me ask for an escrow letter that is already late.';
-const TYPING_SPEED = 32; // ms per character
+const TYPING_SPEED = 60; // ms per character (slower for full prompt visibility)
 const showcaseEmailLines = [
   'Subject: Follow-Up on Escrow Letter Request',
   '',
@@ -125,19 +125,20 @@ function TemplateLibraryPreviewHero() {
 export default function EmailGeneratorShowcase() {
   const [step, setStep] = useState(0);
   const [typedPrompt, setTypedPrompt] = useState('');
+  const [typedEmail, setTypedEmail] = useState('');
   const [dropdownValues, setDropdownValues] = useState([false, false, false]);
   const [cycle, setCycle] = useState(0); // for animation loop
-  const [typedEmail, setTypedEmail] = useState('');
-  const [showSendPulse, setShowSendPulse] = useState(false);
-  const [showSentPopup, setShowSentPopup] = useState(false);
-  const [showEmailWindow, setShowEmailWindow] = useState(false);
-  const [showEmailSentMsg, setShowEmailSentMsg] = useState(false);
-  const [activeTab, setActiveTab] = useState(0); // 0 = generator, 1 = templates
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [promptDone, setPromptDone] = useState(false);
+  const [showSentNotif, setShowSentNotif] = useState(false);
+  const notifTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Step 1: Show prompt
   useEffect(() => {
     if (step !== 1) {
       setTypedPrompt('');
+      setPromptDone(false);
       return;
     }
     let i = 0;
@@ -146,69 +147,17 @@ export default function EmailGeneratorShowcase() {
       setTypedPrompt(showcasePromptFull.slice(0, i));
       if (i < showcasePromptFull.length) {
         i++;
-        setTimeout(type, 32);
-      }
-    };
-    type();
-  }, [step, cycle]);
-
-  // Typewriter effect for generated email
-  useEffect(() => {
-    if (step !== 3) {
-      setTypedEmail('');
-      setShowSendPulse(false);
-      setShowSentPopup(false);
-      setShowEmailWindow(false);
-      setShowEmailSentMsg(false);
-      return;
-    }
-    const fullText = showcaseEmailLines.join('\n');
-    let i = 0;
-    setTypedEmail('');
-    setShowSendPulse(false);
-    setShowSentPopup(false);
-    setShowEmailWindow(false);
-    setShowEmailSentMsg(false);
-    const type = () => {
-      setTypedEmail(fullText.slice(0, i));
-      if (i < fullText.length) {
-        i++;
         setTimeout(type, TYPING_SPEED);
       } else {
-        setTimeout(() => setShowSendPulse(true), 600);
-        setTimeout(() => setShowEmailWindow(true), 1800);
-        setTimeout(() => setShowEmailWindow(false), 3800);
-        setTimeout(() => setShowEmailSentMsg(true), 4000);
-        setTimeout(() => setShowEmailSentMsg(false), 6000);
+        setPromptDone(true);
       }
     };
     type();
   }, [step, cycle]);
 
-  // Animation steps:
-  // 0 = nothing, 1 = prompt, 2 = dropdowns+generate, 3 = email+actions
+  // Step 2: Dropdowns
   useEffect(() => {
-    let timers = [];
-    // Step 1: Show prompt
-    timers.push(setTimeout(() => setStep(1), 800));
-    // Step 2: Dropdowns and generate
-    timers.push(setTimeout(() => setStep(2), 800 + 1200));
-    // Step 3: Email and actions
-    timers.push(setTimeout(() => setStep(3), 800 + 1200 + 2600));
-    // Calculate time for typewriter effect
-    const fullText = showcaseEmailLines.join('\n');
-    const typewriterDuration = fullText.length * TYPING_SPEED + 4000 + 2000; // typing + slower popup + sent message
-    // Loop: hide, then restart by incrementing cycle
-    timers.push(setTimeout(() => setStep(0), 800 + 1200 + 2600 + typewriterDuration));
-    timers.push(setTimeout(() => setCycle(c => c + 1), 800 + 1200 + 2600 + typewriterDuration + 120));
-    return () => timers.forEach(clearTimeout);
-  }, [cycle]);
-
-  // Dropdown animation logic for step 2
-  const dropdownStep = step === 2;
-  // Reveal each dropdown value in sequence
-  useEffect(() => {
-    if (!dropdownStep) {
+    if (step !== 2) {
       setDropdownValues([false, false, false]);
       return;
     }
@@ -217,199 +166,243 @@ export default function EmailGeneratorShowcase() {
     timers.push(setTimeout(() => setDropdownValues([true, true, false]), 900));
     timers.push(setTimeout(() => setDropdownValues([true, true, true]), 1600));
     return () => timers.forEach(clearTimeout);
-  }, [dropdownStep, cycle]);
+  }, [step, cycle]);
 
-  // Reset all state at the start of each loop
+  // Step 3: Typewriter effect for generated email
   useEffect(() => {
-    if (step === 0) {
-      setTypedPrompt('');
-      setDropdownValues([false, false, false]);
+    if (step !== 3) {
       setTypedEmail('');
-      setShowSendPulse(false);
-      setShowSentPopup(false);
-      setShowEmailWindow(false);
-      setShowEmailSentMsg(false);
+      return;
     }
-  }, [step]);
+    const fullText = showcaseEmailLines.join('\n');
+    let i = 0;
+    setTypedEmail('');
+    const type = () => {
+      setTypedEmail(fullText.slice(0, i));
+      if (i < fullText.length) {
+        i++;
+        setTimeout(type, TYPING_SPEED);
+      }
+    };
+    type();
+  }, [step, cycle]);
 
-  // Add useEffect to reset all animation state when switching to the Time-Saving Templates tab
+  // Animation steps: 0 = nothing, 1 = prompt, 2 = dropdowns+generate, 3 = email+actions
   useEffect(() => {
-    if (activeTab !== 0) {
-      setStep(0);
-      setTypedPrompt('');
-      setDropdownValues([false, false, false]);
-      setTypedEmail('');
-      setShowSendPulse(false);
-      setShowSentPopup(false);
-      setShowEmailWindow(false);
-      setShowEmailSentMsg(false);
+    let timers = [];
+    timers.push(setTimeout(() => setStep(1), 400)); // Prompt
+    // Wait for prompt to finish typing, then pause for 1.2s, then move to dropdowns
+    timers.push(setTimeout(() => setStep(2), 400 + showcasePromptFull.length * TYPING_SPEED + 1200));
+    // Dropdowns for 1.6s
+    timers.push(setTimeout(() => setStep(3), 400 + showcasePromptFull.length * TYPING_SPEED + 1200 + 1600));
+    // Calculate time for typewriter effect
+    const fullText = showcaseEmailLines.join('\n');
+    const typewriterDuration = fullText.length * TYPING_SPEED + 2000; // typing + pause
+    // Add extra time for send animation and checkmark
+    const sendAnimTime = 900;
+    const sentCheckTime = 1200;
+    timers.push(setTimeout(() => setStep(0), 400 + showcasePromptFull.length * TYPING_SPEED + 1200 + 1600 + typewriterDuration + sendAnimTime + sentCheckTime)); // Reset
+    timers.push(setTimeout(() => setCycle(c => c + 1), 400 + showcasePromptFull.length * TYPING_SPEED + 1200 + 1600 + typewriterDuration + sendAnimTime + sentCheckTime + 120));
+    return () => timers.forEach(clearTimeout);
+  }, [cycle]);
+
+  // Reset all state when remounting
+  useEffect(() => {
+    setStep(0);
+    setTypedPrompt('');
+    setDropdownValues([false, false, false]);
+    setTypedEmail('');
+  }, []);
+
+  // Auto-animate Send button as part of the showcase (not on click)
+  useEffect(() => {
+    if (step === 3) {
+      // Wait for email to finish typing, then animate send
+      const fullText = showcaseEmailLines.join('\n');
+      const typewriterDuration = fullText.length * TYPING_SPEED;
+      const sendTimeout = setTimeout(() => {
+        setSending(true);
+        setSent(false);
+        setTimeout(() => {
+          setSending(false);
+          setSent(true);
+          setTimeout(() => {
+            setSent(false);
+            setShowSentNotif(true);
+            notifTimeoutRef.current = setTimeout(() => setShowSentNotif(false), 1200);
+          }, 1200);
+        }, 900); // send animation duration
+      }, typewriterDuration + 800); // pause after typing
+      return () => clearTimeout(sendTimeout);
+    } else {
+      setSending(false);
+      setSent(false);
+      setShowSentNotif(false);
+      if (notifTimeoutRef.current) clearTimeout(notifTimeoutRef.current);
     }
-  }, [activeTab]);
+  }, [step, cycle]);
 
   return (
-    <div className="w-full flex flex-col items-center py-12">
-      <div className="max-w-2xl w-full">
-        {/* Tabs */}
-        <div className="flex border-b border-zinc-200 mb-6">
-          <button className={`flex-1 px-0 py-2 text-sm font-medium border-b-2 focus:outline-none ${activeTab === 0 ? 'border-black text-black' : 'border-transparent text-zinc-400'}`} onClick={() => setActiveTab(0)}>Smart Email Generator</button>
-          <button className={`flex-1 px-0 py-2 text-sm font-medium border-b-2 focus:outline-none ${activeTab === 1 ? 'border-black text-black' : 'border-transparent text-zinc-400'}`} onClick={() => setActiveTab(1)}>Time-Saving Templates</button>
-        </div>
-        {/* Card */}
-        <div className="relative rounded-3xl bg-white shadow-md border border-zinc-200 px-2 py-6 sm:px-6 flex flex-col w-full">
-          {activeTab === 0 ? (
-            <div className="flex flex-col gap-6">
-              {/* Prompt */}
-              <AnimatePresence>
-                {step >= 1 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4"
-                  >
-                    <div className="text-xs font-semibold text-zinc-400 mb-1 text-left">Prompt</div>
-                    <div className="text-base text-zinc-900 text-left min-h-[28px]" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: 0 }}>{typedPrompt || showcasePromptFull}</div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              {/* Dropdowns and Generate button, keep showing after email is generated */}
-              <AnimatePresence>
-                {(step === 2 || step === 3) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex flex-wrap gap-2 items-center mb-2"
-                  >
-                    {dropdowns.map((d, idx) => (
-                      <motion.div
-                        key={d.label}
-                        animate={dropdownValues[idx] || step === 3 ? { scale: 1.08, boxShadow: '0 0 0 2px #2563eb33', backgroundColor: '#e0e7ff' } : { scale: 1, boxShadow: 'none', backgroundColor: '#f4f4f5' }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                        className={`flex items-center gap-2 rounded-full border border-zinc-200 px-2 py-1 text-xs font-medium min-w-[90px] shadow-sm ${(dropdownValues[idx] || step === 3) ? 'ring-2 ring-blue-400' : ''}`}
-                        style={{ zIndex: (dropdownValues[idx] || step === 3) ? 1 : 0 }}
-                      >
-                        <span className="text-zinc-500">{d.label}:</span>
-                        <AnimatePresence>
-                          {(dropdownValues[idx] || step === 3) && (
-                            <motion.span
-                              initial={{ opacity: 0, x: 8 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: 8 }}
-                              transition={{ duration: 0.3 }}
-                              className="text-zinc-900 font-semibold"
-                            >
-                              {d.value}
-                            </motion.span>
-                          )}
-                        </AnimatePresence>
-                        <ChevronDown className="w-3 h-3 ml-1 text-zinc-400" />
-                      </motion.div>
-                    ))}
-                    <motion.button
-                      className={`flex items-center justify-center rounded-full bg-black text-white px-5 py-2 text-xs font-semibold shadow-md hover:brightness-110 transition ml-2 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242] ${showSendPulse ? 'ring-4 ring-blue-300 animate-pulse' : ''}`}
-                      style={{ fontFamily: 'Inter, sans-serif' }}
-                      animate={(dropdownValues[2] || step === 3) ? { scale: 1.08, boxShadow: '0 0 0 4px #2563eb33' } : { scale: 1, boxShadow: 'none' }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                    >
-                      Generate
-                    </motion.button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              {/* Generated Email */}
-              <AnimatePresence>
-                {step === 3 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-white border border-zinc-200 rounded-2xl p-4 relative"
-                  >
-                    <div className="text-xs font-semibold text-zinc-400 mb-1">Generated Email</div>
-                    <div className="text-base text-zinc-900 text-left" style={{ lineHeight: 1.5, fontSize: '0.95rem', minHeight: '8em', textAlign: 'left' }}>
-                      {typedEmail.split('\n').map((line, idx) => (
-                        <div key={idx}>{line === '' ? <br /> : line}</div>
-                      ))}
-                    </div>
-                    {/* Action Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.5 }}
-                      className="flex gap-3 mt-4 justify-end items-center"
-                    >
-                      {actionButtons.map(({ icon: Icon, label }) => (
-                        <button
-                          key={label}
-                          className={`flex flex-col items-center text-zinc-500 hover:text-blue-600 focus:outline-none ${label === 'Send' && showSendPulse ? 'bg-blue-100 text-blue-600 ring-2 ring-blue-400' : ''}`}
-                          tabIndex={-1}
-                          style={{ borderRadius: 6, padding: '1px 2px', transition: 'background 0.2s, color 0.2s', minWidth: 38 }}
-                        >
-                          <Icon className="w-5 h-5 mb-0.5" />
-                          <span className="text-[11px] font-medium leading-tight">{label}</span>
-                        </button>
-                      ))}
-                    </motion.div>
-                    {/* Sent popup */}
-                    <AnimatePresence>
-                      {showSentPopup && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 20 }}
-                          transition={{ duration: 0.4 }}
-                          className="absolute left-1/2 -translate-x-1/2 top-2/3 bg-blue-500 text-white px-6 py-3 rounded-xl shadow-lg text-base font-semibold z-50"
-                          style={{ pointerEvents: 'none' }}
-                        >
-                          Email sent!
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <TemplateLibraryPreviewHero />
+    <div className="w-full max-w-2xl mx-auto">
+      <div className="rounded-xl border border-zinc-200 shadow-sm bg-white px-5 py-6 flex flex-col justify-center min-h-[320px] max-h-[400px] relative" style={{ overflow: 'hidden' }}>
+        {/* Centered Email sent notification overlay */}
+        <AnimatePresence>
+          {showSentNotif && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4 }}
+              className="absolute inset-0 flex items-center justify-center z-20"
+            >
+              <div className="bg-green-100 text-green-800 px-6 py-3 rounded-xl shadow-lg text-base font-semibold flex items-center gap-3 border border-green-200" style={{ boxShadow: '0 4px 24px 0 rgba(80,200,120,0.10)' }}>
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+                Email sent!
+              </div>
+            </motion.div>
           )}
-          {/* Email window popup animation (now rendered inside card) */}
+        </AnimatePresence>
+        {/* End notification overlay */}
+        <div className="flex flex-col gap-6 h-full justify-center">
           <AnimatePresence>
-            {showEmailWindow && (
+            {step === 1 && (
               <motion.div
-                initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                key="prompt"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
-                className="absolute left-1/2 top-1/2 z-50 bg-white border border-zinc-200 shadow-2xl rounded-2xl p-6 min-w-[320px] max-w-md"
-                style={{ transform: 'translate(-50%, -50%)' }}
+                className="flex flex-col gap-2 h-full justify-center"
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <Mail className="w-5 h-5 text-blue-500" />
-                  <span className="font-semibold text-blue-700">Sending Email...</span>
-                </div>
-                <div className="text-sm text-zinc-900 whitespace-pre-line text-left" style={{ fontFamily: 'Inter, sans-serif', textAlign: 'left' }}>
-                  {showcaseEmailLines.join('\n')}
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center">
+                      <User className="w-5 h-5 text-zinc-500" />
+                    </div>
+                  </div>
+                  <div className="bg-zinc-50 border border-zinc-200 rounded-2xl px-4 py-3 shadow-sm text-left min-w-[120px] max-w-xl" style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem', color: '#232326', boxShadow: '0 2px 8px 0 rgba(80,60,80,0.04)' }}>
+                    {typedPrompt}<span className="blinking-cursor">|</span>
+                  </div>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
-          {/* Email sent message (now rendered inside card) */}
           <AnimatePresence>
-            {showEmailSentMsg && (
+            {step === 2 && (
               <motion.div
+                key="dropdowns"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.4 }}
-                className="absolute left-1/2 top-1/2 z-50 bg-blue-500 text-white px-8 py-4 rounded-xl shadow-lg text-lg font-semibold"
-                style={{ transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-wrap gap-2 items-center mb-2"
               >
-                <span className="flex items-center gap-2"><Mail className="w-5 h-5 inline-block" />Email Sent!</span>
+                {dropdowns.map((d, idx) => (
+                  <motion.div
+                    key={d.label}
+                    animate={dropdownValues[idx] ? { scale: 1.08, boxShadow: '0 0 0 2px #2563eb33', backgroundColor: '#e0e7ff' } : { scale: 1, boxShadow: 'none', backgroundColor: '#f4f4f5' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className={`flex items-center gap-2 rounded-full border border-zinc-200 px-2 py-1 text-xs font-medium min-w-[90px] shadow-sm ${dropdownValues[idx] ? 'ring-2 ring-blue-400' : ''}`}
+                    style={{ zIndex: dropdownValues[idx] ? 1 : 0 }}
+                  >
+                    <span className="text-zinc-500">{d.label}:</span>
+                    <AnimatePresence>
+                      {dropdownValues[idx] && (
+                        <motion.span
+                          initial={{ opacity: 0, x: 8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 8 }}
+                          transition={{ duration: 0.3 }}
+                          className="text-zinc-900 font-semibold"
+                        >
+                          {d.value}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                    <ChevronDown className="w-3 h-3 ml-1 text-zinc-400" />
+                  </motion.div>
+                ))}
+                <motion.button
+                  className="flex items-center justify-center rounded-full bg-black text-white px-5 py-2 text-xs font-semibold shadow-md hover:brightness-110 transition ml-2 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
+                  style={{ fontFamily: 'Inter, sans-serif' }}
+                  animate={dropdownValues[2] ? { scale: 1.08, boxShadow: '0 0 0 4px #2563eb33' } : { scale: 1, boxShadow: 'none' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
+                  Generate
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <AnimatePresence>
+            {step === 3 && (
+              <motion.div
+                key="email"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="flex flex-col gap-4 h-full justify-center"
+              >
+                <div className="text-xs font-semibold text-zinc-400 mb-1 text-left uppercase tracking-wider">Generated Email</div>
+                <div className="text-base text-zinc-900 text-left font-mono" style={{ lineHeight: 1.5, fontSize: '0.95rem', minHeight: '8em', textAlign: 'left', fontFamily: 'Inter, monospace' }}>
+                  {typedEmail.split('\n').map((line, idx) => (
+                    <div key={idx}>{line === '' ? <br /> : line}</div>
+                  ))}
+                </div>
+                <div className="flex gap-3 mt-2 justify-end items-center">
+                  {actionButtons.map(({ icon: Icon, label }) => {
+                    if (label === 'Send') {
+                      return (
+                        <motion.button
+                          key={label}
+                          className={`flex flex-col items-center text-zinc-500 focus:outline-none relative justify-center pointer-events-none` + (sending ? ' opacity-60' : '')}
+                          style={{ borderRadius: 6, padding: '1px 2px', transition: 'background 0.2s, color 0.2s', minWidth: 38, minHeight: 38 }}
+                          disabled
+                        >
+                          {sending ? (
+                            <motion.span
+                              initial={{ x: 0, opacity: 1 }}
+                              animate={{ x: 32, opacity: 0 }}
+                              transition={{ duration: 0.7, ease: 'easeIn' }}
+                              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24 }}
+                            >
+                              <Send className="w-6 h-6 text-blue-500" />
+                            </motion.span>
+                          ) : sent ? (
+                            <motion.span
+                              initial={{ scale: 0.7, opacity: 0 }}
+                              animate={{ scale: 1.1, opacity: 1 }}
+                              exit={{ scale: 0.7, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24 }}
+                            >
+                              <CheckCircle2 className="w-6 h-6 text-green-500" />
+                            </motion.span>
+                          ) : (
+                            <>
+                              <Icon className="w-5 h-5 mb-0.5" />
+                              <span className="text-[11px] font-medium leading-tight">{label}</span>
+                            </>
+                          )}
+                        </motion.button>
+                      );
+                    }
+                    return (
+                      <button
+                        key={label}
+                        className="flex flex-col items-center text-zinc-500 hover:text-blue-600 focus:outline-none"
+                        tabIndex={-1}
+                        style={{ borderRadius: 6, padding: '1px 2px', transition: 'background 0.2s, color 0.2s', minWidth: 38, minHeight: 38 }}
+                        disabled={sending}
+                      >
+                        <Icon className="w-5 h-5 mb-0.5" />
+                        <span className="text-[11px] font-medium leading-tight">{label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

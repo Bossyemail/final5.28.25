@@ -25,6 +25,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   if (!isLoaded) {
     return (
@@ -47,6 +48,24 @@ export default function DashboardPage() {
       router.push("/" + hash)
     }
   }
+
+  const handleSubscribe = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId: 'YOUR_PRICE_ID' }),
+      });
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-black dark:bg-[#424242] dark:text-[#e0e0e0] flex">

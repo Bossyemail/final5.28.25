@@ -31,10 +31,10 @@ export const metadata: Metadata = {
     siteName: 'BossyEmail',
     images: [
       {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'BossyEmail - Real Estate Email Generator',
+        url: '/icon.png',
+        width: 512,
+        height: 512,
+        alt: 'BossyEmail Icon',
       },
     ],
   },
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'BossyEmail - Real Estate Emails That Don\'t Suck',
     description: 'Generate professional, witty, and effective real estate emails in seconds. Built by real estate pros, not tech bros.',
-    images: ['/og-image.png'],
+    images: ['/icon.png'],
     creator: '@bossyemail',
   },
   robots: {
@@ -70,7 +70,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
         <head>
-          <link rel="icon" href="/logo.png" type="image/png" />
+          <link rel="icon" href="/icon.png" type="image/png" />
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
             strategy="afterInteractive"

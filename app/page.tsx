@@ -76,7 +76,7 @@ export default function Home() {
                   className="w-full h-[240px] flex items-end justify-center"
                   style={{ background: color, borderRadius: 0, borderLeft: '1px solid #232326', borderRight: '1px solid #232326', borderTop: '2px solid #232326', borderBottom: '2px solid #232326', boxShadow: '0 2px 12px 0 rgba(80, 60, 80, 0.08)' }}
                 >
-                  <span className="mb-6 text-zinc-700 text-lg font-medium" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>{label}</span>
+                  <span className="mb-6 text-zinc-700 text-lg sm:text-lg text-base font-medium" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>{label}</span>
                 </div>
               </motion.div>
             ))}

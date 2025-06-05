@@ -8,6 +8,7 @@ import { TryGeneratorCTA } from "./try-generator-cta"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import EmailGeneratorShowcase from "./EmailGeneratorShowcase"
+import EmailGeneratorShowcaseTabs from "./EmailGeneratorShowcaseTabs"
 
 const testimonials = [
   {
@@ -61,51 +62,16 @@ export function Hero() {
               Smart Email Generator + Instant Email<br />
               <span>Templates for Real Estate Pros.</span>
             </h1>
-            <div className="mb-10 text-center text-zinc-700 dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', fontWeight: 500 }}>
+            <div className="mb-10 text-center text-zinc-700 dark:text-black text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
               Get the exact words to chase docs,<br />
               put out fires and follow up like a pro - in seconds.
             </div>
-            <div className="w-full flex justify-center mb-8">
+            {/* Main CTA Button */}
+            <div className="w-full flex justify-center mb-6">
               <TryGeneratorCTA className="bg-black text-white hover:bg-zinc-900 rounded-full px-10 py-4 font-semibold text-lg shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-[#f5f5f5] dark:text-[#212121] dark:hover:bg-[#e0e0e0] dark:border dark:border-[#424242]" label="Start Now" />
             </div>
-            {/* Animated pastel bursts behind the EmailGeneratorShowcase */}
-            <div className="relative w-full flex justify-center items-center" style={{ minHeight: 420 }}>
-              <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-0">
-                <motion.div
-                  className="absolute rounded-full blur-3xl opacity-70"
-                  style={{ width: 260, height: 260, background: '#EFE1E1', left: '10%', top: '10%' }}
-                  animate={{ y: [0, 20, 0], scale: [1, 1.08, 1] }}
-                  transition={{ duration: 7, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute rounded-full blur-3xl opacity-60"
-                  style={{ width: 180, height: 180, background: '#F0D2DA', left: '60%', top: '18%' }}
-                  animate={{ y: [0, -18, 0], scale: [1, 1.12, 1] }}
-                  transition={{ duration: 8, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute rounded-full blur-3xl opacity-60"
-                  style={{ width: 200, height: 200, background: '#E0C1C6', left: '35%', top: '50%' }}
-                  animate={{ x: [0, 24, 0], scale: [1, 1.06, 1] }}
-                  transition={{ duration: 9, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute rounded-full blur-3xl opacity-50"
-                  style={{ width: 160, height: 160, background: '#D1B4C6', left: '70%', top: '60%' }}
-                  animate={{ y: [0, 16, 0], scale: [1, 1.09, 1] }}
-                  transition={{ duration: 10, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-                />
-                <motion.div
-                  className="absolute rounded-full blur-3xl opacity-50"
-                  style={{ width: 140, height: 140, background: '#CBC4D6', left: '20%', top: '70%' }}
-                  animate={{ x: [0, -18, 0], scale: [1, 1.1, 1] }}
-                  transition={{ duration: 11, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
-                />
-              </div>
-              <div className="relative z-10 w-full flex justify-center">
-                <EmailGeneratorShowcase />
-              </div>
-            </div>
+            {/* Tabs and Card Container */}
+            <EmailGeneratorShowcaseTabs />
           </motion.div>
         </div>
       </div>
