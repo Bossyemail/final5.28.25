@@ -21,8 +21,8 @@ export function Support() {
   return (
     <div className="w-full pl-32 pr-16 sm:pl-8 sm:pr-4 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-2 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, WebkitFontSmoothing: 'antialiased' }}>Support</h2>
-        <p className="mb-6 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '18px', WebkitFontSmoothing: 'antialiased' }}>
+        <h2 className="text-3xl font-normal mb-2 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px', WebkitFontSmoothing: 'antialiased' }}>Support</h2>
+        <p className="mb-6 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', WebkitFontSmoothing: 'antialiased' }}>
           Whether you're stuck, confused, or just emotionally exhausted from yet another inspection delay — we got you.<br /><br />
           Reach out via email, phone, or send us a message below. We promise a real human (who's probably also survived a 10PM "urgent" call) will get back to you ASAP.<br /><br />
           <span className="inline-block dark:text-[#e0e0e0]">👉 Let's fix it together — without the hold music.</span>

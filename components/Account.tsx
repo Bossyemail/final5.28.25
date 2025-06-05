@@ -35,7 +35,10 @@ export function Account() {
   return (
     <div className="w-full font-sans pl-32 pr-16 sm:pl-8 sm:pr-4 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', color: '#232326', WebkitFontSmoothing: 'antialiased' }}>
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, color: '#232326' }}>Account & Signature</h2>
+        <h2 className="text-3xl font-normal mb-4 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>Account & Signature</h2>
+        <p className="mb-6 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }}>
+          Manage your account details and email signature below.
+        </p>
         <form className="space-y-4">
           <div className="flex gap-4">
             <input

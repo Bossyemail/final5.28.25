@@ -233,7 +233,7 @@ export function EmailGenerator() {
   return (
     <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, Roboto, SF Pro, Arial, sans-serif' }}>
       <h2 className="text-3xl font-bold mb-6 text-[#232326] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, WebkitFontSmoothing: 'antialiased' }}>
-        Smart Email Generator
+        Email Generator
       </h2>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -376,7 +376,7 @@ export function EmailGenerator() {
             <hr className="border-t border-zinc-200 mb-6" />
             <div>
               <div className="flex items-center mb-2">
-                <span className="text-lg font-bold text-zinc-900 mr-2">Subject:</span>
+                <span className="text-base font-bold text-zinc-900 mr-2">Subject:</span>
                 {isEditing ? (
                   <input
                     type="text"
@@ -386,7 +386,7 @@ export function EmailGenerator() {
                     autoFocus
                   />
                 ) : (
-                  <span className="text-lg font-semibold text-zinc-800">{subject}</span>
+                  <span className="text-base font-semibold text-zinc-800">{subject}</span>
                 )}
               </div>
               {isEditing ? (

@@ -274,7 +274,7 @@ export function Favorites() {
               >
                 ×
               </button>
-              <h3 className="text-xl font-bold mb-4 text-black dark:text-[#e0e0e0]">Add New Template</h3>
+              <h3 className="text-base font-bold mb-4 text-black dark:text-[#e0e0e0]">Add New Template</h3>
               <form
                 onSubmit={e => {
                   e.preventDefault();

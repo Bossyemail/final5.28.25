@@ -1500,7 +1500,7 @@ export function Templates() {
                 ×
               </button>
               <div className="flex items-center gap-2 mb-2">
-                <div className="text-xl font-bold text-zinc-900 dark:text-[#e0e0e0]">{selectedTemplate.title}</div>
+                <div className="text-base font-bold text-zinc-900 dark:text-[#e0e0e0]">{selectedTemplate.title}</div>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
                   {selectedTemplate.category}
                 </span>

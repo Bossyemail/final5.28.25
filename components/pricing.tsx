@@ -52,8 +52,8 @@ export function Pricing() {
     <section className="py-16 md:py-24 bg-[#e0e0e0] dark:bg-[#757575] dark:text-black" style={{ background: '#e0e0e0' }}>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-normal mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
-          <p className="text-center text-black dark:text-black mb-12" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
+          <h2 className="text-3xl font-normal mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
+          <p className="text-center text-black dark:text-black mb-12" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
             Choose the plan that works for you. Start with 3 free emails.<br />
             Stay for the sanity-saving genius.
           </p>
@@ -69,7 +69,7 @@ export function Pricing() {
             className="rounded-2xl shadow-sm border border-black px-8 pt-8 pb-0 flex flex-col gap-6 dark:bg-[#757575]"
             style={{ background: '#D1B4C6' }}
           >
-            <h3 className="text-2xl font-normal mb-2 text-black dark:text-black">Inbox Lite</h3>
+            <h3 className="text-base font-normal mb-2 text-black dark:text-black">Inbox Lite</h3>
             <div className="text-left" style={{ marginTop: '-8px', marginBottom: 0 }}>
               <span className="text-4xl font-bold text-black">$29</span>
               <span className="text-black dark:text-black">per month</span>
@@ -102,13 +102,13 @@ export function Pricing() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-2xl shadow-lg border border-[#734b6d] p-8 relative dark:bg-[#757575]"
-            style={{ background: '#CBC4D6', color: '#232326' }}
+            className="rounded-2xl shadow-lg border border-black p-8 relative dark:bg-[#757575]"
+            style={{ background: '#CBC4D6', color: '#232326', border: '1px solid #232326' }}
           >
             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#734b6d] text-white px-4 py-1 rounded-full text-sm font-medium">
               Most Popular
         </div>
-            <h3 className="text-2xl font-normal mb-2 text-black dark:text-black">Inbox Royalty</h3>
+            <h3 className="text-base font-normal mb-2 text-black dark:text-black">Inbox Royalty</h3>
             <div className="mb-6">
               <span className="text-4xl font-bold" style={{ color: '#232326' }}>$59</span>
               <span style={{ color: '#232326', opacity: 0.8 }} className="text-black dark:text-black">per month</span>

@@ -83,6 +83,26 @@ export default function RootLayout({
               gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
             `}
           </Script>
+          {/* Set dark mode class on <html> before React loads */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    var theme = localStorage.theme;
+                    if (
+                      theme === "dark" ||
+                      (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+                    ) {
+                      document.documentElement.classList.add("dark");
+                    } else {
+                      document.documentElement.classList.remove("dark");
+                    }
+                  } catch(e) {}
+                })();
+              `,
+            }}
+          />
         </head>
         <body className={inter.className} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
           <AppShell>{children}</AppShell>

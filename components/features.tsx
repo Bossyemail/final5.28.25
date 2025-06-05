@@ -189,10 +189,10 @@ export function Features() {
       <section className="w-full py-16 md:py-24 bg-white dark:bg-[#757575] dark:text-black">
         <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-normal mb-4 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '48px', fontWeight: 400 }}>
+            <h2 className="text-3xl font-normal mb-4 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '32px', fontWeight: 400 }}>
               Features That Make You Look Good
             </h2>
-            <p className="text-center text-black dark:text-black max-w-2xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
+            <p className="text-center text-black dark:text-black max-w-2xl mx-auto" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
               Everything you need to write professional, effective emails that get results.
             </p>
           </div>
@@ -208,14 +208,14 @@ export function Features() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="group flex-none w-[320px] snap-center"
                 >
-                  <div className="relative bg-white dark:bg-[#757575] rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-100 dark:border-zinc-700 h-full">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#EFE1E1] to-[#CBC4D6] opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300" />
+                  <div className="relative bg-white dark:bg-[#757575] p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-zinc-100 dark:border-zinc-700 h-full rounded-xl" style={{ border: '1px solid #232326' }}>
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#EFE1E1] to-[#CBC4D6] opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                     <div className="relative z-10">
                       <div className="w-12 h-12 rounded-xl bg-black dark:bg-white flex items-center justify-center mb-6">
                         <feature.icon className="w-6 h-6 text-white dark:text-black" />
                       </div>
-                      <h3 className="text-xl font-semibold mb-4 text-black dark:text-black">{feature.title}</h3>
-                      <p className="text-base text-zinc-600 dark:text-black">{feature.description}</p>
+                      <h3 className="text-sm font-semibold mb-3 text-black dark:text-black" style={{ fontSize: '14px' }}>{feature.title}</h3>
+                      <p className="text-xs text-zinc-600 dark:text-black" style={{ fontSize: '12px' }}>{feature.description}</p>
                     </div>
                   </div>
                 </motion.div>

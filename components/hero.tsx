@@ -47,8 +47,8 @@ const avatarColors = [
 
 export function Hero() {
   return (
-    <section className="py-16 md:py-24 bg-white text-black dark:bg-[#757575] dark:text-black">
-      <div className="container flex flex-col items-center justify-center px-2 sm:px-4 md:px-6">
+    <section className="flex flex-col justify-center items-center py-16 md:py-24 bg-white text-black dark:bg-[#757575] dark:text-black min-h-[70vh]">
+      <div className="container flex flex-col items-center justify-center px-2 sm:px-4 md:px-6 h-full">
         <div className="flex flex-col items-center text-center w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -57,9 +57,10 @@ export function Hero() {
             className="w-full flex flex-col items-center justify-center"
           >
             <img src="/icon.png" alt="BossyEmail icon" className="mx-auto mb-8" style={{ height: '56px', width: 'auto' }} />
-            <h1 className="text-5xl font-normal mb-6 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '48px', fontWeight: 400 }}>
-              Smart Email Generator + Instant Email Templates for Real Estate Pros.
-          </h1>
+            <h1 className="text-3xl font-normal mb-6 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '32px', fontWeight: 400 }}>
+              Smart Email Generator + Instant Email<br />
+              <span>Templates for Real Estate Pros.</span>
+            </h1>
             <div className="mb-10 text-center text-zinc-700 dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', fontWeight: 500 }}>
               Get the exact words to chase docs,<br />
               put out fires and follow up like a pro - in seconds.

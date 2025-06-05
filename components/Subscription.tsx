@@ -43,19 +43,17 @@ export function Subscription() {
   return (
     <div className="w-full pl-32 pr-16 sm:pl-8 sm:pr-4 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', color: '#232326', WebkitFontSmoothing: 'antialiased' }}>
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-2 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, color: '#232326' }}>Subscription</h2>
-        <p className="mb-6 sm:text-lg dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
-          Manage your subscription and billing information.<br />
-          You're not just managing transactions — you're managing chaos. Let us help.
+        <h2 className="text-3xl font-normal mb-2 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>Subscription</h2>
+        <p className="mb-6 sm:text-base dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Inter, sans-serif' }}>
+          Manage your subscription and billing details.
         </p>
-        <p className="mb-8 sm:text-lg dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
-          Whether you're a solo agent buried in follow-ups or a TC juggling ten contracts and a meltdown, BossyEmail is here to make sure your inbox runs like a closing table on caffeine.<br />
-          Choose your plan, and let's get to work.
+        <p className="mb-8 sm:text-base dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Inter, sans-serif' }}>
+          Need to make changes? We've got you covered.
         </p>
         <div className="bg-white dark:bg-[#424242] rounded-2xl shadow-xl p-8 mb-8 w-full">
           <div className="space-y-6">
             <div>
-              <div className="text-lg font-semibold mb-1 dark:text-[#e0e0e0]" style={{ fontWeight: 600 }}>Current Plan</div>
+              <div className="text-base font-semibold mb-1 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Current Plan</div>
               <div className="mb-6 dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
                 {isSubscribed ? (
                   isTrialing ? (
@@ -98,7 +96,7 @@ export function Subscription() {
               )}
             </div>
             <div className="mt-8" style={{ fontWeight: 400, fontSize: '18px' }}>
-              <div className="font-semibold text-lg mb-2 dark:text-[#e0e0e0]" style={{ fontWeight: 600 }}>What You Get (Besides Your Sanity Back)</div>
+              <div className="font-semibold text-base mb-2 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>What You Get (Besides Your Sanity Back)</div>
               <ul className="mb-4 space-y-1 pl-0 dark:text-[#e0e0e0]">
                 <li>✍️ Real estate-specific emails, generated in seconds</li>
                 <li>💬 Smart, editable templates that don't sound like a robot wrote them</li>

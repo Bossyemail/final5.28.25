@@ -12,7 +12,7 @@ export function About() {
           />
         </div>
         <div className="flex-1 order-2 md:order-none">
-          <h2 className="text-5xl font-normal mb-4 text-black dark:text-black text-center md:text-left" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
+          <h2 className="text-3xl font-normal mb-4 text-black dark:text-black text-center md:text-left" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
             About
           </h2>
           <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }} className="text-black dark:text-black">

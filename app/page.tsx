@@ -29,11 +29,11 @@ export default function Home() {
         <SocialProofAndTestimonials />
         <section className="w-full pt-16 md:pt-24 border-b border-zinc-100">
           <div className="max-w-4xl mx-auto px-4 md:px-6 flex flex-col items-center text-center">
-            <h2 className="text-5xl font-normal mb-6 text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '48px', fontWeight: 400 }}>
+            <h2 className="text-3xl font-normal mb-6 text-black" style={{ fontFamily: 'Inter, sans-serif', fontSize: '32px', fontWeight: 400 }}>
               Built by a Real Estate Pro,<br />
               <span className="block">Not a Tech Bro.</span>
             </h2>
-            <p className="text-center mb-14" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px', color: '#000' }}>
+            <p className="text-center mb-14" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', color: '#000' }}>
               Made for the Whole Deal-Making Crew. If your job involves contracts, clients, or chaos,<br />
               <span>This tool was built with you in mind. BossyEmail is ideal for:</span>
             </p>
@@ -74,7 +74,7 @@ export default function Home() {
               >
                 <div
                   className="w-full h-[240px] flex items-end justify-center"
-                  style={{ background: color, borderRadius: '18px 18px 0 0', boxShadow: '0 2px 12px 0 rgba(80, 60, 80, 0.08)' }}
+                  style={{ background: color, borderRadius: 0, borderLeft: '1px solid #232326', borderRight: '1px solid #232326', borderTop: '2px solid #232326', borderBottom: '2px solid #232326', boxShadow: '0 2px 12px 0 rgba(80, 60, 80, 0.08)' }}
                 >
                   <span className="mb-6 text-zinc-700 text-lg font-medium" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>{label}</span>
                 </div>
@@ -82,9 +82,13 @@ export default function Home() {
             ))}
           </motion.div>
         </section>
-        <Features />
+        <section id="features">
+          <Features />
+        </section>
         <Why />
-        <Pricing />
+        <section id="pricing">
+          <Pricing />
+        </section>
         <FAQ />
         <Process />
         <About />

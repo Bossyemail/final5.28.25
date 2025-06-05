@@ -68,7 +68,7 @@ export function Why() {
   return (
     <section id="why" className="w-full py-16 md:py-24 px-4 bg-[#CBC4D6] text-white dark:bg-[#616161]">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-5xl font-normal text-black mb-6 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
+        <h2 className="text-3xl font-normal text-black mb-6 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
             Why BossyEmail Exists
           </h2>
         <div className="mb-10 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px', color: '#000' }}>

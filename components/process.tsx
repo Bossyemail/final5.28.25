@@ -26,10 +26,10 @@ export function Process() {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <h2 className="text-5xl font-normal text-black dark:text-black text-center mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '48px' }}>
+            <h2 className="text-3xl font-normal text-black dark:text-black text-center mb-4" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
               How It Works
             </h2>
-            <p className="mx-auto max-w-[700px] text-center mb-8 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px' }}>
+            <p className="mx-auto max-w-[700px] text-center mb-8 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
               Three simple steps to professional real estate emails
             </p>
           </div>
@@ -42,7 +42,7 @@ export function Process() {
                   <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black text-white shadow-lg">
                     <step.icon className="h-8 w-8" />
                   </div>
-                  <h3 className="text-xl font-bold text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif' }}>{step.title}</h3>
+                  <h3 className="text-sm font-bold text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif' }}>{step.title}</h3>
                   <p className="text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }}>
                     {step.description}
                   </p>

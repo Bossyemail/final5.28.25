@@ -31,7 +31,7 @@ export function Footer() {
           <div className="flex flex-col items-start gap-0">
             <img src="/logo.png" alt="BossyEmail logo" className="h-40 w-auto self-start -mt-14" />
             <p className="text-sm m-0 -mt-8 mb-4" style={{ color: 'var(--footer-text)' }}>
-              Real estate emails done right...in seconds.
+              Real estate emails done right...<br />in seconds.
             </p>
             <div className="flex space-x-2">
               <a href="https://www.threads.com/@bossyemail" target="_blank" rel="noopener noreferrer" aria-label="Threads">
