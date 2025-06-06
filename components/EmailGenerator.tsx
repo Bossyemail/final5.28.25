@@ -371,9 +371,9 @@ export function EmailGenerator() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col flex-grow justify-end min-h-[220px] mt-12"
+            className="flex flex-col flex-grow justify-end min-h-[220px] mt-8"
           >
-            <hr className="border-t border-zinc-200 mb-6" />
+            <hr className="border-t border-zinc-200 mb-2" />
             <div>
               <div className="flex items-center mb-2">
                 <span className="text-base font-bold text-zinc-900 mr-2">Subject:</span>
@@ -398,12 +398,12 @@ export function EmailGenerator() {
               ) : (
                 <div className="generated-email-body text-base text-zinc-900 mt-1">
                   {body
-                    .split(/\n{2,}|(?<!\n)\n(?!\n)/) // Split on double newlines or single newlines not part of a double
+                    .split(/\n{2,}|(?<!\n)\n(?!\n)/)
                     .map(para => para.trim())
                     .filter(para => para.length > 0)
                     .map((para, idx) => (
-                      <p key={idx} className="mb-4 whitespace-pre-line">{para}</p>
-                    ))}
+                    <p key={idx} className="mb-4 whitespace-pre-line">{para}</p>
+                  ))}
                   {getFinalSignature() && (
                     <>
                       <p className="mt-6 whitespace-pre-line">{getFinalSignature()}</p>
@@ -411,14 +411,12 @@ export function EmailGenerator() {
                   )}
                 </div>
               )}
-              {/* Edit action buttons */}
               {isEditing && (
                 <div className="flex gap-2 mt-2 justify-end">
                   <button onClick={handleEditSave} className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" title="Save" aria-label="Save"><Check className="w-4 h-4" />Save</button>
                   <button onClick={handleEditCancel} className="flex items-center gap-1 bg-zinc-200 text-zinc-700 px-3 py-1 rounded hover:bg-zinc-300" title="Cancel" aria-label="Cancel"><X className="w-4 h-4" />Cancel</button>
                 </div>
               )}
-              {/* Grouped action icons at bottom right, including edit */}
               {!isEditing && (
                 <div className="flex gap-2 mt-4 justify-end items-center">
                   <button onClick={handleCopy} className="icon-button" title="Copy Email" aria-label="Copy Email" tabIndex={0}><Copy className="w-5 h-5" /></button>

@@ -343,8 +343,7 @@ export default function EmailGeneratorShowcase() {
                 transition={{ duration: 0.5 }}
                 className="flex flex-col gap-4 h-full justify-center"
               >
-                <div className="text-xs font-semibold text-zinc-400 mb-1 text-left uppercase tracking-wider">Generated Email</div>
-                <div className="text-base text-zinc-900 text-left font-mono" style={{ lineHeight: 1.5, fontSize: '0.95rem', minHeight: '8em', textAlign: 'left', fontFamily: 'Inter, monospace' }}>
+                <div className="text-sm text-zinc-900 text-left font-mono" style={{ lineHeight: 1.5, fontSize: '0.85rem', minHeight: '8em', textAlign: 'left', fontFamily: 'Inter, monospace' }}>
                   {typedEmail.split('\n').map((line, idx) => (
                     <div key={idx}>{line === '' ? <br /> : line}</div>
                   ))}
@@ -369,7 +368,7 @@ export default function EmailGeneratorShowcase() {
                             >
                               <Send className="w-6 h-6 text-blue-500" />
                             </motion.span>
-                          ) : sent ? (
+                          ) : (
                             <motion.span
                               initial={{ scale: 0.7, opacity: 0 }}
                               animate={{ scale: 1.1, opacity: 1 }}
@@ -380,11 +379,6 @@ export default function EmailGeneratorShowcase() {
                             >
                               <CheckCircle2 className="w-6 h-6 text-green-500" />
                             </motion.span>
-                          ) : (
-                            <>
-                              <Icon className="w-5 h-5 mb-0.5" />
-                              <span className="text-[11px] font-medium leading-tight">{label}</span>
-                            </>
                           )}
                         </motion.button>
                       );

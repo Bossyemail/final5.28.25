@@ -254,9 +254,9 @@ export function Features() {
               Get Started
               <ArrowUpRight className="w-5 h-5" />
             </a>
-          </motion.div>
-        </div>
-      </section>
+              </motion.div>
+      </div>
+    </section>
     </>
   )
 } 

@@ -55,15 +55,15 @@ export function Subscription() {
             <div>
               <div className="text-base font-semibold mb-1 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Current Plan</div>
               <div className="mb-6 dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
-                {isSubscribed ? (
-                  isTrialing ? (
-                    "You're currently in your free trial period"
-                  ) : (
-                    "You're currently on the paid plan"
-                  )
-                ) : (
-                  "Start your free trial to get unlimited access"
-                )}
+            {isSubscribed ? (
+              isTrialing ? (
+                "You're currently in your free trial period"
+              ) : (
+                "You're currently on the paid plan"
+              )
+            ) : (
+              "Start your free trial to get unlimited access"
+            )}
               </div>
             </div>
             {subscription && (
@@ -75,25 +75,25 @@ export function Subscription() {
                 {subscription.currentPeriodEnd && (
                   <div className="flex justify-between">
                     <span className="dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
-                      {isCanceled ? "Access until" : "Next billing date"}
-                    </span>
+                    {isCanceled ? "Access until" : "Next billing date"}
+                  </span>
                     <span className="font-semibold dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontSize: '18px' }}>
-                      {new Date(subscription.currentPeriodEnd * 1000).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
+                    {new Date(subscription.currentPeriodEnd * 1000).toLocaleDateString()}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
             <div>
-              {isSubscribed ? (
+          {isSubscribed ? (
                 <Button onClick={handleManageSubscription} disabled={isLoading} size="lg" className="w-1/2 mx-auto block bg-black text-white rounded-full px-8 py-3 font-medium text-base text-center flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]" style={{ fontWeight: 500 }}>
                   {isLoading ? 'Loading...' : <><span>Manage Subscription</span> <ArrowUpRight size={20} /></>}
-                </Button>
-              ) : (
+            </Button>
+          ) : (
                 <Button onClick={handleSubscribe} disabled={isLoading} size="lg" className="w-1/2 mx-auto block bg-black text-white rounded-full px-8 py-3 font-medium text-base text-center flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]" style={{ fontWeight: 500 }}>
                   {isLoading ? 'Loading...' : <><span>Start Free Trial</span> <ArrowUpRight size={20} /></>}
-                </Button>
-              )}
+            </Button>
+          )}
             </div>
             <div className="mt-8" style={{ fontWeight: 400, fontSize: '18px' }}>
               <div className="font-semibold text-base mb-2 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>What You Get (Besides Your Sanity Back)</div>

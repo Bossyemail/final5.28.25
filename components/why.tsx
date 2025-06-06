@@ -68,10 +68,10 @@ export function Why() {
   return (
     <section id="why" className="w-full py-16 md:py-24 px-4 bg-[#CBC4D6] text-white dark:bg-[#616161]">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-3xl font-normal text-black mb-6 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
-            Why BossyEmail Exists
-          </h2>
-        <div className="mb-10 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '18px', color: '#000' }}>
+        <h2 className="text-2xl sm:text-3xl font-normal text-black mb-4 sm:mb-6 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+          Why BossyEmail Exists
+        </h2>
+        <div className="mb-8 sm:mb-10 text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px', color: '#000' }}>
           <div>We built this for the agents doing the real work.</div>
           <div>if you've ever screamed into the void over an addendum request — this is for you.</div>
         </div>

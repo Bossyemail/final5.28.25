@@ -125,87 +125,87 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
           <nav className="w-full mt-10" role="navigation" aria-label="Main navigation">
             <ul className="flex flex-col items-center gap-4 w-full">
               <li className="w-full">
-                <button
-                  type="button"
+                  <button
+                    type="button"
                   onClick={() => onSectionChange && onSectionChange('generator')}
                   className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'generator' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
                   aria-label="Email Generator"
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
-                  tabIndex={0}
-                >
+                    tabIndex={0}
+                  >
                   <LayoutDashboard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-                </button>
-              </li>
+                  </button>
+                </li>
               <li className="w-full">
-                <button
-                  type="button"
+                  <button
+                    type="button"
                   onClick={() => onSectionChange && onSectionChange('templates')}
                   className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'templates' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
                   aria-label="Templates"
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
-                  tabIndex={0}
-                >
+                    tabIndex={0}
+                  >
                   <FileText className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-                </button>
-              </li>
+                  </button>
+                </li>
               <li className="w-full">
-                <button
-                  type="button"
+                  <button
+                    type="button"
                   onClick={() => onSectionChange && onSectionChange('favorites')}
                   className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'favorites' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
                   aria-label="Favorites"
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
-                  tabIndex={0}
-                >
+                    tabIndex={0}
+                  >
                   <Star className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-                </button>
-              </li>
+                  </button>
+                </li>
               <li className="w-full">
-                <button
-                  type="button"
+                  <button
+                    type="button"
                   onClick={() => onSectionChange && onSectionChange('history')}
                   className={`flex items-center justify-center w-full px-0 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'history' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
-                  aria-label="History"
+                    aria-label="History"
                   aria-current={activeSection === 'history' ? 'page' : undefined}
-                  tabIndex={0}
-                >
+                    tabIndex={0}
+                  >
                   <History className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-                </button>
-              </li>
-            </ul>
-          </nav>
+                  </button>
+                </li>
+              </ul>
+            </nav>
           {/* Bottom icons */}
           <div className="flex flex-col gap-2 py-4 w-full items-center px-0 mt-auto border-t border-zinc-200 dark:border-[#616161]" role="navigation" aria-label="Secondary navigation">
-            <button
-              type="button"
-              onClick={() => onSectionChange && onSectionChange("support")}
+              <button
+                type="button"
+                onClick={() => onSectionChange && onSectionChange("support")}
               className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "support" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
-              aria-label="Support"
-              tabIndex={0}
+                aria-label="Support"
+                tabIndex={0}
               title="Support"
-            >
+              >
               <LifeBuoy className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-            </button>
-            <button
-              type="button"
-              onClick={() => onSectionChange && onSectionChange("subscription")}
+              </button>
+              <button
+                type="button"
+                onClick={() => onSectionChange && onSectionChange("subscription")}
               className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "subscription" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
-              aria-label="Subscription"
-              tabIndex={0}
+                aria-label="Subscription"
+                tabIndex={0}
               title="Subscription"
-            >
+              >
               <CreditCard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-            </button>
-            <button
-              type="button"
-              onClick={() => onSectionChange && onSectionChange("account")}
+              </button>
+              <button
+                type="button"
+                onClick={() => onSectionChange && onSectionChange("account")}
               className={`flex items-center justify-center rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "account" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
-              aria-label="Account"
-              tabIndex={0}
+                aria-label="Account"
+                tabIndex={0}
               title="Account"
-            >
+              >
               <User className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
-            </button>
+              </button>
           </div>
         </div>
       </aside>
@@ -224,4 +224,4 @@ function SidebarIcon({ icon: Icon, label, iconClass, strokeWidth = 1.5 }: { icon
       <span className="text-sm font-medium">{label}</span>
     </button>
   );
-}
+} 

@@ -12,10 +12,10 @@ export function About() {
           />
         </div>
         <div className="flex-1 order-2 md:order-none">
-          <h2 className="text-3xl font-normal mb-4 text-black dark:text-black text-center md:text-left" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
+          <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4 text-black dark:text-black text-center md:text-left" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
             About
           </h2>
-          <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }} className="text-black dark:text-black">
+          <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }} className="text-sm sm:text-base text-black dark:text-black">
             <p className="mb-3">
               Hey — I'm Aylen. I've spent the last 20+ years knee-deep in real estate contracts, timelines, and inboxes that should honestly come with a warning label. I've worked with buyers, sellers, lenders, and title companies — and I've survived every "where's that form?" meltdown you can imagine.
           </p>

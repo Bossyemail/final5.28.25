@@ -74,11 +74,9 @@ export function FAQ() {
   return (
     <section id="faq" className="py-16 md:py-24 bg-white dark:bg-[#757575] dark:text-black">
       <div className="container px-4 md:px-6 max-w-2xl mx-auto dark:bg-[#757575]">
-        <h2 className="text-3xl font-normal tracking-tight text-center mb-2 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>
-          Frequently Asked Questions
-        </h2>
-        <p className="text-center text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
-          Got questions? We've got real answers—no fluff, just facts.
+        <h2 className="text-2xl sm:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center">Frequently Asked Questions</h2>
+        <p className="text-center mb-8 sm:mb-12 text-sm sm:text-base text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+          Everything you need to know about BossyEmail and how it works.
         </p>
         <div className="mb-8" />
         <Accordion type="single" collapsible className="divide-y divide-gray-200 dark:divide-zinc-800">

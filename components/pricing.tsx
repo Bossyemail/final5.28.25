@@ -51,9 +51,9 @@ export function Pricing() {
   return (
     <section className="py-16 md:py-24 bg-[#e0e0e0] dark:bg-[#757575] dark:text-black" style={{ background: '#e0e0e0' }}>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-normal mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
-          <p className="text-center text-black dark:text-black mb-12" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
+          <p className="text-center text-black dark:text-black mb-8 sm:mb-12 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
             Choose the plan that works for you. Start with 3 free emails.<br />
             Stay for the sanity-saving genius.
           </p>

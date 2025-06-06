@@ -58,18 +58,18 @@ export function Hero() {
             className="w-full flex flex-col items-center justify-center"
           >
             <img src="/icon.png" alt="BossyEmail icon" className="mx-auto mb-8" style={{ height: '56px', width: 'auto' }} />
-            <h1 className="text-3xl font-normal mb-6 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontSize: '32px', fontWeight: 400 }}>
+            <h1 className="text-2xl sm:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
               Smart Email Generator + Instant Email<br />
               <span>Templates for Real Estate Pros.</span>
             </h1>
-            <div className="mb-10 text-center text-zinc-700 dark:text-black text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '16px' }}>
+            <div className="mb-8 sm:mb-10 text-center text-zinc-700 dark:text-black text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Get the exact words to chase docs,<br />
               put out fires and follow up like a pro - in seconds.
             </div>
             {/* Main CTA Button */}
             <div className="w-full flex justify-center mb-6">
               <TryGeneratorCTA className="bg-black text-white hover:bg-zinc-900 rounded-full px-10 py-4 font-semibold text-lg shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-[#f5f5f5] dark:text-[#212121] dark:hover:bg-[#e0e0e0] dark:border dark:border-[#424242]" label="Start Now" />
-            </div>
+          </div>
             {/* Tabs and Card Container */}
             <EmailGeneratorShowcaseTabs />
           </motion.div>

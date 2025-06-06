@@ -136,129 +136,129 @@ export function Favorites() {
             </button>
           ))}
         </div>
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex items-center mb-6" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
-          <input
-            type="text"
-            placeholder="Search away"
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="flex items-center mb-6" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
+        <input
+          type="text"
+          placeholder="Search away"
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
             className="flex-1 px-5 py-3 text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] border-none outline-none bg-transparent"
-          />
-          <button
-            type="submit"
-            className="px-8 py-3 bg-black text-white font-bold text-lg rounded-full"
-            style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 9999, borderBottomRightRadius: 9999 }}
-          >
-            SEARCH
-          </button>
-        </form>
+        />
+        <button
+          type="submit"
+          className="px-8 py-3 bg-black text-white font-bold text-lg rounded-full"
+          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 9999, borderBottomRightRadius: 9999 }}
+        >
+          SEARCH
+        </button>
+      </form>
         {Object.keys(groupedFavorites).length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
-            <Mail className="w-12 h-12 mb-4" />
-            <p className="text-lg font-medium mb-2">No favorites yet</p>
-            <p className="text-sm">Save emails to your favorites and they'll show up here for quick access.</p>
-          </div>
-        ) : (
+          <Mail className="w-12 h-12 mb-4" />
+          <p className="text-lg font-medium mb-2">No favorites yet</p>
+          <p className="text-sm">Save emails to your favorites and they'll show up here for quick access.</p>
+        </div>
+      ) : (
           Object.entries(groupedFavorites).map(([category, favs]) => (
             <div key={category}>
               <ul>
                 {favs.map((fav, idx) => (
-                  <li
-                    key={fav.id}
+            <li
+              key={fav.id}
                     className={`flex items-center group px-2 py-4 transition hover:bg-zinc-50 dark:hover:bg-[#616161] cursor-pointer${idx !== favs.length - 1 ? ' border-b-2 border-black dark:border-[#616161]' : ''}`}
-                    onClick={e => {
-                      if ((e.target as HTMLElement).closest('.copy-btn,.edit-btn,.delete-btn')) return;
-                      openFavoriteModal(fav);
-                    }}
-                  >
-                    <div className="flex-1 min-w-0">
+              onClick={e => {
+                if ((e.target as HTMLElement).closest('.copy-btn,.edit-btn,.delete-btn')) return;
+                openFavoriteModal(fav);
+              }}
+            >
+              <div className="flex-1 min-w-0">
                       <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] truncate">{fav.subject}</div>
                       <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1">{fav.body}</div>
-                    </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      <button
-                        onClick={() => handleCopy(fav)}
+              </div>
+              <div className="flex items-center gap-2 ml-4">
+                <button
+                  onClick={() => handleCopy(fav)}
                         className="ml-2 w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative copy-btn"
-                        aria-label="Copy Email"
-                      >
+                  aria-label="Copy Email"
+                >
                         <Copy className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                        <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
-                          {copiedId === fav.id ? "Copied!" : "Copy"}
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => handleEdit(fav)}
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
+                    {copiedId === fav.id ? "Copied!" : "Copy"}
+                  </span>
+                </button>
+                <button
+                  onClick={() => handleEdit(fav)}
                         className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative edit-btn"
-                        aria-label="Edit Email"
-                      >
+                  aria-label="Edit Email"
+                >
                         <Pencil className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                        <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity">
-                          Edit
-                        </span>
-                      </button>
-                      <button
-                        onClick={() => handleDelete(fav.id)}
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity">
+                    Edit
+                  </span>
+                </button>
+                <button
+                  onClick={() => handleDelete(fav.id)}
                         className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative delete-btn"
-                        aria-label="Delete Email"
-                      >
+                  aria-label="Delete Email"
+                >
                         <Trash2 className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                        <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/delete:opacity-100 pointer-events-none transition-opacity">
-                          Delete
-                        </span>
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/delete:opacity-100 pointer-events-none transition-opacity">
+                    Delete
+                  </span>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
             </div>
           ))
-        )}
-        {/* Modal for favorite preview */}
-        {showModal && selectedFavorite && (
+      )}
+      {/* Modal for favorite preview */}
+      {showModal && selectedFavorite && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={closeFavoriteModal}
+        >
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-            onClick={closeFavoriteModal}
-          >
-            <div
               className="bg-white dark:bg-[#424242] rounded-xl shadow-xl w-full max-w-3xl sm:max-w-lg p-6 relative"
               style={{ maxHeight: '90vh', overflowY: 'auto' }}
-              onClick={e => e.stopPropagation()}
-            >
-              <button
+            onClick={e => e.stopPropagation()}
+          >
+            <button
                 className="absolute top-3 right-3 text-zinc-400 dark:text-[#bdbdbd] hover:text-zinc-700 dark:hover:text-[#e0e0e0] text-2xl"
-                onClick={closeFavoriteModal}
-                aria-label="Close"
-              >
-                ×
-              </button>
-              <div className="mb-6">
+              onClick={closeFavoriteModal}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <div className="mb-6">
                 <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Subject:</div>
                 <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
-                  {selectedFavorite.subject}
-                </div>
+                {selectedFavorite.subject}
+              </div>
                 <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Body:</div>
                 <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
-                  {selectedFavorite.body}
-                </div>
-              </div>
-              <div className="flex gap-3 justify-end">
-                <button
-                  onClick={() => handleCopy(selectedFavorite)}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 transition"
-                >
-                  <Copy className="w-4 h-4" /> Copy
-                </button>
-                <button
-                  onClick={closeFavoriteModal}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
-                >
-                  Close
-                </button>
+                {selectedFavorite.body}
               </div>
             </div>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => handleCopy(selectedFavorite)}
+                className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 transition"
+              >
+                <Copy className="w-4 h-4" /> Copy
+              </button>
+              <button
+                onClick={closeFavoriteModal}
+                  className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
+              >
+                Close
+              </button>
+            </div>
           </div>
-        )}
+        </div>
+      )}
         {/* Add Template Modal */}
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAddModal(false)}>
