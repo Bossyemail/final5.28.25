@@ -14,9 +14,10 @@ export async function POST(req: NextRequest) {
     const user = await clerkClient.users.getUser(userId);
     const subscription = user.privateMetadata.subscription as any;
     const emailUsageCount = user.privateMetadata.emailUsageCount as number || 0;
+    const isAdmin = user.publicMetadata?.isAdmin === true;
 
-    // Check if user has reached free limit and doesn't have an active subscription
-    if (emailUsageCount >= 3 && (!subscription || subscription.status !== 'active')) {
+    // Admins bypass usage/subscription check
+    if (!isAdmin && emailUsageCount >= 3 && (!subscription || subscription.status !== 'active')) {
       return NextResponse.json(
         { error: 'You have reached your free email limit. Please subscribe to continue.' },
         { status: 403 }

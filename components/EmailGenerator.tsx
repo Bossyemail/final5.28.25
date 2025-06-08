@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X } from "lucide-react";
+import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import {
   DropdownMenu,
@@ -17,6 +17,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
 import { UserButton } from "@clerk/nextjs";
+import ReactMarkdown from "react-markdown";
+import { marked } from "marked";
 
 const TONES = [
   "Professional",
@@ -46,6 +48,15 @@ const PLACEHOLDERS = [
   "What do you want to say? BossyEmail delivers.",
 ];
 
+interface ChatMessage {
+  id: string;
+  type: 'user' | 'ai';
+  content: string;
+  subject?: string;
+  body?: string;
+  timestamp: number;
+}
+
 export function EmailGenerator() {
   const { user } = useUser();
   const [prompt, setPrompt] = useState("");
@@ -66,14 +77,13 @@ export function EmailGenerator() {
   const [editBody, setEditBody] = useState("");
   const [signature, setSignature] = useState("");
   const [accountName, setAccountName] = useState("");
-  type HistoryItem = {
-    prompt: string;
-    subject: string;
-    body: string;
-    signature: string;
-    timestamp: number;
-  };
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [feedback, setFeedback] = useState<Record<string, 'like' | 'dislike' | undefined>>({});
+  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const [pinned, setPinned] = useState<Record<string, boolean>>({});
+  const [searchChat, setSearchChat] = useState("");
 
   // Animated placeholder effect
   useEffect(() => {
@@ -116,11 +126,19 @@ export function EmailGenerator() {
 
   async function handleGenerate(e?: React.FormEvent) {
     if (e) e.preventDefault();
+    if (!prompt) return;
     setLoading(true);
     setError("");
-    setSubject("");
-    setBody("");
     try {
+      // Add user message to thread
+      const userMsg: ChatMessage = {
+        id: `${Date.now()}-user`,
+        type: 'user',
+        content: prompt,
+        timestamp: Date.now(),
+      };
+      setMessages(prev => [...prev, userMsg]);
+      // Call API
       const res = await fetch("/api/generate-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -128,19 +146,18 @@ export function EmailGenerator() {
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setSubject(data.subject || "");
-      setBody(data.body || "");
-      setHistory(prev => [
-        {
-          prompt,
-          subject: data.subject || "",
-          body: data.body || "",
-          signature: getFinalSignature(),
-          timestamp: Date.now(),
-        },
-        ...prev
-      ]);
+      // Add AI message to thread
+      const aiMsg: ChatMessage = {
+        id: `${Date.now()}-ai`,
+        type: 'ai',
+        content: `Subject: ${data.subject || ''}\n\n${data.body || ''}`,
+        subject: data.subject || '',
+        body: data.body || '',
+        timestamp: Date.now(),
+      };
+      setMessages(prev => [...prev, aiMsg]);
       await incrementUsage();
+      setPrompt("");
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {
@@ -230,272 +247,392 @@ export function EmailGenerator() {
     )
   }
 
-  return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, Roboto, SF Pro, Arial, sans-serif' }}>
-      <h2 className="text-3xl font-bold mb-6 text-[#232326] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, WebkitFontSmoothing: 'antialiased' }}>
-        Email Generator
-      </h2>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="resize-y overflow-auto min-h-[220px] max-h-[700px] rounded-3xl bg-white shadow-md border border-zinc-200 px-2 py-4 sm:px-4 sm:py-6 flex flex-col w-full"
-      >
-        <form className="w-full flex flex-col flex-grow" onSubmit={handleGenerate} aria-label="Smart Email Generator Form">
-          <div className="flex flex-col flex-grow">
-            <div className="relative w-full">
-              <textarea
-                className="w-full bg-transparent border border-zinc-300 outline-none px-4 py-2 text-base sm:text-lg font-normal placeholder-zinc-500 rounded-2xl transition-all duration-200 focus:ring-2 focus:ring-primary/80 focus:border-primary resize-none min-h-[48px] mb-0 pr-10"
-                placeholder={typing || placeholder}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                aria-label="Prompt"
-                required
-                rows={2}
-                style={{ minWidth: 0, overflow: 'hidden' }}
-                tabIndex={0}
-              />
-              {prompt && (
-                <button
-                  type="button"
-                  onClick={handlePromptClear}
-                  className="absolute top-2 right-4 text-zinc-400 hover:text-zinc-700 text-xl focus:outline-none focus:ring-2 focus:ring-primary rounded-full bg-white"
-                  aria-label="Clear prompt"
-                  tabIndex={0}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          </div>
-          {/* Dropdowns and action buttons in a single row */}
-          <div className="flex flex-nowrap items-center gap-2 w-full mb-12 mt-0 overflow-x-auto min-h-[56px]">
-            {/* Sender Dropdown (From) */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary min-w-[110px] shadow-sm"
-                  aria-label="From"
-                >
-                  {sender ? sender : <span className="text-zinc-500">From</span>}
-                  <ChevronDown className="w-4 h-4 ml-1 text-zinc-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="rounded-xl ring-0 border-0 p-1 !shadow-none !border-0">
-                {ROLES.map(r => (
-                  <DropdownMenuItem key={r} onClick={() => setSender(r)} className="py-1 px-2 text-sm rounded transition-colors hover:bg-zinc-100 focus:bg-zinc-100">
-                    {r}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {/* Recipient Dropdown (To) */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary min-w-[110px] shadow-sm"
-                  aria-label="To"
-                >
-                  {recipient ? recipient : <span className="text-zinc-500">To</span>}
-                  <ChevronDown className="w-4 h-4 ml-1 text-zinc-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="rounded-xl ring-0 border-0 p-1 !shadow-none !border-0">
-                {ROLES.map(r => (
-                  <DropdownMenuItem key={r} onClick={() => setRecipient(r)} className="py-1 px-2 text-sm rounded transition-colors hover:bg-zinc-100 focus:bg-zinc-100">
-                    {r}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {/* Tone Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex items-center gap-2 rounded-full bg-zinc-50 border border-zinc-200 px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary min-w-[110px] shadow-sm"
-                  aria-label="Tone"
-                >
-                  {tone ? tone : <span className="text-zinc-500">Tone</span>}
-                  <ChevronDown className="w-4 h-4 ml-1 text-zinc-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[180px] rounded-xl ring-0 border-0 p-1 !shadow-none !border-0 bg-white">
-                {TONES.map(toneOpt => (
-                  <DropdownMenuItem
-                    key={toneOpt}
-                    onClick={() => setTone(toneOpt)}
-                    className={`py-1 px-2 text-sm rounded transition-colors ${tone === toneOpt ? 'bg-zinc-100 text-black' : ''} hover:bg-zinc-100 focus:bg-zinc-100`}
-                  >
-                    <span>{toneOpt}</span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <div className="flex-1" />
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              className="flex items-center justify-center rounded-full bg-black text-white px-8 py-3 font-semibold shadow-md hover:brightness-110 transition disabled:opacity-60 ml-2 focus:outline-none focus:ring-2 focus:ring-primary"
-              disabled={loading || !prompt || !sender || !recipient || !tone}
-              aria-label="Generate Email"
-              tabIndex={0}
-            >
-              {loading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                >
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Generate
-                </motion.div>
-              )}
-            </motion.button>
-          </div>
-        </form>
-        {/* Generated email preview below the form, after the thin line */}
-        {loading ? (
-          <LoadingSkeleton />
-        ) : (subject || body) && (
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col flex-grow justify-end min-h-[220px] mt-8"
-          >
-            <hr className="border-t border-zinc-200 mb-2" />
-            <div>
-              <div className="flex items-center mb-2">
-                <span className="text-base font-bold text-zinc-900 mr-2">Subject:</span>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={editSubject}
-                    onChange={e => setEditSubject(e.target.value)}
-                    className="flex-1 border border-zinc-200 rounded-lg p-2 text-base"
-                    autoFocus
-                  />
-                ) : (
-                  <span className="text-base font-semibold text-zinc-800">{subject}</span>
-                )}
-              </div>
-              {isEditing ? (
-                <textarea
-                  value={editBody}
-                  onChange={e => setEditBody(e.target.value)}
-                  className="resize-y min-h-[120px] w-full border border-zinc-200 rounded-lg p-3 text-base mb-2"
-                />
-              ) : (
-                <div className="generated-email-body text-base text-zinc-900 mt-1">
-                  {body
-                    .split(/\n{2,}|(?<!\n)\n(?!\n)/)
-                    .map(para => para.trim())
-                    .filter(para => para.length > 0)
-                    .map((para, idx) => (
-                    <p key={idx} className="mb-4 whitespace-pre-line">{para}</p>
-                  ))}
-                  {getFinalSignature() && (
-                    <>
-                      <p className="mt-6 whitespace-pre-line">{getFinalSignature()}</p>
-                    </>
-                  )}
-                </div>
-              )}
-              {isEditing && (
-                <div className="flex gap-2 mt-2 justify-end">
-                  <button onClick={handleEditSave} className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" title="Save" aria-label="Save"><Check className="w-4 h-4" />Save</button>
-                  <button onClick={handleEditCancel} className="flex items-center gap-1 bg-zinc-200 text-zinc-700 px-3 py-1 rounded hover:bg-zinc-300" title="Cancel" aria-label="Cancel"><X className="w-4 h-4" />Cancel</button>
-                </div>
-              )}
-              {!isEditing && (
-                <div className="flex gap-2 mt-4 justify-end items-center">
-                  <button onClick={handleCopy} className="icon-button" title="Copy Email" aria-label="Copy Email" tabIndex={0}><Copy className="w-5 h-5" /></button>
-                  <a
-                    href={`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
-                    className="icon-button"
-                    title="Send Email"
-                    aria-label="Send Email"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    tabIndex={0}
-                  >
-                    <Mail className="w-5 h-5" />
-                  </a>
-                  <button onClick={handleGenerate} className="icon-button" title="Regenerate" aria-label="Regenerate Email" tabIndex={0}><RefreshCw className="w-5 h-5" /></button>
-                  <button onClick={handleSave} className="icon-button" title="Save Email" aria-label="Save Email" tabIndex={0}><Save className="w-5 h-5" /></button>
-                  <button onClick={handleEdit} className="icon-button" title="Edit Email" aria-label="Edit Email" tabIndex={0}><Edit2 className="w-5 h-5" /></button>
-                  <button onClick={handleClear} className="icon-button" title="Clear Email" aria-label="Clear Email" tabIndex={0}><Trash2 className="w-5 h-5" /></button>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        )}
+  function copyHtmlFromMarkdown(markdown: string) {
+    const html = typeof marked.parse === 'function' ? marked.parse(markdown) : '';
+    if (typeof html === 'string') {
+      navigator.clipboard.writeText(html);
+    } else if (html instanceof Promise) {
+      html.then(res => navigator.clipboard.writeText(res));
+    }
+  }
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-destructive text-sm mt-4"
-            aria-live="polite"
-          >
-            {error}
-          </motion.div>
+  function handleTouchStart(e: React.TouchEvent, msgId: string) {
+    touchStartX.current = e.changedTouches[0].clientX;
+  }
+  function handleTouchEnd(e: React.TouchEvent, msg: ChatMessage) {
+    touchEndX.current = e.changedTouches[0].clientX;
+    if (touchStartX.current !== null && touchEndX.current !== null) {
+      const dx = touchEndX.current - touchStartX.current;
+      if (dx > 60) {
+        // Swipe right: favorite
+        setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }));
+        toast.success(favorites[msg.id] ? 'Removed from favorites' : 'Added to favorites');
+      } else if (dx < -60) {
+        // Swipe left: copy
+        if (msg.body) {
+          navigator.clipboard.writeText(msg.body);
+          toast.success('Copied to clipboard!');
+        }
+      }
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  }
+
+  function TypingIndicator() {
+    const [dots, setDots] = useState('');
+    useEffect(() => {
+      if (!dots && typeof window === 'undefined') return;
+      const interval = setInterval(() => {
+        setDots(prev => prev.length < 3 ? prev + '.' : '');
+      }, 500);
+      return () => clearInterval(interval);
+    }, []);
+    return (
+      <div className="flex items-center gap-2">
+        <span>BossyEmail is writing{dots}</span>
+      </div>
+    );
+  }
+
+  // Filtered and pinned messages
+  const pinnedMessages = messages.filter(m => pinned[m.id]);
+  const filteredMessages = messages.filter(m => {
+    if (pinned[m.id]) return false; // Don't show pinned in main thread
+    if (!searchChat.trim()) return true;
+    const text = (m.subject || "") + " " + (m.body || m.content || "");
+    return text.toLowerCase().includes(searchChat.toLowerCase());
+  });
+
+  return (
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0] flex flex-col h-[80vh]">
+      <div className="flex-1 overflow-y-auto pb-4">
+        {/* Search bar */}
+        <div className="mb-4 sticky top-0 z-10 bg-white dark:bg-[#424242] pt-2 pb-2">
+          <input
+            type="text"
+            value={searchChat}
+            onChange={e => setSearchChat(e.target.value)}
+            placeholder="Search chat..."
+            className="w-full px-4 py-2 rounded-full border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black text-base"
+          />
+        </div>
+        {/* Pinned section */}
+        {pinnedMessages.length > 0 && (
+          <div className="mb-6">
+            <div className="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wide">Pinned</div>
+            {pinnedMessages.map((msg, idx) => (
+              <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+                <div className={`rounded-xl px-4 py-3 max-w-[80%] bg-yellow-50 border border-yellow-300 text-yellow-900`} style={{ fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                  {msg.type === 'ai' && msg.subject && (
+                    <div className="font-bold mb-1">Subject: {msg.subject}</div>
+                  )}
+                  {msg.type === 'ai' && msg.body ? (
+                    <>
+                      <div className="mb-2">
+                        {msg.subject && (
+                          <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
+                        )}
+                        <ReactMarkdown components={{ p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} /> }}>{msg.body}</ReactMarkdown>
+                      </div>
+                      <div className="flex flex-row gap-2 mt-2 mb-1 items-center justify-start">
+                        <button
+                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                          style={{ width: 28, height: 28 }}
+                          onClick={() => {
+                            navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
+                            toast.success('Copied to clipboard!');
+                          }}
+                          title="Copy"
+                          type="button"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                        <a
+                          href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
+                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                          style={{ width: 28, height: 28 }}
+                          title="Send"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Mail className="w-4 h-4" />
+                        </a>
+                        <button
+                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                          style={{ width: 28, height: 28 }}
+                          onClick={() => handleGenerate()}
+                          title="Rewrite"
+                          type="button"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                          style={{ width: 28, height: 28 }}
+                          onClick={handleEdit}
+                          title="Edit"
+                          type="button"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                          style={{ width: 28, height: 28 }}
+                          onClick={() => {
+                            setMessages(prev => prev.filter(m => m.id !== msg.id));
+                          }}
+                          title="Delete"
+                          type="button"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <div>{msg.content}</div>
+                  )}
+                  {/* Pin button */}
+                  <button
+                    aria-label="Unpin"
+                    className="absolute top-2 right-2 rounded-full p-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-900"
+                    onClick={() => setPinned(p => ({ ...p, [msg.id]: false }))}
+                    type="button"
+                    style={{ fontSize: '1.1em' }}
+                  >
+                    📌
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
-      </motion.div>
+        {/* Main chat thread (filtered) */}
+        {filteredMessages.length === 0 && (
+          <div className="text-center text-zinc-400 mt-12">No messages yet. Start by entering a prompt below.</div>
+        )}
+        {filteredMessages.map((msg, idx) => (
+          <div
+            key={msg.id}
+            className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
+            onTouchStart={msg.type === 'ai' ? (e) => handleTouchStart(e, msg.id) : undefined}
+            onTouchEnd={msg.type === 'ai' ? (e) => handleTouchEnd(e, msg) : undefined}
+          >
+            <div
+              className={`rounded-xl px-4 py-3 max-w-[80%] ${msg.type === 'user' ? 'bg-black text-white' : 'text-black dark:text-[#e0e0e0]'} ${favorites[msg.id] ? 'ring-2 ring-yellow-400' : ''}`}
+              style={{ whiteSpace: 'pre-line', fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+            >
+              {msg.type === 'ai' && msg.subject && (
+                <div className="font-bold mb-1">Subject: {msg.subject}</div>
+              )}
+              {msg.type === 'ai' && msg.body ? (
+                <>
+                  <div className="mb-2">
+                    {msg.subject && (
+                      <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
+                    )}
+                    <ReactMarkdown components={{ p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} /> }}>{msg.body}</ReactMarkdown>
+                  </div>
+                  <div className="flex flex-row gap-2 mt-2 mb-1 items-center justify-start">
+                    <button
+                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                      style={{ width: 28, height: 28 }}
+                      onClick={() => {
+                        navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
+                        toast.success('Copied to clipboard!');
+                      }}
+                      title="Copy"
+                      type="button"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                    <a
+                      href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
+                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                      style={{ width: 28, height: 28 }}
+                      title="Send"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Mail className="w-4 h-4" />
+                    </a>
+                    <button
+                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                      style={{ width: 28, height: 28 }}
+                      onClick={() => handleGenerate()}
+                      title="Rewrite"
+                      type="button"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </button>
+                    <button
+                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                      style={{ width: 28, height: 28 }}
+                      onClick={handleEdit}
+                      title="Edit"
+                      type="button"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
+                      style={{ width: 28, height: 28 }}
+                      onClick={() => {
+                        setMessages(prev => prev.filter(m => m.id !== msg.id));
+                      }}
+                      title="Delete"
+                      type="button"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  {/* Like/Dislike buttons for AI responses */}
+                  <div className="flex gap-2 mt-2 items-center">
+                    <button
+                      aria-label="Like"
+                      className={`rounded-full p-2 transition-colors ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200'}`}
+                      onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
+                      type="button"
+                    >
+                      <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? '#22c55e' : 'none'} />
+                    </button>
+                    <button
+                      aria-label="Dislike"
+                      className={`rounded-full p-2 transition-colors ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200'}`}
+                      onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
+                      type="button"
+                    >
+                      <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? '#ef4444' : 'none'} />
+                    </button>
+                    {/* Reference button */}
+                    <button
+                      aria-label="Reference this email"
+                      className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 ml-2"
+                      type="button"
+                      onClick={() => {
+                        const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}"`;
+                        setPrompt(summary);
+                      }}
+                    >
+                      <span className="text-xs font-semibold">Reference</span>
+                    </button>
+                  </div>
+                  {msg.type === 'ai' && (
+                    <button
+                      aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
+                      className={`ml-2 rounded-full p-2 transition-colors ${favorites[msg.id] ? 'bg-yellow-100 text-yellow-700' : 'hover:bg-yellow-50'} hidden sm:inline-flex`}
+                      style={{ fontSize: '1.2em' }}
+                      onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
+                      type="button"
+                    >
+                      <span role="img" aria-label="star">⭐</span>
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div>{msg.content}</div>
+              )}
+              {/* Pin button */}
+              {msg.type === 'ai' && (
+                <button
+                  aria-label={pinned[msg.id] ? 'Unpin' : 'Pin'}
+                  className={`absolute top-2 right-2 rounded-full p-2 ${pinned[msg.id] ? 'bg-yellow-200 text-yellow-900' : 'bg-zinc-200 text-zinc-700 hover:bg-yellow-100'} transition-colors`}
+                  onClick={() => setPinned(p => ({ ...p, [msg.id]: !p[msg.id] }))}
+                  type="button"
+                  style={{ fontSize: '1.1em' }}
+                >
+                  📌
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+        {loading && (
+          <div className="flex justify-start mb-4">
+            <div className="rounded-xl px-4 py-3 max-w-[80%] bg-zinc-100 dark:bg-[#616161] text-black dark:text-[#e0e0e0] font-sans">
+              <TypingIndicator />
+            </div>
+          </div>
+        )}
+      </div>
+      {/* Sticky input at bottom */}
+      <form onSubmit={handleGenerate} className="w-full flex items-start gap-2 bg-white dark:bg-[#424242] p-2 border-t border-zinc-200 dark:border-[#616161] sticky bottom-0 z-10" style={{ minHeight: 64 }}>
+        <div className="flex-1 flex flex-col">
+          <textarea
+            className="w-full px-4 py-3 rounded-full border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black text-base sm:text-lg resize-none min-h-[48px] max-h-[160px] overflow-auto"
+            placeholder={typing || placeholder}
+            value={prompt}
+            onChange={e => {
+              setPrompt(e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = e.target.scrollHeight + 'px';
+            }}
+            required
+            rows={1}
+            style={{ minHeight: 48, borderRadius: 9999 }}
+          />
+          {/* Selectors below the textarea, with spacing */}
+          <div className="flex flex-row gap-2 items-center mt-3 pl-2">
+            <select
+              value={sender}
+              onChange={e => setSender(e.target.value)}
+              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+            >
+              <option value="">From</option>
+              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+            </select>
+            <select
+              value={recipient}
+              onChange={e => setRecipient(e.target.value)}
+              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+            >
+              <option value="">To</option>
+              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+            </select>
+            <select
+              value={tone}
+              onChange={e => setTone(e.target.value)}
+              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+            >
+              <option value="">Tone</option>
+              {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
+            </select>
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="self-start bg-black text-white rounded-full px-6 py-3 font-semibold shadow-md hover:brightness-110 transition disabled:opacity-60 mt-0"
+          disabled={loading || !prompt}
+          style={{ minHeight: 48 }}
+        >
+          Go
+        </button>
+        {/* Floating Action Button (FAB) for mobile */}
+        <button
+          type="submit"
+          className="fixed bottom-20 right-4 z-20 bg-black text-white rounded-full p-4 shadow-lg sm:hidden flex items-center justify-center"
+          style={{ fontSize: 22, boxShadow: '0 4px 16px rgba(0,0,0,0.18)' }}
+          disabled={loading || !prompt}
+          aria-label="Go"
+        >
+          Go
+        </button>
+      </form>
       <style jsx global>{`
-        .fab {
-          background: #fff;
-          color: #2563eb;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-          cursor: pointer;
-          border: 1px solid #e0e7ff;
-          margin-bottom: 4px;
-          transition: background 0.2s, color 0.2s;
-        }
-        .fab:hover { background: #2563eb; color: #fff; }
-        .icon-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: #222;
-          padding: 6px;
-          border-radius: 50%;
-          transition: color 0.2s, background 0.2s;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .icon-button:hover, .icon-button:focus { color: #2563eb; background: #e0e7ff; outline: none; }
-        body, .font-sans { font-family: 'Inter', 'Roboto', 'SF Pro', Arial, sans-serif; }
-        .generated-email-body {
-          line-height: 1.7;
-        }
-        .generated-email-body p, .generated-email-body br {
-          margin-bottom: 1em;
-        }
         @media (max-width: 640px) {
-          .generated-email-body, .icon-button, .fab {
-            font-size: 1rem;
+          .prose, .prose-invert, .prose-zinc {
+            font-size: 1.05em !important;
           }
-          .icon-button, .fab {
+          .rounded-xl {
+            border-radius: 1.2em !important;
+          }
+          .p-2, .px-4, .py-3 {
+            padding: 0.9em !important;
+          }
+          .icon-button, .rounded-full, button {
             min-width: 44px;
             min-height: 44px;
+            font-size: 1.1em;
           }
         }
       `}</style>

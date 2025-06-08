@@ -109,15 +109,15 @@ export function Pricing() {
             <div className="mb-6">
               <span className="text-4xl font-bold" style={{ color: '#232326' }}>$59</span>
               <span style={{ color: '#232326', opacity: 0.8 }} className="text-black dark:text-black">per month</span>
-            </div>
+        </div>
             <ul className="space-y-2 mb-6 text-left">
               {planIncludes.royalty.map((item, index) => (
                 <li key={index} className="flex items-center gap-2">
                   <ArrowUpRight className="w-5 h-5 text-black" />
                   <span className="text-black dark:text-black">{item}</span>
-                </li>
-              ))}
-            </ul>
+            </li>
+          ))}
+        </ul>
             <TrialButton
               className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 mb-3 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
               label="Start Free Trial"

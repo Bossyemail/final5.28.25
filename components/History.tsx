@@ -1,5 +1,7 @@
 import React from "react";
 import { ArrowRight, Mail } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
+import { useUser } from "@clerk/nextjs";
 
 // Define allowed activity types
 const ACTIVITY_TYPES = ["generate", "favorite", "copy"] as const;
@@ -48,6 +50,24 @@ function formatDate(dateStr: string) {
 }
 
 export function History() {
+  const { subscription } = useSubscription();
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.isAdmin === true;
+  const isRoyalty = subscription?.priceId === 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+  const hasFullAccess = isRoyalty || isAdmin;
+
+  if (!hasFullAccess) {
+    return (
+      <div className="w-full font-sans pl-32 pr-32 sm:pl-8 sm:pr-8 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 dark:text-[#f5f5f5]">History</h2>
+          <p className="text-lg font-medium mb-2">This feature is only available for Inbox Royalty subscribers.</p>
+          <p className="text-sm">Please upgrade your plan to access history.</p>
+        </div>
+      </div>
+    );
+  }
+
   const activities = MOCK_HISTORY;
 
   return (

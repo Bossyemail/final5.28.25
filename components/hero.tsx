@@ -58,7 +58,10 @@ export function Hero() {
             className="w-full flex flex-col items-center justify-center"
           >
             <img src="/icon.png" alt="BossyEmail icon" className="mx-auto mb-8" style={{ height: '56px', width: 'auto' }} />
-            <h1 className="text-2xl sm:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+            <h1
+              className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center leading-tight"
+              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}
+            >
               Smart Email Generator + Instant Email<br />
               <span>Templates for Real Estate Pros.</span>
             </h1>

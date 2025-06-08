@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Copy, Trash2, Mail, Pencil, Plus } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
+import { useUser } from "@clerk/nextjs";
+import Fuse from "fuse.js";
 
 const MOCK_FAVORITES = [
   {
@@ -36,6 +39,24 @@ const CONTRACT_STAGES = {
 } as const;
 
 export function Favorites() {
+  const { subscription } = useSubscription();
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.isAdmin === true;
+  const isRoyalty = subscription?.priceId === 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+  const hasFullAccess = isRoyalty || isAdmin;
+
+  if (!hasFullAccess) {
+    return (
+      <div className="w-full font-sans pl-32 pr-32 sm:pl-8 sm:pr-8 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold mb-6 dark:text-[#f5f5f5]">Favorites</h2>
+          <p className="text-lg font-medium mb-2">This feature is only available for Inbox Royalty subscribers.</p>
+          <p className="text-sm">Please upgrade your plan to access favorites.</p>
+        </div>
+      </div>
+    );
+  }
+
   const [favorites, setFavorites] = useState(MOCK_FAVORITES);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -47,6 +68,11 @@ export function Favorites() {
   const [newTemplate, setNewTemplate] = useState({ subject: '', body: '', category: '' });
   const [addError, setAddError] = useState('');
   const [addSuccess, setAddSuccess] = useState(false);
+
+  const fuse = new Fuse(favorites, {
+    keys: ["subject", "body"],
+    threshold: 0.35, // adjust for fuzziness
+  });
 
   function handleCopy(fav: typeof MOCK_FAVORITES[0]) {
     navigator.clipboard.writeText(`Subject: ${fav.subject}\n\n${fav.body}`);
@@ -63,11 +89,6 @@ export function Favorites() {
     setFavorites(favorites => favorites.filter(f => f.id !== id));
   }
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    setSearch(searchInput);
-  }
-
   function openFavoriteModal(fav: typeof MOCK_FAVORITES[0]) {
     setSelectedFavorite(fav);
     setShowModal(true);
@@ -77,11 +98,12 @@ export function Favorites() {
     setSelectedFavorite(null);
   }
 
-  const filteredFavorites = favorites.filter(fav => {
-    const matchesSearch = fav.subject.toLowerCase().includes(search.toLowerCase()) || fav.body.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = !selectedCategory || fav.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredFavorites = searchInput.trim()
+    ? fuse.search(searchInput).map(result => result.item)
+    : favorites.filter(fav => {
+        const matchesCategory = !selectedCategory || fav.category === selectedCategory;
+        return matchesCategory;
+      });
 
   const groupedFavorites = filteredFavorites.reduce((acc, fav) => {
     const cat = fav.category || 'Uncategorized';
@@ -137,21 +159,14 @@ export function Favorites() {
           ))}
         </div>
       {/* Search Bar */}
-      <form onSubmit={handleSearch} className="flex items-center mb-6" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
+      <form className="flex items-center mb-6" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
         <input
           type="text"
           placeholder="Search away"
           value={searchInput}
           onChange={e => setSearchInput(e.target.value)}
-            className="flex-1 px-5 py-3 text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] border-none outline-none bg-transparent"
+          className="flex-1 px-5 py-3 text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] border-none outline-none bg-transparent"
         />
-        <button
-          type="submit"
-          className="px-8 py-3 bg-black text-white font-bold text-lg rounded-full"
-          style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderTopRightRadius: 9999, borderBottomRightRadius: 9999 }}
-        >
-          SEARCH
-        </button>
       </form>
         {Object.keys(groupedFavorites).length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">

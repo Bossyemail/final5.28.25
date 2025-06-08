@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { Mail, Clipboard, Pencil, Trash2, Filter, Star } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
+import { useUser } from "@clerk/nextjs";
+import Fuse from "fuse.js";
 
 const CONTRACT_STAGES = {
   LISTING: "Listing",
@@ -1244,8 +1247,18 @@ const MOCK_TEMPLATES = [
   }
 ];
 
+const fuse = new Fuse(MOCK_TEMPLATES, {
+  keys: ["title", "body"],
+  threshold: 0.35, // adjust for fuzziness
+});
+
 export function Templates() {
-  const [search, setSearch] = useState("");
+  const { subscription } = useSubscription();
+  const { user } = useUser();
+  const isAdmin = user?.publicMetadata?.isAdmin === true;
+  const isRoyalty = subscription?.priceId === 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+  const hasFullAccess = isRoyalty || isAdmin;
+
   const [searchInput, setSearchInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [templates, setTemplates] = useState(MOCK_TEMPLATES);
@@ -1270,12 +1283,11 @@ export function Templates() {
     localStorage.setItem("bossyemail_recently_used", JSON.stringify(recentlyUsed));
   }, [favorites, recentlyUsed]);
 
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    setSearch(searchInput);
-  }
-
   function handleCopy(template: typeof MOCK_TEMPLATES[0]) {
+    if (!hasFullAccess) {
+      alert("This action is only available for Inbox Royalty subscribers.");
+      return;
+    }
     navigator.clipboard.writeText(`Subject: ${template.title}\n\n${template.body}`);
     setCopiedId(template.id);
     setTimeout(() => setCopiedId(null), 1200);
@@ -1288,17 +1300,29 @@ export function Templates() {
   }
 
   function handleEdit(template: typeof MOCK_TEMPLATES[0]) {
+    if (!hasFullAccess) {
+      alert("This action is only available for Inbox Royalty subscribers.");
+      return;
+    }
     // Placeholder for edit action
     alert(`Edit template: ${template.title}`);
   }
 
   function handleDelete(template: typeof MOCK_TEMPLATES[0]) {
+    if (!hasFullAccess) {
+      alert("This action is only available for Inbox Royalty subscribers.");
+      return;
+    }
     if (window.confirm(`Are you sure you want to delete the template: "${template.title}"? This cannot be undone.`)) {
       setTemplates(prev => prev.filter(t => t.id !== template.id));
     }
   }
 
   function handleFavorite(templateId: string) {
+    if (!hasFullAccess) {
+      alert("This action is only available for Inbox Royalty subscribers.");
+      return;
+    }
     setFavorites(favs =>
       favs.includes(templateId)
         ? favs.filter(id => id !== templateId)
@@ -1306,14 +1330,14 @@ export function Templates() {
     );
   }
 
-  const filteredTemplates = templates.filter(t => {
-    const matchesSearch = t.title.toLowerCase().includes(search.toLowerCase()) ||
-      t.body.toLowerCase().includes(search.toLowerCase());
+  const filteredTemplates = searchInput.trim()
+    ? fuse.search(searchInput).map(result => result.item)
+    : templates.filter(t => {
     const matchesCategory = !selectedCategory || t.category === selectedCategory;
     const matchesView = view === 'all' || 
       (view === 'favorites' && favorites.includes(t.id)) ||
       (view === 'recent' && recentlyUsed.includes(t.id));
-    return matchesSearch && matchesCategory && matchesView;
+        return matchesCategory && matchesView;
   });
 
   function openTemplateModal(template: any) {
@@ -1389,20 +1413,20 @@ export function Templates() {
         ))}
       </div>
       {/* Search Bar */}
-        <form onSubmit={handleSearch} className="mb-6 w-full">
+        <div className="mb-6 w-full">
           <div className="flex items-center w-full border border-zinc-300 bg-white dark:bg-[#616161] rounded-full h-12">
         <input
           type="text"
           placeholder="Search away"
           value={searchInput}
           onChange={e => setSearchInput(e.target.value)}
-              className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
-              style={{ borderRight: 'none' }}
+          className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
+          style={{ borderRight: 'none' }}
         />
         {searchInput && (
           <button
             type="button"
-            onClick={() => { setSearchInput(""); setSearch(""); }}
+            onClick={() => { setSearchInput(""); }}
                 className="text-black dark:text-[#e0e0e0] hover:text-zinc-700 dark:hover:text-[#f5f5f5] text-2xl focus:outline-none focus:ring-2 focus:ring-primary px-2"
             aria-label="Clear search"
             tabIndex={0}
@@ -1411,15 +1435,14 @@ export function Templates() {
             ×
           </button>
         )}
-        <button
-          type="submit"
-              className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none focus:outline-none hover:bg-zinc-800 dark:hover:bg-[#757575] transition-colors"
-              style={{ borderLeft: 'none' }}
+        <span
+          className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none flex items-center"
+          style={{ borderLeft: 'none', cursor: 'default', opacity: 0.5 }}
         >
           SEARCH
-        </button>
+        </span>
           </div>
-      </form>
+      </div>
       {filteredTemplates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
           <Mail className="w-12 h-12 mb-4" />
@@ -1440,6 +1463,7 @@ export function Templates() {
                     <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
                     {t.category}
                   </span>
+                  {hasFullAccess && (
                   <button
                       className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${favorites.includes(t.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'}`}
                     onClick={e => { e.stopPropagation(); handleFavorite(t.id); }}
@@ -1447,11 +1471,38 @@ export function Templates() {
                   >
                     <Star fill={favorites.includes(t.id) ? '#facc15' : 'none'} className="w-5 h-5" />
                   </button>
+                  )}
                 </div>
-                  <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1">{t.body}</div>
+                  <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
+                    <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{t.body}</span>
+                    {!hasFullAccess && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: 'rgba(255,255,255,0.7)',
+                          color: '#222',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 600,
+                          fontSize: '0.95em',
+                          borderRadius: '0.5em',
+                          zIndex: 2,
+                          pointerEvents: 'auto',
+                        }}
+                      >
+                        Upgrade to copy
+                      </span>
+                    )}
+                  </div>
               </div>
               <div className="flex items-center gap-2 ml-4">
                 <div className="flex items-center gap-1">
+                  {hasFullAccess && (
                   <button
                     onClick={e => { e.stopPropagation(); handleCopy(t); }}
                       className="copy-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/copy"
@@ -1462,6 +1513,8 @@ export function Templates() {
                       {copiedId === t.id ? "Copied!" : "Copy"}
                     </span>
                   </button>
+                  )}
+                  {hasFullAccess && (
                   <a
                     href={`mailto:?subject=${encodeURIComponent(t.title)}&body=${encodeURIComponent(t.body)}`}
                       className="send-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/send"
@@ -1475,6 +1528,7 @@ export function Templates() {
                       Send
                     </span>
                   </a>
+                  )}
                 </div>
               </div>
             </li>
@@ -1504,9 +1558,10 @@ export function Templates() {
                 <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
                 {selectedTemplate.category}
               </span>
+              {hasFullAccess && (
               <button
                 className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${
-                    favorites.includes(selectedTemplate.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'
+                      favorites.includes(selectedTemplate.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'
                 }`}
                 onClick={() => handleFavorite(selectedTemplate.id)}
                 aria-label={favorites.includes(selectedTemplate.id) ? 'Unfavorite' : 'Favorite'}
@@ -1516,27 +1571,76 @@ export function Templates() {
                   className="w-5 h-5" 
                 />
               </button>
+              )}
             </div>
             <div className="mb-6">
                 <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Subject:</div>
-                <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
-                {selectedTemplate.title}
+                <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
+                    <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.title}</span>
+                    {!hasFullAccess && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: 'rgba(255,255,255,0.7)',
+                          color: '#222',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 600,
+                          fontSize: '1.1em',
+                          borderRadius: '0.5em',
+                          zIndex: 2,
+                          pointerEvents: 'auto',
+                        }}
+                      >
+                        Upgrade to copy
+                      </span>
+                    )}
               </div>
                 <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Body:</div>
-                <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
-                {selectedTemplate.body}
+                <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
+                    <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.body}</span>
+                    {!hasFullAccess && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: 0,
+                          top: 0,
+                          width: '100%',
+                          height: '100%',
+                          background: 'rgba(255,255,255,0.7)',
+                          color: '#222',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 600,
+                          fontSize: '1.1em',
+                          borderRadius: '0.5em',
+                          zIndex: 2,
+                          pointerEvents: 'auto',
+                        }}
+                      >
+                        Upgrade to copy
+                      </span>
+                    )}
               </div>
             </div>
             <div className="flex gap-3 justify-end">
+              {hasFullAccess && (
               <button
                 onClick={() => handleCopy(selectedTemplate)}
                   className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 dark:hover:bg-[#757575] transition"
               >
                 <Clipboard className="w-4 h-4" /> Copy
               </button>
+              )}
               <button
                 onClick={closeTemplateModal}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
+                className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
               >
                 Close
               </button>

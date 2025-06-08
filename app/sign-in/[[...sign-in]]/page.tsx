@@ -13,9 +13,9 @@ export default function Page() {
           <h1 className="text-xl font-bold text-center text-zinc-900 dark:text-white mb-2" style={{ fontFamily: 'Inter, sans-serif', letterSpacing: '-0.01em' }}>
             Back for more? You're either busy or brilliant. Probably both.
           </h1>
-          <SignIn 
-            appearance={{
-              elements: {
+      <SignIn 
+        appearance={{
+          elements: {
                 // Main container
                 card: 'w-full items-center bg-transparent shadow-none border-none p-0',
                 
@@ -77,13 +77,13 @@ export default function Page() {
                 colorInputBackground: '#ffffff',
                 colorInputText: '#232326',
                 borderRadius: '9999px',
-              },
-            }}
-            routing="path"
-            path="/sign-in"
-            signUpUrl="/sign-up"
-            redirectUrl="/dashboard"
-          />
+          },
+        }}
+        routing="path"
+        path="/sign-in"
+        signUpUrl="/sign-up"
+        redirectUrl="/dashboard"
+      />
           <div className="text-center mt-4">
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
               New here? <a href="/sign-up" className="text-primary hover:text-primary/90 font-semibold">Sign up</a> – we don't bite.
