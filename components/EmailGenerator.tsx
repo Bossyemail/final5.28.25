@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import {
   DropdownMenu,
@@ -19,6 +19,7 @@ import { motion } from "framer-motion"
 import { UserButton } from "@clerk/nextjs";
 import ReactMarkdown from "react-markdown";
 import { marked } from "marked";
+import React from "react";
 
 const TONES = [
   "Professional",
@@ -153,7 +154,7 @@ export function EmailGenerator() {
         content: `Subject: ${data.subject || ''}\n\n${data.body || ''}`,
         subject: data.subject || '',
         body: data.body || '',
-        timestamp: Date.now(),
+          timestamp: Date.now(),
       };
       setMessages(prev => [...prev, aiMsg]);
       await incrementUsage();
@@ -304,19 +305,22 @@ export function EmailGenerator() {
     return text.toLowerCase().includes(searchChat.toLowerCase());
   });
 
+  // Custom renderer for ReactMarkdown to highlight [Placeholders]
+  function renderWithPlaceholders(text: string) {
+    const parts = text.split(/(\[.*?\])/g);
+    return parts.map((part, i) => {
+      if (/^\[.*\]$/.test(part)) {
+        return (
+          <span key={i} className="italic text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-1 rounded">{part}</span>
+        );
+      }
+      return part;
+    });
+  }
+
   return (
     <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0] flex flex-col h-[80vh]">
       <div className="flex-1 overflow-y-auto pb-4">
-        {/* Search bar */}
-        <div className="mb-4 sticky top-0 z-10 bg-white dark:bg-[#424242] pt-2 pb-2">
-          <input
-            type="text"
-            value={searchChat}
-            onChange={e => setSearchChat(e.target.value)}
-            placeholder="Search chat..."
-            className="w-full px-4 py-2 rounded-full border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black text-base"
-          />
-        </div>
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
           <div className="mb-6">
@@ -325,68 +329,112 @@ export function EmailGenerator() {
               <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
                 <div className={`rounded-xl px-4 py-3 max-w-[80%] bg-yellow-50 border border-yellow-300 text-yellow-900`} style={{ fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                   {msg.type === 'ai' && msg.subject && (
-                    <div className="font-bold mb-1">Subject: {msg.subject}</div>
+                    <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
                   )}
                   {msg.type === 'ai' && msg.body ? (
                     <>
                       <div className="mb-2">
-                        {msg.subject && (
-                          <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
-                        )}
-                        <ReactMarkdown components={{ p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} /> }}>{msg.body}</ReactMarkdown>
+                        <ReactMarkdown
+                          components={{
+                            p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} />,
+                            text: ({children}) => <>{renderWithPlaceholders(children as string)}</>
+                          }}
+                        >
+                          {msg.body}
+                        </ReactMarkdown>
                       </div>
-                      <div className="flex flex-row gap-2 mt-2 mb-1 items-center justify-start">
-                        <button
-                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                          style={{ width: 28, height: 28 }}
-                          onClick={() => {
-                            navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
-                            toast.success('Copied to clipboard!');
-                          }}
-                          title="Copy"
-                          type="button"
-                        >
-                          <Copy className="w-4 h-4" />
-                        </button>
-                        <a
-                          href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
-                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                          style={{ width: 28, height: 28 }}
-                          title="Send"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Mail className="w-4 h-4" />
-                        </a>
-                        <button
-                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                          style={{ width: 28, height: 28 }}
-                          onClick={() => handleGenerate()}
-                          title="Rewrite"
-                          type="button"
-                        >
-                          <RefreshCw className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                          style={{ width: 28, height: 28 }}
-                          onClick={handleEdit}
-                          title="Edit"
-                          type="button"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                          style={{ width: 28, height: 28 }}
-                          onClick={() => {
-                            setMessages(prev => prev.filter(m => m.id !== msg.id));
-                          }}
-                          title="Delete"
-                          type="button"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      <div className="flex flex-row justify-between mt-6 pt-3 border-t border-zinc-100 dark:border-[#333] items-end">
+                        {/* Left group: Like, Dislike, Favorite */}
+                        <div className="flex flex-row gap-2 items-center">
+                          <button
+                            aria-label="Like"
+                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                            onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
+                            type="button"
+                            style={{ width: 36, height: 36 }}
+                          >
+                            <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? '#22c55e' : 'none'} />
+                          </button>
+                          <button
+                            aria-label="Dislike"
+                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                            onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
+                            type="button"
+                            style={{ width: 36, height: 36 }}
+                          >
+                            <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? '#ef4444' : 'none'} />
+                          </button>
+                          <button
+                            aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
+                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${favorites[msg.id] ? 'text-yellow-500' : 'hover:text-yellow-500 text-zinc-500 dark:text-zinc-400'}`}
+                            style={{ width: 36, height: 36 }}
+                            onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
+                            type="button"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill={favorites[msg.id] ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 17.25l-6.16 3.73 1.64-7.03L2 9.24l7.19-.61L12 2.5l2.81 6.13 7.19.61-5.48 4.71 1.64 7.03z" />
+                            </svg>
+                          </button>
+                        </div>
+                        {/* Reference button below left group */}
+                        <div className="flex flex-col items-start">
+                          <button
+                            aria-label="Reference this email"
+                            className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 text-xs font-semibold mt-1"
+                            type="button"
+                            onClick={() => {
+                              const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n\"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}\"`;
+                              setPrompt(summary);
+                            }}
+                          >
+                            Reference
+                          </button>
+                        </div>
+                        {/* Right group: Copy, Send, Edit, Delete */}
+                        <div className="flex flex-row gap-1 items-center">
+                          <button
+                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            style={{ width: 36, height: 36 }}
+                            onClick={() => {
+                              navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
+                              toast.success('Copied!', { duration: 1200 });
+                            }}
+                            title="Copy"
+                            type="button"
+                          >
+                            <Copy className="w-5 h-5" />
+                          </button>
+                          <a
+                            href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
+                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            style={{ width: 36, height: 36 }}
+                            title="Send"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Mail className="w-5 h-5" />
+                          </a>
+                          <button
+                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            style={{ width: 36, height: 36 }}
+                            onClick={handleEdit}
+                            title="Edit"
+                            type="button"
+                          >
+                            <Edit2 className="w-5 h-5" />
+                          </button>
+                          <button
+                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            style={{ width: 36, height: 36 }}
+                            onClick={() => {
+                              setMessages(prev => prev.filter(m => m.id !== msg.id));
+                            }}
+                            title="Delete"
+                            type="button"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
                     </>
                   ) : (
@@ -395,18 +443,18 @@ export function EmailGenerator() {
                   {/* Pin button */}
                   <button
                     aria-label="Unpin"
-                    className="absolute top-2 right-2 rounded-full p-2 bg-yellow-200 hover:bg-yellow-300 text-yellow-900"
+                    className="absolute top-2 right-2 rounded-full p-2 transition-colors bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-black dark:bg-[#232323] dark:hover:bg-[#333] dark:text-zinc-400"
                     onClick={() => setPinned(p => ({ ...p, [msg.id]: false }))}
                     type="button"
-                    style={{ fontSize: '1.1em' }}
+                    style={{ width: 36, height: 36 }}
                   >
-                    📌
+                    <Pin className="w-5 h-5" fill="none" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-        )}
+              )}
         {/* Main chat thread (filtered) */}
         {filteredMessages.length === 0 && (
           <div className="text-center text-zinc-400 mt-12">No messages yet. Start by entering a prompt below.</div>
@@ -423,111 +471,113 @@ export function EmailGenerator() {
               style={{ whiteSpace: 'pre-line', fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
             >
               {msg.type === 'ai' && msg.subject && (
-                <div className="font-bold mb-1">Subject: {msg.subject}</div>
+                <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
               )}
               {msg.type === 'ai' && msg.body ? (
                 <>
                   <div className="mb-2">
-                    {msg.subject && (
-                      <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
-                    )}
-                    <ReactMarkdown components={{ p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} /> }}>{msg.body}</ReactMarkdown>
-                  </div>
-                  <div className="flex flex-row gap-2 mt-2 mb-1 items-center justify-start">
-                    <button
-                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                      style={{ width: 28, height: 28 }}
-                      onClick={() => {
-                        navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
-                        toast.success('Copied to clipboard!');
-                      }}
-                      title="Copy"
-                      type="button"
-                    >
-                      <Copy className="w-4 h-4" />
-                    </button>
-                    <a
-                      href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
-                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                      style={{ width: 28, height: 28 }}
-                      title="Send"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Mail className="w-4 h-4" />
-                    </a>
-                    <button
-                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                      style={{ width: 28, height: 28 }}
-                      onClick={() => handleGenerate()}
-                      title="Rewrite"
-                      type="button"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                      style={{ width: 28, height: 28 }}
-                      onClick={handleEdit}
-                      title="Edit"
-                      type="button"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white"
-                      style={{ width: 28, height: 28 }}
-                      onClick={() => {
-                        setMessages(prev => prev.filter(m => m.id !== msg.id));
-                      }}
-                      title="Delete"
-                      type="button"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                  {/* Like/Dislike buttons for AI responses */}
-                  <div className="flex gap-2 mt-2 items-center">
-                    <button
-                      aria-label="Like"
-                      className={`rounded-full p-2 transition-colors ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200'}`}
-                      onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
-                      type="button"
-                    >
-                      <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? '#22c55e' : 'none'} />
-                    </button>
-                    <button
-                      aria-label="Dislike"
-                      className={`rounded-full p-2 transition-colors ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200'}`}
-                      onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
-                      type="button"
-                    >
-                      <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? '#ef4444' : 'none'} />
-                    </button>
-                    {/* Reference button */}
-                    <button
-                      aria-label="Reference this email"
-                      className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 ml-2"
-                      type="button"
-                      onClick={() => {
-                        const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}"`;
-                        setPrompt(summary);
+                    <ReactMarkdown
+                      components={{
+                        p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} />,
+                        text: ({children}) => <>{renderWithPlaceholders(children as string)}</>
                       }}
                     >
-                      <span className="text-xs font-semibold">Reference</span>
-                    </button>
+                      {msg.body}
+                    </ReactMarkdown>
                   </div>
-                  {msg.type === 'ai' && (
-                    <button
-                      aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
-                      className={`ml-2 rounded-full p-2 transition-colors ${favorites[msg.id] ? 'bg-yellow-100 text-yellow-700' : 'hover:bg-yellow-50'} hidden sm:inline-flex`}
-                      style={{ fontSize: '1.2em' }}
-                      onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
-                      type="button"
-                    >
-                      <span role="img" aria-label="star">⭐</span>
-                    </button>
-                  )}
+                  <div className="flex flex-row justify-between mt-6 pt-3 border-t border-zinc-100 dark:border-[#333] items-end">
+                    {/* Left group: Like, Dislike, Favorite */}
+                    <div className="flex flex-row gap-1 items-center">
+                      <button
+                        aria-label="Like"
+                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                        onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
+                        type="button"
+                        style={{ width: 36, height: 36 }}
+                      >
+                        <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? '#22c55e' : 'none'} />
+                      </button>
+                      <button
+                        aria-label="Dislike"
+                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                        onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
+                        type="button"
+                        style={{ width: 36, height: 36 }}
+                      >
+                        <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? '#ef4444' : 'none'} />
+                      </button>
+                      <button
+                        aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
+                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${favorites[msg.id] ? 'text-yellow-500' : 'hover:text-yellow-500 text-zinc-500 dark:text-zinc-400'}`}
+                        style={{ width: 36, height: 36 }}
+                        onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
+                        type="button"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill={favorites[msg.id] ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 17.25l-6.16 3.73 1.64-7.03L2 9.24l7.19-.61L12 2.5l2.81 6.13 7.19.61-5.48 4.71 1.64 7.03z" />
+                        </svg>
+                      </button>
+                    </div>
+                    {/* Reference button below left group */}
+                    <div className="flex flex-col items-start">
+                      <button
+                        aria-label="Reference this email"
+                        className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 text-xs font-semibold mt-1"
+                        type="button"
+                        onClick={() => {
+                          const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n\"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}\"`;
+                          setPrompt(summary);
+                        }}
+                      >
+                        Reference
+                      </button>
+                    </div>
+                    {/* Right group: Copy, Send, Edit, Delete */}
+                    <div className="flex flex-row gap-1 items-center">
+                      <button
+                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        style={{ width: 36, height: 36 }}
+                        onClick={() => {
+                          navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
+                          toast.success('Copied!', { duration: 1200 });
+                        }}
+                        title="Copy"
+                        type="button"
+                      >
+                        <Copy className="w-5 h-5" />
+                      </button>
+                      <a
+                        href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
+                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        style={{ width: 36, height: 36 }}
+                        title="Send"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Mail className="w-5 h-5" />
+                      </a>
+                      <button
+                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        style={{ width: 36, height: 36 }}
+                        onClick={handleEdit}
+                        title="Edit"
+                        type="button"
+                      >
+                        <Edit2 className="w-5 h-5" />
+                      </button>
+                      <button
+                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        style={{ width: 36, height: 36 }}
+                        onClick={() => {
+                          setMessages(prev => prev.filter(m => m.id !== msg.id));
+                        }}
+                        title="Delete"
+                        type="button"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
                 </>
               ) : (
                 <div>{msg.content}</div>
@@ -536,12 +586,12 @@ export function EmailGenerator() {
               {msg.type === 'ai' && (
                 <button
                   aria-label={pinned[msg.id] ? 'Unpin' : 'Pin'}
-                  className={`absolute top-2 right-2 rounded-full p-2 ${pinned[msg.id] ? 'bg-yellow-200 text-yellow-900' : 'bg-zinc-200 text-zinc-700 hover:bg-yellow-100'} transition-colors`}
+                  className={`absolute top-2 right-2 rounded-full p-2 transition-colors ${pinned[msg.id] ? 'bg-yellow-100 text-yellow-700' : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200 dark:bg-[#232323] dark:hover:bg-[#333] dark:text-zinc-400'}`}
                   onClick={() => setPinned(p => ({ ...p, [msg.id]: !p[msg.id] }))}
                   type="button"
-                  style={{ fontSize: '1.1em' }}
+                  style={{ width: 36, height: 36 }}
                 >
-                  📌
+                  <Pin className="w-5 h-5" fill={pinned[msg.id] ? 'currentColor' : 'none'} />
                 </button>
               )}
             </div>
@@ -556,64 +606,63 @@ export function EmailGenerator() {
         )}
       </div>
       {/* Sticky input at bottom */}
-      <form onSubmit={handleGenerate} className="w-full flex items-start gap-2 bg-white dark:bg-[#424242] p-2 border-t border-zinc-200 dark:border-[#616161] sticky bottom-0 z-10" style={{ minHeight: 64 }}>
-        <div className="flex-1 flex flex-col">
-          <textarea
-            className="w-full px-4 py-3 rounded-full border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black text-base sm:text-lg resize-none min-h-[48px] max-h-[160px] overflow-auto"
-            placeholder={typing || placeholder}
-            value={prompt}
-            onChange={e => {
-              setPrompt(e.target.value);
-              e.target.style.height = 'auto';
-              e.target.style.height = e.target.scrollHeight + 'px';
-            }}
-            required
-            rows={1}
-            style={{ minHeight: 48, borderRadius: 9999 }}
-          />
-          {/* Selectors below the textarea, with spacing */}
-          <div className="flex flex-row gap-2 items-center mt-3 pl-2">
+      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] border border-zinc-200 dark:border-[#616161] rounded-[2.5rem] px-6 pt-5 pb-6 shadow-sm" style={{ minHeight: 140, maxWidth: '100%' }}>
+        {/* Prompt input on top */}
+        <textarea
+          className="w-full px-2 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"
+          placeholder={typing || placeholder || 'Ask anything'}
+          value={prompt}
+          onChange={e => {
+            setPrompt(e.target.value);
+            e.target.style.height = 'auto';
+            e.target.style.height = e.target.scrollHeight + 'px';
+          }}
+          required
+          rows={1}
+          style={{ minWidth: 120, minHeight: 48, maxHeight: 180, borderRadius: '0.75rem' }}
+        />
+        {/* Dropdowns row */}
+        <div className="flex flex-row gap-3 items-center" style={{ paddingBottom: 0 }}>
+          <div className="relative">
             <select
               value={sender}
               onChange={e => setSender(e.target.value)}
-              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
             >
-              <option value="">From</option>
+              <option value="" className="font-bold">From</option>
               {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
             </select>
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
+          </div>
+          <div className="relative">
             <select
               value={recipient}
               onChange={e => setRecipient(e.target.value)}
-              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
             >
-              <option value="">To</option>
+              <option value="" className="font-bold">To</option>
               {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
             </select>
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
+          </div>
+          <div className="relative">
             <select
               value={tone}
               onChange={e => setTone(e.target.value)}
-              className="rounded-full border border-zinc-200 dark:border-[#757575] bg-zinc-50 dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] font-semibold text-xs w-[90px] min-w-[70px] px-3 py-1 shadow-sm focus:ring-2 focus:ring-black focus:border-black transition-all duration-150 hover:border-black outline-none"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
             >
-              <option value="">Tone</option>
+              <option value="" className="font-bold">Tone</option>
               {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
             </select>
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
           </div>
         </div>
+        {/* Circular Go button at bottom right */}
         <button
           type="submit"
-          className="self-start bg-black text-white rounded-full px-6 py-3 font-semibold shadow-md hover:brightness-110 transition disabled:opacity-60 mt-0"
+          className="absolute bottom-6 right-6 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg shadow-none hover:brightness-110 transition disabled:opacity-60"
           disabled={loading || !prompt}
-          style={{ minHeight: 48 }}
-        >
-          Go
-        </button>
-        {/* Floating Action Button (FAB) for mobile */}
-        <button
-          type="submit"
-          className="fixed bottom-20 right-4 z-20 bg-black text-white rounded-full p-4 shadow-lg sm:hidden flex items-center justify-center"
-          style={{ fontSize: 22, boxShadow: '0 4px 16px rgba(0,0,0,0.18)' }}
-          disabled={loading || !prompt}
-          aria-label="Go"
+          style={{ minWidth: 48, minHeight: 48 }}
         >
           Go
         </button>

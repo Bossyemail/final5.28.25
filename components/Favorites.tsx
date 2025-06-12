@@ -159,15 +159,36 @@ export function Favorites() {
           ))}
         </div>
       {/* Search Bar */}
-      <form className="flex items-center mb-6" style={{ borderRadius: 9999, overflow: 'hidden', background: 'white', border: '1px solid #e5e7eb' }}>
-        <input
-          type="text"
-          placeholder="Search away"
-          value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
-          className="flex-1 px-5 py-3 text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] border-none outline-none bg-transparent"
-        />
-      </form>
+      <div className="mb-6 w-full">
+        <div className="flex items-center w-full border border-zinc-300 bg-white dark:bg-[#616161] rounded-full h-12">
+          <input
+            type="text"
+            placeholder="Search away"
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
+            style={{ borderRight: 'none' }}
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => { setSearchInput(""); }}
+              className="text-black dark:text-[#e0e0e0] hover:text-zinc-700 dark:hover:text-[#f5f5f5] text-2xl focus:outline-none focus:ring-2 focus:ring-primary px-2"
+              aria-label="Clear search"
+              tabIndex={0}
+              style={{ background: 'none', border: 'none', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
+            >
+              ×
+            </button>
+          )}
+          <span
+            className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none flex items-center"
+            style={{ borderLeft: 'none', cursor: 'default', opacity: 0.5 }}
+          >
+            SEARCH
+          </span>
+        </div>
+      </div>
         {Object.keys(groupedFavorites).length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
           <Mail className="w-12 h-12 mb-4" />

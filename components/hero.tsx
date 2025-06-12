@@ -64,11 +64,11 @@ export function Hero() {
             >
               Smart Email Generator + Instant Email<br />
               <span>Templates for Real Estate Pros.</span>
-            </h1>
+          </h1>
             <div className="mb-8 sm:mb-10 text-center text-zinc-700 dark:text-black text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
               Get the exact words to chase docs,<br />
               put out fires and follow up like a pro - in seconds.
-            </div>
+          </div>
             {/* Main CTA Button */}
             <div className="w-full flex justify-center mb-6">
               <TryGeneratorCTA className="bg-black text-white hover:bg-zinc-900 rounded-full px-10 py-4 font-semibold text-lg shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-[#f5f5f5] dark:text-[#212121] dark:hover:bg-[#e0e0e0] dark:border dark:border-[#424242]" label="Start Now" />
