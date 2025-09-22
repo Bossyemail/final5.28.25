@@ -2,172 +2,161 @@
 
 import { Button } from "@/components/ui/button"
 import { TrialButton } from "@/components/trial-button"
-import { Star, CheckCircle } from "lucide-react"
+import { Star, CheckCircle, Bell, ArrowRight, Play } from "lucide-react"
 import { motion } from "framer-motion"
 import { TryGeneratorCTA } from "./try-generator-cta"
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
-import EmailGeneratorShowcase from "./EmailGeneratorShowcase"
-import EmailGeneratorShowcaseTabs from "./EmailGeneratorShowcaseTabs"
-
-const testimonials = [
-  {
-    quote: "Saved me 2 hours a day on email writing. Game changer.",
-    author: "Sarah K.",
-    role: "Transaction Coordinator"
-  },
-  {
-    quote: "Finally, emails that sound like a human wrote them.",
-    author: "Michael R.",
-    role: "Real Estate Agent"
-  },
-  {
-    quote: "My clients actually respond to these emails.",
-    author: "Lisa T.",
-    role: "Broker"
-  },
-  {
-    quote: "I love the templates. It's like having a transaction therapist in my inbox.",
-    author: "Ava P.",
-    role: "Agent"
-  },
-  {
-    quote: "BossyEmail saved me from losing it on a lender last week.",
-    author: "Jordan M.",
-    role: "Realtor"
-  }
-]
-
-const avatarColors = [
-  '#EFE1E1',
-  '#F0D2DA',
-  '#E0C1C6',
-  '#D1B4C6',
-  '#CBC4D6',
-];
 
 export function Hero() {
   return (
-    <section className="flex flex-col justify-center items-center py-16 md:py-24 bg-white text-black dark:bg-[#757575] dark:text-black min-h-[70vh]">
-      <div className="container flex flex-col items-center justify-center px-2 sm:px-4 md:px-6 h-full">
-        <div className="flex flex-col items-center text-center w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+    <section className="relative text-white pt-8 pb-20 lg:pb-32">
+      <motion.div 
+        className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D1B4C6]/15 rounded-full blur-3xl"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: [0.8, 1.1, 0.8], opacity: [0, 0.4, 0] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        style={{ willChange: 'transform, opacity' }}
+      ></motion.div>
+      <motion.div 
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#D1B4C6]/12 rounded-full blur-3xl"
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: [0.6, 1.2, 0.6], opacity: [0, 0.3, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        style={{ willChange: 'transform, opacity' }}
+      ></motion.div>
+      {/* Additional light source */}
+      <motion.div 
+        className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: [0.5, 1.3, 0.5], opacity: [0, 0.2, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        style={{ willChange: 'transform, opacity' }}
+      ></motion.div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          {/* Main Headline */}
+          <motion.div 
+            className="mt-16 mb-16 text-center"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="w-full flex flex-col items-center justify-center"
+            transition={{ duration: 0.8 }}
           >
-            <img src="/icon.png" alt="BossyEmail icon" className="mx-auto mb-8" style={{ height: '56px', width: 'auto' }} />
-            <h1
-              className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center leading-tight"
-              style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight">
+              <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+                <div>SMART EMAIL GENERATOR</div>
+                <div>+ TEMPLATES FOR REAL ESTATE PROS</div>
+              </div>
+            </h1>
+            <p className="text-base text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-8">
+              Supercharge Your Workflow with an AI-Powered Email Assistant. Get the exact words to chase docs, put out fires and follow up like a pro - in seconds.
+            </p>
+            <a
+              href="#pricing"
+              className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center gap-2 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
             >
-              Smart Email Generator + Instant Email<br />
-              <span>Templates for Real Estate Pros.</span>
-          </h1>
-            <div className="mb-8 sm:mb-10 text-center text-zinc-700 dark:text-black text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-              Get the exact words to chase docs,<br />
-              put out fires and follow up like a pro - in seconds.
-          </div>
-            {/* Main CTA Button */}
-            <div className="w-full flex justify-center mb-6">
-              <TryGeneratorCTA className="bg-black text-white hover:bg-zinc-900 rounded-full px-10 py-4 font-semibold text-lg shadow-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-[#f5f5f5] dark:text-[#212121] dark:hover:bg-[#e0e0e0] dark:border dark:border-[#424242]" label="Start Now" />
-          </div>
-            {/* Tabs and Card Container */}
-            <EmailGeneratorShowcaseTabs />
+              Get Started
+              <ArrowUpRight className="w-5 h-5" />
+            </a>
+          </motion.div>
+
+          {/* Video Placeholder - Floating in Void */}
+          <motion.div 
+            className="max-w-4xl mx-auto mt-8 md:mt-16"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <div className="relative">
+              {/* Void background layers for depth */}
+              <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-black/40 rounded-3xl blur-2xl scale-125"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/50 via-transparent to-zinc-900/50 rounded-3xl blur-xl scale-110"></div>
+              
+              {/* Main floating container */}
+              <div className="relative bg-gradient-to-br from-zinc-800/90 to-zinc-900/90 rounded-2xl border border-zinc-700/30 backdrop-blur-sm shadow-[0_0_80px_rgba(0,0,0,0.9)] shadow-black/60">
+                {/* Inner atmospheric glow */}
+                <div className="absolute inset-2 bg-gradient-to-br from-[#D1B4C6]/8 via-transparent to-transparent rounded-xl"></div>
+                
+                {/* Video content area */}
+                <div className="relative aspect-video bg-gradient-to-br from-zinc-700/80 to-zinc-800/80 rounded-xl m-2 md:m-4 flex items-center justify-center">
+                  {/* Play button with enhanced effects */}
+                  <motion.button 
+                    className="w-12 h-12 md:w-16 md:h-16 bg-[#D1B4C6] rounded-full flex items-center justify-center hover:bg-[#C4A7B9] transition-all duration-300 shadow-[0_0_30px_rgba(209,180,198,0.5)] hover:shadow-[0_0_40px_rgba(209,180,198,0.7)]"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Play className="w-4 h-4 md:w-6 md:h-6 text-black ml-0.5" fill="currentColor" />
+                  </motion.button>
+                  
+                  {/* Video label */}
+                  <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 text-zinc-300 text-xs md:text-sm font-medium">
+                    <p>Product Demo Video</p>
+                    <p className="text-zinc-400 text-xs mt-1">See BossyEmail in action</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Floating atmospheric particles */}
+              <motion.div 
+                className="absolute -top-6 -left-6 w-3 h-3 bg-[#D1B4C6]/40 rounded-full blur-sm"
+                animate={{ 
+                  y: [0, -15, 0],
+                  opacity: [0.4, 0.8, 0.4],
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              ></motion.div>
+              <motion.div 
+                className="absolute -bottom-8 -right-8 w-2 h-2 bg-[#D1B4C6]/50 rounded-full blur-sm"
+                animate={{ 
+                  y: [0, 12, 0],
+                  opacity: [0.5, 0.9, 0.5],
+                  scale: [1, 1.3, 1]
+                }}
+                transition={{ 
+                  duration: 5, 
+                  repeat: Infinity, 
+                  ease: "easeInOut",
+                  delay: 1.5
+                }}
+              ></motion.div>
+              <motion.div 
+                className="absolute top-1/3 -right-10 w-1.5 h-1.5 bg-[#D1B4C6]/60 rounded-full blur-sm"
+                animate={{ 
+                  x: [0, -8, 0],
+                  opacity: [0.6, 1, 0.6],
+                  scale: [1, 1.4, 1]
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "easeInOut",
+                  delay: 0.8
+                }}
+              ></motion.div>
+              <motion.div 
+                className="absolute bottom-1/3 -left-12 w-2.5 h-2.5 bg-[#D1B4C6]/30 rounded-full blur-sm"
+                animate={{ 
+                  x: [0, 6, 0],
+                  opacity: [0.3, 0.7, 0.3],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 6, 
+                  repeat: Infinity, 
+                  ease: "easeInOut",
+                  delay: 2.2
+                }}
+              ></motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
-  )
-}
-
-export function SocialProofAndTestimonials() {
-  // Marquee shell design for testimonials
-  return (
-    <div className="w-full max-w-5xl mx-auto overflow-x-hidden py-6 flex flex-col items-center mb-12">
-      <div className="flex items-center gap-3 mb-6">
-        {/* Avatars */}
-        <div className="flex -space-x-3">
-          {['H', 'C', 'L', 'T'].map((initial, idx) => (
-            <div
-              key={initial}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-black font-bold text-xs border-2 border-white shadow"
-              style={{ background: avatarColors[idx % avatarColors.length] }}
-              title={initial === 'H' ? 'Hannah R.' : initial === 'C' ? 'Carlos M.' : initial === 'L' ? 'Lisa T.' : 'Tom S.'}
-            >
-              {initial}
-            </div>
-          ))}
-        </div>
-        {/* Star rating and trust statement */}
-        <div className="flex items-center gap-2">
-          <div className="flex" style={{ color: '#7ED6A6' }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><polygon points="9.9,1.1 7.6,6.6 1.6,7.5 6,11.7 4.8,17.6 9.9,14.6 15,17.6 13.8,11.7 18.2,7.5 12.2,6.6 "/></svg>
-            ))}
-          </div>
-          <span className="text-xs text-gray-600 dark:text-gray-400">
-            Trusted by <span className="font-bold">500+</span> real estate professionals
-          </span>
-        </div>
-      </div>
-      {/* Marquee shell for testimonials */}
-      <div className="overflow-x-hidden w-full">
-        <div className="flex animate-marquee-ltr whitespace-nowrap gap-x-6" style={{ animationDuration: '32s' }}>
-          {[...testimonials, ...testimonials].map((testimonial, idx) => {
-            // Split quote into up to two sentences for display
-            let sentences = testimonial.quote.split('. ');
-            if (sentences.length > 1) {
-              sentences[0] = sentences[0].endsWith('.') ? sentences[0] : sentences[0] + '.';
-            }
-            // Special handling for the 'Saved me 2 hours...' testimonial to ensure both sentences are on the same line
-            if (testimonial.quote.startsWith('Saved me 2 hours a day on email writing')) {
-              sentences = ['Saved me 2 hours a day on email writing. Game changer.'];
-            }
-            // Special handling for the 'I love the templates...' testimonial to keep it as one line
-            if (testimonial.quote.startsWith("I love the templates. It's like having a transaction therapist in my inbox.")) {
-              sentences = [testimonial.quote];
-            }
-            return (
-              <div
-                key={idx}
-                className="flex flex-col sm:flex-row items-start bg-white/70 backdrop-blur-md rounded-lg px-5 py-4 shadow-xl min-w-[280px] max-w-xs text-left hover:bg-white/90 transition-colors border border-black/10"
-                style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '13px', color: '#232326' }}
-              >
-                <div className="flex items-center mb-2 sm:mb-0 mr-1 flex-shrink-0">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-black text-xs font-bold" style={{ background: avatarColors[idx % avatarColors.length] }}>
-                    {testimonial.author[0]}
-                  </div>
-                </div>
-                <div className="flex flex-col break-words whitespace-normal max-w-full">
-                  <span className="leading-snug break-words whitespace-normal max-w-full">{sentences[0]}</span>
-                  {sentences[1] && <span className="leading-snug break-words whitespace-normal max-w-full">{sentences[1]}</span>}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export function Header() {
-  return (
-    <header className="w-full border-b bg-white flex items-center">
-      <div className="container flex items-center justify-between px-4" style={{ height: '48px' }}>
-        <Link href="/" className="flex items-center">
-          <img src="/logo.png" alt="BossyEmail logo" className="h-8 w-auto" />
-        </Link>
-        <nav className="flex items-center gap-6">
-          <a className="uppercase tracking-wide text-sm text-gray-700" href="#features">Features</a>
-          {/* ...other links... */}
-        </nav>
-        <Button className="rounded-full bg-black text-white px-6 py-2 text-base font-normal" style={{ fontFamily: 'Inter, sans-serif' }}>
-          Log in <ArrowUpRight size={18} />
-        </Button>
-      </div>
-    </header>
   )
 } 

@@ -72,23 +72,29 @@ const iconColors = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="py-16 md:py-24 bg-white dark:bg-[#757575] dark:text-black">
-      <div className="container px-4 md:px-6 max-w-2xl mx-auto dark:bg-[#757575]">
-        <h2 className="text-2xl sm:text-3xl font-normal mb-4 sm:mb-6 text-black dark:text-black text-center">Frequently Asked Questions</h2>
-        <p className="text-center mb-8 sm:mb-12 text-sm sm:text-base text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-          Everything you need to know about BossyEmail and how it works.
+    <section id="faq" className="py-16 md:py-24 text-white relative">
+      <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-[#D1B4C6]/8 rounded-full blur-3xl"></div>
+      {/* Additional light source */}
+      <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-white/4 rounded-full blur-3xl"></div>
+      <div className="container px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight text-center">
+          <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+            FAQ
+          </div>
+        </h2>
+        <p className="text-center mb-12 text-base text-zinc-300">
+          Still scrolling? That means you're either really thorough… or you're procrastinating writing another email. Either way, BossyEmail will save you time, make you sound sharp, and keep deals moving. Go on—your inbox will thank you.
         </p>
-        <div className="mb-8" />
-        <Accordion type="single" collapsible className="divide-y divide-gray-200 dark:divide-zinc-800">
+        <Accordion type="single" collapsible className="space-y-4">
           {sortedFaqs.map((faq, idx) => (
-            <AccordionItem key={faq.question} value={faq.question}>
-              <AccordionTrigger className="px-2 py-2 text-sm font-normal text-left text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif' }}>
-                <div className="flex items-center gap-2">
-                  <faq.icon className="w-5 h-5" style={{ color: iconColors[idx % iconColors.length] }} />
-                  {faq.question}
+            <AccordionItem key={faq.question} value={faq.question} className="border border-zinc-800 rounded-lg hover:border-[#D1B4C6]/20 hover:shadow-[0_0_20px_rgba(209,180,198,0.05)] transition-all duration-300">
+              <AccordionTrigger className="px-6 py-4 text-left text-white hover:text-zinc-300 transition-colors duration-200">
+                <div className="flex items-center gap-3">
+                  <faq.icon className="w-5 h-5 text-[#D1B4C6]" />
+                  <span className="font-medium">{faq.question}</span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="px-4 pb-2 text-zinc-700 dark:text-black text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+              <AccordionContent className="px-6 pb-4 text-zinc-300">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
@@ -97,14 +103,13 @@ export function FAQ() {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <p className="text-base font-normal mb-4 text-black dark:text-black">Still not sure?</p>
+          <p className="text-base text-zinc-300 mb-4">Still not sure?</p>
           <Button
             size="lg"
-            className="mt-2 bg-black text-white rounded-full font-normal px-8 py-3 shadow-none border border-transparent hover:bg-zinc-900 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
-            style={{ fontFamily: 'Inter, sans-serif', fontSize: '1rem', fontWeight: 400 }}
+            className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-6 py-3 rounded-lg font-medium text-base transition-all duration-200 flex items-center gap-2 mx-auto"
           >
             Just Try It.
-            <ArrowUpRight size={18} />
+            <ArrowUpRight size={16} />
           </Button>
         </div>
       </div>

@@ -49,11 +49,20 @@ const planIncludes = {
 
 export function Pricing() {
   return (
-    <section className="py-16 md:py-24 bg-[#e0e0e0] dark:bg-[#757575] dark:text-black" style={{ background: '#e0e0e0' }}>
-      <div className="w-full max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-normal mb-3 sm:mb-4 text-black dark:text-black text-center">Simple, Transparent Pricing</h2>
-          <p className="text-center text-black dark:text-black mb-8 sm:mb-12 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+    <section className="py-16 md:py-24 text-white relative">
+      <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[#D1B4C6]/8 rounded-full blur-3xl"></div>
+      {/* Additional light source */}
+      <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight">
+            <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+              <div>SIMPLE,</div>
+              <div>TRANSPARENT PRICING</div>
+            </div>
+          </h2>
+          <p className="text-base text-zinc-300 max-w-2xl leading-relaxed mb-8">
             Choose the plan that works for you. Start with 3 free emails.<br />
             Stay for the sanity-saving genius.
           </p>
@@ -62,92 +71,97 @@ export function Pricing() {
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto items-start">
           {/* Inbox Lite */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="rounded-2xl shadow-sm border border-black px-8 pt-8 pb-0 flex flex-col gap-6 dark:bg-[#757575]"
-            style={{ background: '#D1B4C6' }}
+          <motion.div 
+            className="bg-zinc-800 rounded-lg border border-zinc-700 p-6 md:p-8 flex flex-col gap-6 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_30px_rgba(209,180,198,0.1)] hover:shadow-[#D1B4C6]/10 transition-all duration-300 group"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            viewport={{ once: true }}
           >
-            <h3 className="text-base font-normal mb-2 text-black dark:text-black">Inbox Lite</h3>
-            <div className="text-left" style={{ marginTop: '-8px', marginBottom: 0 }}>
-              <span className="text-4xl font-bold text-black">$29</span>
-              <span className="text-black dark:text-black">per month</span>
+            <h3 className="text-xl font-medium text-white">Inbox Lite</h3>
+            <div className="text-left">
+              <span className="text-4xl font-bold text-white">$19</span>
+              <span className="text-zinc-400 ml-2">per month</span>
             </div>
-            <ul className="space-y-2 mb-0 text-left">
+            <ul className="space-y-3 mb-4 text-left">
               {planIncludes.lite.map((item, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <ArrowUpRight className="w-5 h-5 text-black" />
-                  <span className="text-black dark:text-black">{item}</span>
+                <li key={index} className="flex items-center gap-3">
+                  <ArrowUpRight className="w-4 h-4 text-[#D1B4C6]" />
+                  <span className="text-zinc-300">{item}</span>
                 </li>
               ))}
             </ul>
-            <TrialButton
-              className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
-              label="Start Free Trial"
-            />
-            <div className="pt-0 pb-8 w-full">
-              <div className="text-sm text-black text-left leading-snug italic text-gray-700" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, margin: 0, padding: 0 }}>
-                Just type what you need — like "ask for HOA docs" — and get a polished, real estate-ready email in seconds.<br />
-                Perfect for follow-ups, document chases, updates, and putting out fires without rewriting the same line 12 different ways.
-              </div>
+            <a
+              href="#pricing"
+              className="w-full bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
+            >
+              Start Free Trial
+              <ArrowUpRight className="w-5 h-5" />
+            </a>
+            <div className="pt-4 border-t border-zinc-700">
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Just type what you need — like "ask for HOA docs" — and get a polished, real estate-ready email in seconds. Perfect for follow-ups, document chases, updates, and putting out fires without rewriting the same line 12 different ways.
+              </p>
             </div>
           </motion.div>
 
           {/* Inbox Royalty */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="rounded-2xl shadow-lg border border-black p-8 relative dark:bg-[#757575]"
-            style={{ background: '#CBC4D6', color: '#232326', border: '1px solid #232326' }}
+          <motion.div 
+            className="bg-zinc-800 rounded-lg border border-[#D1B4C6] p-6 md:p-8 relative hover:shadow-[0_0_40px_rgba(209,180,198,0.2)] hover:shadow-[#D1B4C6]/20 transition-all duration-300 group"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
           >
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#734b6d] text-white px-4 py-1 rounded-full text-sm font-medium">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#D1B4C6] text-black px-4 py-1 rounded-full text-sm font-medium">
               Most Popular
-        </div>
-            <h3 className="text-base font-normal mb-2 text-black dark:text-black">Inbox Royalty</h3>
-            <div className="mb-6">
-              <span className="text-4xl font-bold" style={{ color: '#232326' }}>$59</span>
-              <span style={{ color: '#232326', opacity: 0.8 }} className="text-black dark:text-black">per month</span>
-        </div>
-            <ul className="space-y-2 mb-6 text-left">
+            </div>
+            <h3 className="text-xl font-medium text-white">Inbox Royalty</h3>
+            <div className="text-left mb-6">
+              <span className="text-4xl font-bold text-white">$59</span>
+              <span className="text-zinc-400 ml-2">per month</span>
+            </div>
+            <ul className="space-y-3 mb-6 text-left">
               {planIncludes.royalty.map((item, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <ArrowUpRight className="w-5 h-5 text-black" />
-                  <span className="text-black dark:text-black">{item}</span>
-            </li>
-          ))}
-        </ul>
-            <TrialButton
-              className="w-full bg-black text-white hover:bg-zinc-900 rounded-full px-8 py-3 font-normal shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition focus:outline-none focus:ring-2 focus:ring-offset-2 mb-3 flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]"
-              label="Start Free Trial"
-            />
+                <li key={index} className="flex items-center gap-3">
+                  <ArrowUpRight className="w-4 h-4 text-[#D1B4C6]" />
+                  <span className="text-zinc-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#pricing"
+              className="w-full bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 mb-6 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
+            >
+              Start Free Trial
+              <ArrowUpRight className="w-5 h-5" />
+            </a>
             
             {/* Testimonial */}
-            <div className="mt-8 p-4 rounded-xl" style={{ background: '#F3F3F3' }}>
+            <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-700">
               <div className="flex items-center gap-2 mb-2">
-                <div className="flex" style={{ color: '#7ED6A6' }}>
+                <div className="flex text-[#D1B4C6]">
                   {[...Array(5)].map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-current" />
                   ))}
-      </div>
-    </div>
-              <p className="text-sm italic" style={{ color: '#232326', opacity: 0.9 }}>
+                </div>
+              </div>
+              <p className="text-sm italic text-zinc-300 mb-2">
                 "The template library alone is worth it. I've saved hours every week on follow-ups and document requests."
               </p>
-              <p className="text-sm mt-2" style={{ color: '#232326', opacity: 0.8 }}>- Sarah K., Transaction Coordinator</p>
-          </div>
+              <p className="text-sm text-zinc-400">- Sarah K., Transaction Coordinator</p>
+            </div>
           </motion.div>
         </div>
 
         {/* Upgrade Note */}
-        <div className="text-center mt-6">
-          <p className="mb-1 text-center mt-12 text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px' }}>
+        <div className="text-center mt-12">
+          <p className="text-base text-zinc-300 mb-2">
             Start with Lite and upgrade anytime. No commitment required.
           </p>
-          <span className="text-center text-black dark:text-black" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '16px', marginTop: 0 }}>
-            Have questions? Check out our <a href="#faq" className="text-[#734b6d] hover:underline">FAQ section</a>
-          </span>
+          <p className="text-base text-zinc-300">
+            Have questions? Check out our <a href="#faq" className="text-[#D1B4C6] hover:underline">FAQ section</a>
+          </p>
         </div>
       </div>
     </section>

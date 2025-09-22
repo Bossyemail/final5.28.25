@@ -38,16 +38,16 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
         />
         {/* Sidebar Drawer */}
         <aside
-          className="fixed left-0 top-0 h-full w-64 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-[#383838] text-[#bdbdbd] backdrop-blur-sm"
+          className="fixed left-0 top-0 h-full w-16 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-zinc-900 border-r border-zinc-800 backdrop-blur-sm"
           tabIndex={-1}
         >
-          <nav className="flex-1 py-0.5 px-1">
-            <ul className="space-y-2">
+          <nav className="flex-1 py-2 px-1">
+            <ul className="space-y-1">
               <li>
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('generator')}
-                  className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'generator' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Email Generator"
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
                   tabIndex={0}
@@ -59,7 +59,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('templates')}
-                  className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'templates' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Templates"
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
                   tabIndex={0}
@@ -71,7 +71,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('favorites')}
-                  className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'favorites' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Favorites"
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
                   tabIndex={0}
@@ -83,7 +83,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('history')}
-                  className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'history' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'history' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="History"
                   aria-current={activeSection === 'history' ? 'page' : undefined}
                   tabIndex={0}
@@ -107,32 +107,31 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
     <>
       {/* Mobile hamburger toggle */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-[#424242] text-zinc-700 dark:text-[#e0e0e0] p-2 rounded-full shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-50 bg-zinc-900 text-white p-2 rounded-lg shadow-lg hover:bg-zinc-800 transition-colors"
         onClick={() => onClose && onClose()}
         aria-label="Toggle Sidebar"
         tabIndex={0}
       >
-        <LayoutDashboard className="w-5 h-5 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+        <LayoutDashboard className="w-5 h-5" aria-hidden="true" strokeWidth={2} />
       </button>
       {/* Desktop sidebar */}
       <aside
-        className="hidden md:flex fixed top-16 left-0 h-[calc(100vh-4rem)] w-16 shadow-none flex-col justify-start z-20 transition-all duration-200 p-0 bg-[#e0e0e0] dark:bg-[#757575] text-zinc-700 dark:text-[#e0e0e0]"
+        className="hidden md:flex fixed top-0 left-0 h-full w-16 shadow-lg flex-col justify-start z-20 transition-all duration-300 p-0 bg-zinc-900 border-r border-zinc-800 text-zinc-300"
         aria-label="Sidebar"
         role="navigation"
       >
         {/* Logo at the top */}
-        <div className="flex items-center justify-center w-full pt-2 pb-0.5">
-          <img src="/transparent 1.png" alt="Logo" className="h-8 w-auto" />
+        <div className="flex items-center justify-center w-full pt-4 pb-2">
+          <img src="/transparent 2.png" alt="BossyEmail" className="h-8 w-8" />
         </div>
-        {activeSection && <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-black dark:bg-[#757575] z-10" />}
         <div className="flex flex-col h-full w-full">
-          <nav className="w-full mt-10" role="navigation" aria-label="Main navigation">
-            <ul className="flex flex-col items-center gap-4 w-full">
+          <nav className="w-full mt-4" role="navigation" aria-label="Main navigation">
+            <ul className="flex flex-col items-center gap-2 w-full px-2">
               <li className="w-full">
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('generator')}
-                  className={`flex items-center justify-center w-12 h-12 mx-auto rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'generator' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Email Generator"
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
                     tabIndex={0}
@@ -144,7 +143,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('templates')}
-                  className={`flex items-center justify-center w-12 h-12 mx-auto rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'templates' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Templates"
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
                     tabIndex={0}
@@ -156,7 +155,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('favorites')}
-                  className={`flex items-center justify-center w-12 h-12 mx-auto rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'favorites' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                   aria-label="Favorites"
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
                     tabIndex={0}
@@ -168,7 +167,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('history')}
-                  className={`flex items-center justify-center w-12 h-12 mx-auto rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === 'history' ? 'bg-zinc-100 dark:bg-[#616161]' : 'hover:bg-zinc-100 dark:hover:bg-[#616161]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === 'history' ? 'bg-[#D1B4C6] text-black' : 'hover:bg-zinc-800 text-zinc-300 hover:text-white'}`}
                     aria-label="History"
                   aria-current={activeSection === 'history' ? 'page' : undefined}
                     tabIndex={0}
@@ -179,11 +178,11 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               </ul>
             </nav>
           {/* Bottom icons */}
-          <div className="flex flex-col gap-2 py-4 w-full items-center px-0 mt-auto border-t border-zinc-200 dark:border-[#616161]" role="navigation" aria-label="Secondary navigation">
+          <div className="flex flex-col gap-2 py-4 w-full items-center px-2 mt-auto border-t border-zinc-800" role="navigation" aria-label="Secondary navigation">
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("support")}
-              className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "support" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === "support" ? "bg-[#D1B4C6] text-black" : "hover:bg-zinc-800 text-zinc-300 hover:text-white"}`}
                 aria-label="Support"
                 tabIndex={0}
               title="Support"
@@ -193,7 +192,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("subscription")}
-              className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "subscription" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === "subscription" ? "bg-[#D1B4C6] text-black" : "hover:bg-zinc-800 text-zinc-300 hover:text-white"}`}
                 aria-label="Subscription"
                 tabIndex={0}
               title="Subscription"
@@ -203,7 +202,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("account")}
-              className={`flex items-center justify-center w-12 h-12 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${activeSection === "account" ? "bg-zinc-100 dark:bg-[#616161]" : "hover:bg-zinc-100 dark:hover:bg-[#616161]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-all duration-200 ${activeSection === "account" ? "bg-[#D1B4C6] text-black" : "hover:bg-zinc-800 text-zinc-300 hover:text-white"}`}
                 aria-label="Account"
                 tabIndex={0}
               title="Account"

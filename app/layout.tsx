@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   authors: [{ name: "BossyEmail Team" }],
   creator: "BossyEmail",
   publisher: "BossyEmail",
+  icons: {
+    icon: '/transparent 2.png',
+    shortcut: '/transparent 2.png',
+    apple: '/transparent 2.png',
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -31,7 +36,7 @@ export const metadata: Metadata = {
     siteName: 'BossyEmail',
     images: [
       {
-        url: '/icon.png',
+        url: '/transparent 2.png',
         width: 512,
         height: 512,
         alt: 'BossyEmail Icon',
@@ -42,7 +47,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'BossyEmail - Real Estate Emails That Don\'t Suck',
     description: 'Generate professional, witty, and effective real estate emails in seconds. Built by real estate pros, not tech bros.',
-    images: ['/icon.png'],
+    images: ['/transparent 2.png'],
     creator: '@bossyemail',
   },
   robots: {
@@ -70,7 +75,9 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
         <head>
-          <link rel="icon" href="/icon.png" type="image/png" />
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="icon" href="/transparent 2.png" type="image/png" />
+          <link rel="apple-touch-icon" href="/transparent 2.png" />
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
             strategy="afterInteractive"
@@ -83,26 +90,6 @@ export default function RootLayout({
               gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
             `}
           </Script>
-          {/* Set dark mode class on <html> before React loads */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function() {
-                  try {
-                    var theme = localStorage.theme;
-                    if (
-                      theme === "dark" ||
-                      (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches)
-                    ) {
-                      document.documentElement.classList.add("dark");
-                    } else {
-                      document.documentElement.classList.remove("dark");
-                    }
-                  } catch(e) {}
-                })();
-              `,
-            }}
-          />
         </head>
         <body className={inter.className} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
           <AppShell>{children}</AppShell>

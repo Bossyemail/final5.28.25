@@ -127,7 +127,10 @@ export function EmailGenerator() {
 
   async function handleGenerate(e?: React.FormEvent) {
     if (e) e.preventDefault();
-    if (!prompt) return;
+    if (!prompt.trim()) {
+      setError("Please enter a prompt to generate an email.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
@@ -222,7 +225,7 @@ export function EmailGenerator() {
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${value === opt ? 'bg-black text-white border-black' : 'bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200'}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${value === opt ? 'bg-[#D1B4C6] text-black border-[#D1B4C6]' : 'bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200'}`}
             aria-pressed={value === opt}
           >
             {opt}
@@ -311,7 +314,7 @@ export function EmailGenerator() {
     return parts.map((part, i) => {
       if (/^\[.*\]$/.test(part)) {
         return (
-          <span key={i} className="italic text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-1 rounded">{part}</span>
+          <span key={i} className="italic text-[#D1B4C6] bg-[#D1B4C6]/10 px-1 rounded">{part}</span>
         );
       }
       return part;
@@ -319,7 +322,7 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 dark:bg-[#424242] dark:text-[#e0e0e0] flex flex-col h-[80vh]">
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] border border-zinc-200 rounded-lg shadow-sm">
       <div className="flex-1 overflow-y-auto pb-4">
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
@@ -455,6 +458,14 @@ export function EmailGenerator() {
             ))}
           </div>
               )}
+        {/* Error display */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <p className="font-medium">Error:</p>
+            <p>{error}</p>
+          </div>
+        )}
+        
         {/* Main chat thread (filtered) */}
         {filteredMessages.length === 0 && (
           <div className="text-center text-zinc-400 mt-12">No messages yet. Start by entering a prompt below.</div>

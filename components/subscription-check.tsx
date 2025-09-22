@@ -39,7 +39,7 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
     }
     try {
       setIsLoading(true);
-      const priceId = selectedPlan === 'lite' ? 'price_1RSlDYEApsNPWe3PYQu3K9j1' : 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+      const priceId = selectedPlan === 'lite' ? 'price_1S9zinEApsNPWe3PwzWoZfom' : 'price_1RSlGrEApsNPWe3P5R6MkIAY';
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

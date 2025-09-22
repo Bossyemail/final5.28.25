@@ -68,11 +68,11 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black dark:bg-[#424242] dark:text-[#e0e0e0] flex">
-      {/* Minimal mobile dashboard header */}
-      <div className="md:hidden fixed top-0 left-0 w-full h-16 z-40 bg-white dark:bg-[#424242] border-b flex items-center justify-between px-2 text-black dark:text-[#e0e0e0]">
+    <div className="min-h-screen flex">
+      {/* Consistent header with landing page */}
+      <div className="md:hidden fixed top-0 left-0 w-full h-16 z-40 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 text-white">
         <button
-          className="p-2 rounded-full hover:bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="p-2 rounded-full hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-colors"
           onClick={() => setSidebarOpen(true)}
           aria-label="Open sidebar menu"
         >
@@ -80,7 +80,7 @@ export default function DashboardPage() {
         </button>
         <div className="flex items-center gap-2">
           <Button 
-            className="rounded-full bg-black text-white font-medium px-4 py-2 shadow hover:bg-zinc-900 transition focus:outline-none focus:ring-2 focus:ring-offset-2"
+            className="rounded-lg bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black font-medium px-4 py-2 shadow hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] transition-all duration-300"
             style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
             asChild
           >
@@ -97,7 +97,7 @@ export default function DashboardPage() {
         onCollapseChange={setSidebarCollapsed}
       />
       <main
-        className="flex-1 flex flex-col pt-16 transition-all duration-200 w-full md:ml-16 ml-0 text-black dark:text-[#e0e0e0]"
+        className="flex-1 flex flex-col pt-16 transition-all duration-300 w-full md:ml-16 ml-0"
         role="main"
         aria-live="polite"
       >
