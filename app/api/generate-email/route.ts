@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs';
 
-export const runtime = 'edge';
-
 export async function POST(req: NextRequest) {
   try {
     const { userId } = auth();
