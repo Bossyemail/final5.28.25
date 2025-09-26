@@ -5,9 +5,14 @@ import { SignIn } from '@clerk/nextjs'
 
 export default function Page() {
   return (
-    <div className="min-h-screen bg-zinc-900 flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center">
-        <div className="w-full bg-zinc-800 rounded-2xl shadow-2xl px-6 py-8 flex flex-col items-center border border-zinc-700" style={{ boxShadow: '0 8px 32px 0 rgba(0,0,0,0.3)' }}>
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900 flex items-center justify-center relative overflow-hidden">
+      {/* Background blur elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#D1B4C6]/5 via-transparent to-[#D1B4C6]/5 blur-3xl"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
+      
+      <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center relative z-10">
+        <div className="w-full bg-zinc-800/30 backdrop-blur-xl rounded-3xl shadow-2xl px-8 py-10 flex flex-col items-center border border-zinc-700/50" style={{ boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
           <SignIn 
             appearance={{
               elements: {
@@ -15,19 +20,19 @@ export default function Page() {
                 card: 'w-full items-center bg-transparent shadow-none border-none p-0',
                 
                 // Header elements
-                headerTitle: 'text-xl font-bold text-center text-white mb-2',
+                headerTitle: 'text-2xl font-bold text-center text-white mb-6 bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent',
                 headerSubtitle: 'hidden',
-                headerLogo: 'flex justify-center items-center mb-4',
+                headerLogo: 'flex justify-center items-center mb-6',
                 
                 // Form elements
-                formButtonPrimary: 'rounded-lg bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black py-3 px-6 text-base font-semibold shadow hover:scale-105 hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] transition-all mt-4 w-full',
+                formButtonPrimary: 'rounded-2xl bg-gradient-to-r from-[#D1B4C6] to-[#C4A7B9] hover:from-[#C4A7B9] hover:to-[#D1B4C6] text-black py-4 px-8 text-lg font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 mt-6 w-full',
                 formButtonPrimaryText: 'Sign In',
-                formFieldInput: 'rounded-lg border border-zinc-600 bg-zinc-700 text-white py-3 px-4 text-base focus:ring-2 focus:ring-[#D1B4C6] focus:border-[#D1B4C6] transition-all',
-                formFieldLabel: 'text-zinc-300 font-medium mb-1.5',
-                formFieldInputShowPasswordButton: 'text-zinc-400 hover:text-zinc-200',
+                formFieldInput: 'rounded-2xl border border-zinc-600/50 bg-zinc-800/30 backdrop-blur-sm text-white py-4 px-5 text-base focus:ring-2 focus:ring-[#D1B4C6]/50 focus:border-[#D1B4C6] transition-all duration-300 placeholder-zinc-400',
+                formFieldLabel: 'text-zinc-200 font-medium mb-2 text-sm',
+                formFieldInputShowPasswordButton: 'text-zinc-400 hover:text-white transition-colors',
                 
                 // Social buttons
-                socialButtonsBlockButton: 'rounded-lg py-3 px-4 text-base font-semibold mb-2 border border-zinc-600 bg-zinc-700 text-white hover:bg-zinc-600 transition-all w-full',
+                socialButtonsBlockButton: 'rounded-2xl py-4 px-5 text-base font-medium mb-3 border border-zinc-600/50 bg-zinc-800/30 backdrop-blur-sm text-white hover:bg-zinc-700/50 hover:scale-105 transition-all duration-300 w-full',
                 socialButtonsBlockButtonArrow: 'text-zinc-400',
                 socialButtonsBlockButtonText: 'text-white',
                 socialButtonsBlockButtonText__apple: 'Continue with Apple',
@@ -35,28 +40,28 @@ export default function Page() {
                 socialButtonsBlockButtonText__google: 'Continue with Google',
                 
                 // Footer elements
-                footer: 'flex flex-col items-center gap-2 mt-4',
-                footerActionLink: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold',
-                dividerRow: 'my-4',
-                dividerLine: 'bg-zinc-600',
+                footer: 'flex flex-col items-center gap-3 mt-6',
+                footerActionLink: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold transition-colors',
+                dividerRow: 'my-6',
+                dividerLine: 'bg-zinc-600/50',
                 dividerText: 'text-zinc-400 text-sm',
                 
                 // Identity provider icons
                 identityProviderIcon: 'mx-auto',
                 
                 // Error messages
-                formFieldError: 'text-red-400 text-sm mt-1',
+                formFieldError: 'text-red-400 text-sm mt-2',
                 
                 // Form resend code
-                formResendCodeLink: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold',
+                formResendCodeLink: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold transition-colors',
                 
                 // Form field action
-                formFieldAction: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold',
+                formFieldAction: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold transition-colors',
                 
                 // Additional text elements
-                formFieldHint: 'text-zinc-400 text-sm mt-1',
+                formFieldHint: 'text-zinc-400 text-sm mt-2',
                 formFieldAction__signIn: 'text-zinc-400 text-sm',
-                formFieldAction__signUp: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold',
+                formFieldAction__signUp: 'text-[#D1B4C6] hover:text-[#C4A7B9] font-semibold transition-colors',
               },
               layout: {
                 socialButtonsPlacement: "bottom",
@@ -67,11 +72,13 @@ export default function Page() {
               variables: {
                 colorPrimary: '#D1B4C6',
                 colorText: '#ffffff',
-                colorTextSecondary: '#a1a1aa',
-                colorBackground: '#27272a',
-                colorInputBackground: '#3f3f46',
+                colorTextSecondary: '#d1d5db',
+                colorBackground: 'transparent',
+                colorInputBackground: 'rgba(39, 39, 42, 0.3)',
                 colorInputText: '#ffffff',
-                borderRadius: '8px',
+                borderRadius: '16px',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '16px',
               },
             }}
             routing="path"

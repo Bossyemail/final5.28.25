@@ -52,7 +52,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
                   tabIndex={0}
                   >
-                  <LayoutDashboard className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <LayoutDashboard className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                 </button>
               </li>
               <li>
@@ -64,7 +64,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
                   tabIndex={0}
                 >
-                  <FileText className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <FileText className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                 </button>
               </li>
               <li>
@@ -76,7 +76,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
                   tabIndex={0}
                 >
-                  <Star className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <Star className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                 </button>
               </li>
               <li>
@@ -88,15 +88,15 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'history' ? 'page' : undefined}
                   tabIndex={0}
                 >
-                  <History className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <History className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                 </button>
               </li>
             </ul>
           </nav>
           <div className="flex flex-col gap-2 py-4 px-2 border-t border-zinc-200">
-            <SidebarIcon icon={LifeBuoy} label="Support" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
-            <SidebarIcon icon={CreditCard} label="Subscription" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
-            <SidebarIcon icon={User} label="Account" iconClass="text-black dark:text-[#e0e0e0]" strokeWidth={2} />
+            <SidebarIcon icon={LifeBuoy} label="Support" iconClass="text-white" strokeWidth={2} />
+            <SidebarIcon icon={CreditCard} label="Subscription" iconClass="text-white" strokeWidth={2} />
+            <SidebarIcon icon={User} label="Account" iconClass="text-white" strokeWidth={2} />
           </div>
         </aside>
       </div>
@@ -136,7 +136,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
                     tabIndex={0}
                   >
-                  <LayoutDashboard className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <LayoutDashboard className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                   </button>
                 </li>
               <li className="w-full">
@@ -148,7 +148,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
                     tabIndex={0}
                   >
-                  <FileText className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <FileText className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                   </button>
                 </li>
               <li className="w-full">
@@ -160,7 +160,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
                     tabIndex={0}
                   >
-                  <Star className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <Star className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                   </button>
                 </li>
               <li className="w-full">
@@ -172,7 +172,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   aria-current={activeSection === 'history' ? 'page' : undefined}
                     tabIndex={0}
                   >
-                  <History className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+                  <History className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
                   </button>
                 </li>
               </ul>
@@ -187,7 +187,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 tabIndex={0}
               title="Support"
               >
-              <LifeBuoy className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+              <LifeBuoy className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
               </button>
               <button
                 type="button"
@@ -197,7 +197,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 tabIndex={0}
               title="Subscription"
               >
-              <CreditCard className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+              <CreditCard className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
               </button>
               <button
                 type="button"
@@ -207,7 +207,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 tabIndex={0}
               title="Account"
               >
-              <User className="w-6 h-6 text-black dark:text-[#e0e0e0]" aria-hidden="true" strokeWidth={2} />
+              <User className="w-6 h-6 text-white" aria-hidden="true" strokeWidth={2} />
               </button>
           </div>
         </div>

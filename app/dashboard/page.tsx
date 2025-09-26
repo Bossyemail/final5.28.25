@@ -12,6 +12,7 @@ import { Subscription } from "@/components/Subscription"
 import { Support } from "@/components/Support"
 import { SubscriptionButton } from "@/components/subscription-button"
 import { SubscriptionCheck } from "@/components/subscription-check"
+import { Header } from "@/components/header"
 import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -68,8 +69,13 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Consistent header with landing page */}
+    <div className="min-h-screen flex flex-col">
+      {/* Header for desktop */}
+      <div className="hidden md:block">
+        <Header />
+      </div>
+      
+      {/* Mobile header */}
       <div className="md:hidden fixed top-0 left-0 w-full h-16 z-40 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 text-white">
         <button
           className="p-2 rounded-full hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-colors"
@@ -89,6 +95,8 @@ export default function DashboardPage() {
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>
+      
+      <div className="flex flex-1">
       <Sidebar 
         mobileOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 
@@ -97,7 +105,7 @@ export default function DashboardPage() {
         onCollapseChange={setSidebarCollapsed}
       />
       <main
-        className="flex-1 flex flex-col pt-16 transition-all duration-300 w-full md:ml-16 ml-0"
+        className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-16 ml-0"
         role="main"
         aria-live="polite"
       >
@@ -141,6 +149,7 @@ export default function DashboardPage() {
           )}
         </div>
       </main>
+      </div>
     </div>
   )
 } 
