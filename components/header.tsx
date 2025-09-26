@@ -43,17 +43,21 @@ export function Header() {
 
           {/* Action Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button 
-              variant="outline" 
-              className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 text-sm font-medium px-6 py-2 rounded-lg"
-            >
-              Log In
-            </Button>
-            <Button 
-              className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black text-sm font-medium px-6 py-2 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] rounded-lg"
-            >
-              Sign Up
-            </Button>
+            <Link href="/sign-in">
+              <Button 
+                variant="outline" 
+                className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 text-sm font-medium px-6 py-2 rounded-lg"
+              >
+                Log In
+              </Button>
+            </Link>
+            <Link href="/sign-up">
+              <Button 
+                className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black text-sm font-medium px-6 py-2 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] rounded-lg"
+              >
+                Sign Up
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -107,17 +111,21 @@ export function Header() {
                 CONTACT
               </Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-zinc-800">
-                <Button 
-                  variant="outline" 
-                  className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 justify-start text-sm font-medium rounded-lg"
-                >
-                  Log In
-                </Button>
-                <Button 
-                  className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black justify-start text-sm font-medium transition-all duration-300 rounded-lg"
-                >
-                  Sign Up
-                </Button>
+                <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
+                  <Button 
+                    variant="outline" 
+                    className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 justify-start text-sm font-medium rounded-lg w-full"
+                  >
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
+                  <Button 
+                    className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black justify-start text-sm font-medium transition-all duration-300 rounded-lg w-full"
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
               </div>
             </nav>
           </div>
