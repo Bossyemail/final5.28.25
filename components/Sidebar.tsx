@@ -38,7 +38,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
         />
         {/* Sidebar Drawer */}
         <aside
-          className="fixed left-0 top-0 h-full w-16 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-zinc-900 border-r border-zinc-800 backdrop-blur-sm"
+          className="fixed left-0 top-16 h-full w-16 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-zinc-900 border-r border-zinc-800 backdrop-blur-sm"
           tabIndex={-1}
         >
           <nav className="flex-1 py-2 px-1">
@@ -116,7 +116,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
       </button>
       {/* Desktop sidebar */}
       <aside
-        className="hidden md:flex fixed top-0 left-0 h-full w-16 shadow-lg flex-col justify-start z-20 transition-all duration-300 p-0 bg-zinc-900 border-r border-zinc-800 text-zinc-300"
+        className="hidden md:flex fixed top-16 left-0 h-full w-16 shadow-lg flex-col justify-start z-20 transition-all duration-300 p-0 bg-zinc-900 border-r border-zinc-800 text-zinc-300"
         aria-label="Sidebar"
         role="navigation"
       >

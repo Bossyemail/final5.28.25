@@ -13,7 +13,7 @@ export function Header() {
   return (
     <header className="w-full bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-14 lg:h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <img src="/transparent 2.png" alt="BossyEmail" className="h-8 w-8" />

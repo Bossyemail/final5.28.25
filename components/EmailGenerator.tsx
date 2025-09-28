@@ -322,7 +322,7 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] border border-zinc-200 rounded-lg shadow-sm">
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh]">
       <div className="flex-1 overflow-y-auto pb-4">
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
@@ -617,7 +617,7 @@ export function EmailGenerator() {
         )}
       </div>
       {/* Sticky input at bottom */}
-      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] border border-zinc-200 dark:border-[#616161] rounded-[2.5rem] px-6 pt-5 pb-6 shadow-sm" style={{ minHeight: 140, maxWidth: '100%' }}>
+      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] rounded-[2.5rem] px-6 pt-5 pb-6" style={{ minHeight: 140, maxWidth: '100%' }}>
         {/* Prompt input on top */}
         <textarea
           className="w-full px-2 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"

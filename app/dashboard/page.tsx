@@ -105,7 +105,7 @@ export default function DashboardPage() {
         onCollapseChange={setSidebarCollapsed}
       />
       <main
-        className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-16 ml-0"
+        className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-16 ml-0 pt-4"
         role="main"
         aria-live="polite"
       >
