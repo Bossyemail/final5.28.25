@@ -522,7 +522,53 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] shadow-none">
+    <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
+      {/* Conversation Sidebar */}
+      <div className="hidden md:flex w-64 bg-white border-r border-zinc-200 flex-col">
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-zinc-200">
+          <button
+            onClick={createNewConversation}
+            className="w-full flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            New Conversation
+          </button>
+        </div>
+        
+        {/* Conversation List */}
+        <div className="flex-1 overflow-y-auto">
+          {conversations.length === 0 ? (
+            <div className="p-4 text-center text-zinc-500 text-sm">
+              No conversations yet
+            </div>
+          ) : (
+            <div className="p-2">
+              {conversations.map((conversation) => (
+                <button
+                  key={conversation.id}
+                  onClick={() => switchConversation(conversation.id)}
+                  className={`w-full text-left p-3 rounded-lg mb-1 transition-colors ${
+                    currentConversationId === conversation.id
+                      ? 'bg-zinc-100 border border-zinc-300'
+                      : 'hover:bg-zinc-50'
+                  }`}
+                >
+                  <div className="text-sm font-medium text-zinc-900 truncate">
+                    {conversation.title}
+                  </div>
+                  <div className="text-xs text-zinc-500 mt-1">
+                    {conversation.messages.length} messages
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Main Chat Area */}
+      <div className="flex-1 max-w-3xl mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col shadow-none">
       <div className="flex-1 overflow-y-auto pb-4">
         
         {/* Pinned section */}
@@ -937,24 +983,25 @@ export function EmailGenerator() {
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Go"}
         </button>
         </form>
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .prose, .prose-invert, .prose-zinc {
-            font-size: 1.05em !important;
+        <style jsx global>{`
+          @media (max-width: 640px) {
+            .prose, .prose-invert, .prose-zinc {
+              font-size: 1.05em !important;
+            }
+            .rounded-xl {
+              border-radius: 1.2em !important;
+            }
+            .p-2, .px-4, .py-3 {
+              padding: 0.9em !important;
+            }
+            .icon-button, .rounded-full, button {
+              min-width: 44px;
+              min-height: 44px;
+              font-size: 1.1em;
+            }
           }
-          .rounded-xl {
-            border-radius: 1.2em !important;
-          }
-          .p-2, .px-4, .py-3 {
-            padding: 0.9em !important;
-          }
-          .icon-button, .rounded-full, button {
-            min-width: 44px;
-            min-height: 44px;
-            font-size: 1.1em;
-          }
-        }
-      `}</style>
+        `}</style>
+      </div>
     </div>
   );
 } 
