@@ -93,6 +93,7 @@ export function EmailGenerator() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Initialize voice recognition
   useEffect(() => {
@@ -524,9 +525,19 @@ export function EmailGenerator() {
   return (
     <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
       {/* Conversation Sidebar */}
-      <div className="hidden md:flex w-64 bg-white border-r border-zinc-200 flex-col">
+      <div className={`hidden md:flex ${sidebarCollapsed ? 'w-0' : 'w-64'} bg-white border-r border-zinc-200 flex-col transition-all duration-300 overflow-hidden`}>
         {/* Sidebar Header */}
         <div className="p-4 border-b border-zinc-200">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-zinc-700">Conversations</h3>
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1 hover:bg-zinc-100 rounded transition-colors"
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+            </button>
+          </div>
           <button
             onClick={createNewConversation}
             className="w-full flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
@@ -569,6 +580,18 @@ export function EmailGenerator() {
       
       {/* Main Chat Area */}
       <div className="flex-1 max-w-3xl mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col shadow-none">
+        {/* Sidebar Toggle Button (when collapsed) */}
+        {sidebarCollapsed && (
+          <div className="absolute left-4 top-4 z-10">
+            <button
+              onClick={() => setSidebarCollapsed(false)}
+              className="p-2 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition-colors"
+              title="Show conversations"
+            >
+              <MessageSquare className="w-4 h-4 text-zinc-600" />
+            </button>
+          </div>
+        )}
       <div className="flex-1 overflow-y-auto pb-4">
         
         {/* Pinned section */}
@@ -743,17 +766,6 @@ export function EmailGenerator() {
           </div>
         )}
 
-        {/* Streaming content */}
-        {isStreaming && streamingContent && (
-          <div className="flex justify-start mb-4">
-            <div className="rounded-xl px-4 py-3 bg-zinc-100 border border-zinc-200 max-w-[80%]">
-              <div className="text-sm text-zinc-600 whitespace-pre-wrap">
-                {streamingContent}
-                <span className="animate-pulse">|</span>
-              </div>
-            </div>
-          </div>
-        )}
         
         {filteredMessages.map((msg, idx) => (
           <div
