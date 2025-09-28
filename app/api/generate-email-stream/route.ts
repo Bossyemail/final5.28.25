@@ -62,38 +62,62 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Create a readable stream
+    // Create a readable stream that properly handles OpenAI streaming
     const stream = new ReadableStream({
-      start(controller) {
+      async start(controller) {
         const reader = response.body?.getReader();
         if (!reader) {
-          controller.close();
+          controller.error('No response body from OpenAI');
           return;
         }
 
-        const pump = async () => {
-          try {
-            while (true) {
-              const { done, value } = await reader.read();
-              if (done) {
-                controller.close();
-                break;
-              }
-              controller.enqueue(value);
-            }
-          } catch (error) {
-            controller.error(error);
-          }
-        };
+        const decoder = new TextDecoder();
+        let buffer = '';
 
-        pump();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // Process chunks that might contain multiple SSE events
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                const data = line.substring(6);
+                if (data === '[DONE]') {
+                  controller.close();
+                  return;
+                }
+                try {
+                  const json = JSON.parse(data);
+                  const content = json.choices?.[0]?.delta?.content || '';
+                  if (content) {
+                    controller.enqueue(new TextEncoder().encode(content));
+                  }
+                } catch (e) {
+                  console.error('Failed to parse SSE data:', e);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Streaming read error:', error);
+          controller.error(error);
+        } finally {
+          reader.releaseLock();
+          controller.close();
+        }
       },
     });
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
         'Connection': 'keep-alive',
       },
     });

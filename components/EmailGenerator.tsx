@@ -242,6 +242,30 @@ export function EmailGenerator() {
             // Continue streaming until we have complete JSON
           }
         }
+
+        // If we didn't get JSON, try to extract subject and body from the content
+        if (!subject || !body) {
+          const lines = fullContent.split('\n');
+          let subjectLine = '';
+          let bodyStart = -1;
+          
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i].toLowerCase().includes('subject:')) {
+              subjectLine = lines[i].replace(/subject:\s*/i, '').trim();
+              bodyStart = i + 1;
+              break;
+            }
+          }
+          
+          if (subjectLine && bodyStart > 0) {
+            subject = subjectLine;
+            body = lines.slice(bodyStart).join('\n').trim();
+          } else {
+            // Fallback: use the full content as body
+            subject = 'Email Response';
+            body = fullContent;
+          }
+        }
       } catch (streamError) {
         console.error('Streaming error:', streamError);
         throw new Error('Error reading streaming response');
