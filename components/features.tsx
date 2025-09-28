@@ -211,12 +211,12 @@ export function Features() {
                       Our tone isn't corporate robot. It's clear, direct, and professional with just enough personality to make clients listen (and lenders answer). Emails that get opened, read, and acted on.
                     </p>
                     <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_25px_rgba(209,180,198,0.08)] transition-all duration-300 group">
-                      <div className="aspect-video bg-gradient-to-br from-zinc-700 to-zinc-600 rounded flex items-center justify-center">
-                        <div className="text-center">
-                          <Zap className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-                          <p className="text-zinc-300 text-lg font-medium">Conversion Dashboard</p>
-                          <p className="text-zinc-400 text-sm mt-2">Copy that converts and gets results</p>
-                        </div>
+                      <div className="aspect-video rounded overflow-hidden">
+                        <img 
+                          src="/conversion-image.jpg" 
+                          alt="Conversion-First Copy Dashboard" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                   </div>
