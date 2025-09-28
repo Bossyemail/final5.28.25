@@ -131,12 +131,12 @@ export function Features() {
                       Forget "Dear Sir/Madam." BossyEmail comes preloaded with 100+ plug-and-play email templates written for the chaos of contract-to-close. Inspection drama? Low appraisal? Ghosting client? We've got a draft ready.
                     </p>
                     <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_25px_rgba(209,180,198,0.08)] transition-all duration-300 group">
-                      <div className="aspect-video bg-gradient-to-br from-zinc-700 to-zinc-600 rounded flex items-center justify-center">
-                        <div className="text-center">
-                          <Copy className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-                          <p className="text-zinc-300 text-lg font-medium">Template Library Dashboard</p>
-                          <p className="text-zinc-400 text-sm mt-2">Browse and manage email templates</p>
-                        </div>
+                      <div className="aspect-video rounded overflow-hidden">
+                        <img 
+                          src="/templates.jpeg" 
+                          alt="Template Library Dashboard" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                   </div>
@@ -171,12 +171,12 @@ export function Features() {
                       Other email tools spit out fluff. BossyEmail speaks agent. It pulls from real contracts, addenda, and scenarios, so what you send actually makes sense (and gets a response instead of a delete).
                     </p>
                     <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_25px_rgba(209,180,198,0.08)] transition-all duration-300 group">
-                      <div className="aspect-video bg-gradient-to-br from-zinc-700 to-zinc-600 rounded flex items-center justify-center">
-                        <div className="text-center">
-                          <Sparkles className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-                          <p className="text-zinc-300 text-lg font-medium">AI Real Estate Dashboard</p>
-                          <p className="text-zinc-400 text-sm mt-2">Smart AI that understands real estate</p>
-                        </div>
+                      <div className="aspect-video rounded overflow-hidden">
+                        <img 
+                          src="/favorites.jpeg" 
+                          alt="AI Real Estate Dashboard" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                   </div>
