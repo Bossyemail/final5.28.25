@@ -500,28 +500,6 @@ export function EmailGenerator() {
   return (
     <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] shadow-none">
       <div className="flex-1 overflow-y-auto pb-4">
-        {/* Suggested prompts when no messages */}
-        {messages.length === 0 && (
-          <div className="mb-8">
-            <div className="text-sm font-medium text-zinc-500 mb-4">Try these prompts:</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {[
-                "Write a follow-up email about missing documents",
-                "Draft a credit request for $5,000",
-                "Create a closing congratulations message",
-                "Write an inspection reminder email"
-              ].map((suggestion, index) => (
-                <button
-                  key={index}
-                  onClick={() => setPrompt(suggestion)}
-                  className="text-left p-3 rounded-lg border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-colors text-sm text-zinc-700 hover:text-zinc-900"
-                >
-                  {suggestion}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
         
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
