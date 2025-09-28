@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin } from "lucide-react";
+import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin, Mic, MicOff, MessageSquare, Plus } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import {
   DropdownMenu,
@@ -85,6 +85,41 @@ export function EmailGenerator() {
   const touchEndX = useRef<number | null>(null);
   const [pinned, setPinned] = useState<Record<string, boolean>>({});
   const [searchChat, setSearchChat] = useState("");
+  
+  // New features
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingContent, setStreamingContent] = useState("");
+  const [conversations, setConversations] = useState<Array<{id: string, title: string, messages: ChatMessage[]}>>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+
+  // Initialize voice recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setPrompt(transcript);
+        setIsListening(false);
+      };
+      
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      
+      setRecognition(recognition);
+    }
+  }, []);
 
   // Animated placeholder effect
   useEffect(() => {
@@ -133,6 +168,9 @@ export function EmailGenerator() {
     }
     setLoading(true);
     setError("");
+    setIsStreaming(true);
+    setStreamingContent("");
+    
     try {
       // Add user message to thread
       const userMsg: ChatMessage = {
@@ -141,31 +179,82 @@ export function EmailGenerator() {
         content: prompt,
         timestamp: Date.now(),
       };
-      setMessages(prev => [...prev, userMsg]);
-      // Call API
-      const res = await fetch("/api/generate-email", {
+      const newMessages = [...messages, userMsg];
+      setMessages(newMessages);
+      updateCurrentConversation(newMessages);
+
+      // Create AI message placeholder for streaming
+      const aiMsgId = `${Date.now()}-ai`;
+      const aiMsg: ChatMessage = {
+        id: aiMsgId,
+        type: 'ai',
+        content: '',
+        subject: '',
+        body: '',
+        timestamp: Date.now(),
+      };
+      const messagesWithAI = [...newMessages, aiMsg];
+      setMessages(messagesWithAI);
+
+      // Call streaming API
+      const res = await fetch("/api/generate-email-stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, tone, recipient, sender }),
       });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      // Add AI message to thread
-      const aiMsg: ChatMessage = {
-        id: `${Date.now()}-ai`,
-        type: 'ai',
-        content: `Subject: ${data.subject || ''}\n\n${data.body || ''}`,
-        subject: data.subject || '',
-        body: data.body || '',
-          timestamp: Date.now(),
+
+      if (!res.ok) {
+        throw new Error('Failed to generate email');
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('No response body');
+
+      let fullContent = '';
+      let subject = '';
+      let body = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = new TextDecoder().decode(value);
+        fullContent += chunk;
+        setStreamingContent(fullContent);
+
+        // Try to parse JSON when we have complete content
+        try {
+          const parsed = JSON.parse(fullContent);
+          if (parsed.subject && parsed.body) {
+            subject = parsed.subject;
+            body = parsed.body;
+            break;
+          }
+        } catch (e) {
+          // Continue streaming until we have complete JSON
+        }
+      }
+
+      // Update the AI message with final content
+      const finalAiMsg: ChatMessage = {
+        ...aiMsg,
+        content: `Subject: ${subject}\n\n${body}`,
+        subject,
+        body,
       };
-      setMessages(prev => [...prev, aiMsg]);
+
+      const finalMessages = [...newMessages, finalAiMsg];
+      setMessages(finalMessages);
+      updateCurrentConversation(finalMessages);
+      
       await incrementUsage();
       setPrompt("");
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
+      setIsStreaming(false);
+      setStreamingContent("");
     }
   }
 
@@ -211,6 +300,52 @@ export function EmailGenerator() {
   function handleEditCancel() {
     setIsEditing(false);
   }
+
+  // Voice input functions
+  const startListening = () => {
+    if (recognition) {
+      setIsListening(true);
+      recognition.start();
+    }
+  };
+
+  const stopListening = () => {
+    if (recognition) {
+      recognition.stop();
+      setIsListening(false);
+    }
+  };
+
+  // Conversation management
+  const createNewConversation = () => {
+    const newId = Date.now().toString();
+    const newConversation = {
+      id: newId,
+      title: "New Conversation",
+      messages: []
+    };
+    setConversations(prev => [newConversation, ...prev]);
+    setCurrentConversationId(newId);
+    setMessages([]);
+  };
+
+  const switchConversation = (conversationId: string) => {
+    const conversation = conversations.find(c => c.id === conversationId);
+    if (conversation) {
+      setCurrentConversationId(conversationId);
+      setMessages(conversation.messages);
+    }
+  };
+
+  const updateCurrentConversation = (newMessages: ChatMessage[]) => {
+    if (currentConversationId) {
+      setConversations(prev => prev.map(conv => 
+        conv.id === currentConversationId 
+          ? { ...conv, messages: newMessages, title: newMessages[0]?.content?.slice(0, 30) + "..." || "New Conversation" }
+          : conv
+      ));
+    }
+  };
 
   function handlePromptClear() {
     setPrompt("");
@@ -322,8 +457,65 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] shadow-none">
+    <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
+      {/* Conversation Sidebar */}
+      <div className="w-64 bg-zinc-100 border-r border-zinc-200 flex flex-col">
+        <div className="p-4 border-b border-zinc-200">
+          <button
+            onClick={createNewConversation}
+            className="w-full flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            New Conversation
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-2">
+          {conversations.map((conv) => (
+            <button
+              key={conv.id}
+              onClick={() => switchConversation(conv.id)}
+              className={`w-full text-left p-3 rounded-lg mb-2 transition-colors ${
+                currentConversationId === conv.id 
+                  ? 'bg-zinc-200 text-zinc-900' 
+                  : 'hover:bg-zinc-100 text-zinc-600'
+              }`}
+            >
+              <div className="font-medium text-sm truncate">{conv.title}</div>
+              <div className="text-xs text-zinc-500 mt-1">
+                {conv.messages.length} messages
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col h-full shadow-none">
       <div className="flex-1 overflow-y-auto pb-4">
+        {/* Suggested prompts when no messages */}
+        {messages.length === 0 && (
+          <div className="mb-8">
+            <div className="text-sm font-medium text-zinc-500 mb-4">Try these prompts:</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                "Write a follow-up email about missing documents",
+                "Draft a credit request for $5,000",
+                "Create a closing congratulations message",
+                "Write an inspection reminder email"
+              ].map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => setPrompt(suggestion)}
+                  className="text-left p-3 rounded-lg border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 transition-colors text-sm text-zinc-700 hover:text-zinc-900"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
           <div className="mb-6">
@@ -430,6 +622,18 @@ export function EmailGenerator() {
                             className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
                             style={{ width: 36, height: 36 }}
                             onClick={() => {
+                              setPrompt(msg.content.split('\n\n')[0] || '');
+                              handleGenerate();
+                            }}
+                            title="Regenerate"
+                            type="button"
+                          >
+                            <RefreshCw className="w-5 h-5" />
+                          </button>
+                          <button
+                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            style={{ width: 36, height: 36 }}
+                            onClick={() => {
                               setMessages(prev => prev.filter(m => m.id !== msg.id));
                             }}
                             title="Delete"
@@ -467,9 +671,35 @@ export function EmailGenerator() {
         )}
         
         {/* Main chat thread (filtered) */}
-        {filteredMessages.length === 0 && (
+        {filteredMessages.length === 0 && !loading && (
           <div className="text-center text-zinc-400 mt-12">No messages yet. Start by entering a prompt below.</div>
         )}
+        
+        {/* Loading indicator */}
+        {loading && !isStreaming && (
+          <div className="flex justify-start mb-4">
+            <div className="rounded-xl px-4 py-3 bg-zinc-100 border border-zinc-200">
+              <div className="flex items-center space-x-1">
+                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Streaming content */}
+        {isStreaming && streamingContent && (
+          <div className="flex justify-start mb-4">
+            <div className="rounded-xl px-4 py-3 bg-zinc-100 border border-zinc-200 max-w-[80%]">
+              <div className="text-sm text-zinc-600 whitespace-pre-wrap">
+                {streamingContent}
+                <span className="animate-pulse">|</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {filteredMessages.map((msg, idx) => (
           <div
             key={msg.id}
@@ -620,53 +850,75 @@ export function EmailGenerator() {
       <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] rounded-[2.5rem] px-6 pt-5 pb-6 border border-black" style={{ minHeight: 140, maxWidth: '100%' }}>
         {/* Prompt input on top */}
         <textarea
-          className="w-full px-2 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"
-          placeholder={typing || placeholder || 'Ask anything'}
+          className="w-full px-4 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"
+          placeholder={typing || placeholder || 'Message BossyEmail...'}
           value={prompt}
           onChange={e => {
             setPrompt(e.target.value);
             e.target.style.height = 'auto';
-            e.target.style.height = e.target.scrollHeight + 'px';
+            e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+          }}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleGenerate();
+            }
           }}
           required
           rows={1}
-          style={{ minWidth: 120, minHeight: 48, maxHeight: 180, borderRadius: '0.75rem' }}
+          style={{ minWidth: 120, minHeight: 48, maxHeight: 200, borderRadius: '0.75rem' }}
         />
         {/* Dropdowns row */}
-        <div className="flex flex-row gap-3 items-center" style={{ paddingBottom: 0 }}>
-          <div className="relative">
+        <div className="flex flex-row gap-2 items-center flex-wrap justify-between" style={{ paddingBottom: 0 }}>
+          <div className="flex flex-row gap-2 items-center flex-wrap">
+          <div className="relative flex-shrink-0">
             <select
               value={sender}
               onChange={e => setSender(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
             >
               <option value="" className="font-bold">From</option>
               {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
             </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
+            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
               value={recipient}
               onChange={e => setRecipient(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
             >
               <option value="" className="font-bold">To</option>
               {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
             </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
+            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
           </div>
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <select
               value={tone}
               onChange={e => setTone(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-4 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition w-[110px]"
+              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
             >
               <option value="" className="font-bold">Tone</option>
               {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
             </select>
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400">▼</span>
+            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
           </div>
+          </div>
+          
+          {/* Voice Input Button */}
+          <button
+            type="button"
+            onClick={isListening ? stopListening : startListening}
+            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+              isListening 
+                ? 'bg-red-500 text-white animate-pulse' 
+                : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-600'
+            }`}
+            title={isListening ? 'Stop listening' : 'Start voice input'}
+          >
+            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          </button>
         </div>
         {/* Circular Go button at bottom right */}
         <button
@@ -675,9 +927,11 @@ export function EmailGenerator() {
           disabled={loading || !prompt}
           style={{ minWidth: 48, minHeight: 48 }}
         >
-          Go
+          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Go"}
         </button>
-      </form>
+        </form>
+        </div>
+      </div>
       <style jsx global>{`
         @media (max-width: 640px) {
           .prose, .prose-invert, .prose-zinc {
