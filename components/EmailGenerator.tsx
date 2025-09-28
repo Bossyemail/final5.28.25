@@ -876,8 +876,7 @@ export function EmailGenerator() {
           style={{ minWidth: 120, minHeight: 48, maxHeight: 200, borderRadius: '0.75rem' }}
         />
         {/* Dropdowns row */}
-        <div className="flex flex-row gap-2 items-center flex-wrap justify-between" style={{ paddingBottom: 0 }}>
-          <div className="flex flex-row gap-2 items-center flex-wrap">
+        <div className="flex flex-row gap-2 items-center flex-wrap mb-4 pr-16" style={{ paddingBottom: 0 }}>
           <div className="relative flex-shrink-0">
             <select
               value={sender}
@@ -911,13 +910,12 @@ export function EmailGenerator() {
             </select>
             <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
           </div>
-          </div>
           
           {/* Voice Input Button */}
           <button
             type="button"
             onClick={isListening ? stopListening : startListening}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors flex-shrink-0 ${
               isListening 
                 ? 'bg-red-500 text-white animate-pulse' 
                 : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-600'
@@ -930,7 +928,7 @@ export function EmailGenerator() {
         {/* Circular Go button at bottom right */}
         <button
           type="submit"
-          className="absolute bottom-6 right-6 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg hover:brightness-110 transition disabled:opacity-60"
+          className="absolute bottom-4 right-4 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg hover:brightness-110 transition disabled:opacity-60 z-10"
           disabled={loading || !prompt}
           style={{ minWidth: 48, minHeight: 48 }}
         >
