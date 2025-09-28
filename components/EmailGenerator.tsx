@@ -322,7 +322,7 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh]">
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] shadow-none">
       <div className="flex-1 overflow-y-auto pb-4">
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
@@ -617,7 +617,7 @@ export function EmailGenerator() {
         )}
       </div>
       {/* Sticky input at bottom */}
-      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] rounded-[2.5rem] px-6 pt-5 pb-6" style={{ minHeight: 140, maxWidth: '100%' }}>
+      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] rounded-[2.5rem] px-6 pt-5 pb-6 border border-black" style={{ minHeight: 140, maxWidth: '100%' }}>
         {/* Prompt input on top */}
         <textarea
           className="w-full px-2 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"
@@ -671,7 +671,7 @@ export function EmailGenerator() {
         {/* Circular Go button at bottom right */}
         <button
           type="submit"
-          className="absolute bottom-6 right-6 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg shadow-none hover:brightness-110 transition disabled:opacity-60"
+          className="absolute bottom-6 right-6 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg hover:brightness-110 transition disabled:opacity-60"
           disabled={loading || !prompt}
           style={{ minWidth: 48, minHeight: 48 }}
         >
