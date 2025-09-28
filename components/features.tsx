@@ -91,12 +91,12 @@ export function Features() {
                       Why waste an hour "perfecting" an email? Drop in a few details, click generate, and watch BossyEmail hand you a polished draft faster than your client can say "Can we see it tonight?"
                     </p>
                     <div className="bg-zinc-800 rounded-lg p-6 border border-zinc-700 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_25px_rgba(209,180,198,0.08)] transition-all duration-300 group">
-                      <div className="aspect-video bg-gradient-to-br from-zinc-700 to-zinc-600 rounded flex items-center justify-center">
-                        <div className="text-center">
-                          <Mail className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
-                          <p className="text-zinc-300 text-lg font-medium">Email Generation Dashboard</p>
-                          <p className="text-zinc-400 text-sm mt-2">Live email creation interface</p>
-                        </div>
+                      <div className="aspect-video rounded overflow-hidden">
+                        <img 
+                          src="/smart-email-generator.jpg" 
+                          alt="Smart Email Generator Dashboard" 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     </div>
                   </div>
