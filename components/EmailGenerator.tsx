@@ -97,27 +97,32 @@ export function EmailGenerator() {
   // Initialize voice recognition
   useEffect(() => {
     if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setPrompt(transcript);
-        setIsListening(false);
-      };
-      
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-      
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-      
-      setRecognition(recognition);
+      try {
+        const SpeechRecognition = (window as any).webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+        
+        recognition.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setPrompt(transcript);
+          setIsListening(false);
+        };
+        
+        recognition.onerror = (event: any) => {
+          console.log('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+        
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+        
+        setRecognition(recognition);
+      } catch (error) {
+        console.log('Speech recognition not supported:', error);
+      }
     }
   }, []);
 
@@ -171,17 +176,18 @@ export function EmailGenerator() {
     setIsStreaming(true);
     setStreamingContent("");
     
+    // Add user message to thread
+    const userMsg: ChatMessage = {
+      id: `${Date.now()}-user`,
+      type: 'user',
+      content: prompt,
+      timestamp: Date.now(),
+    };
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
+    updateCurrentConversation(newMessages);
+    
     try {
-      // Add user message to thread
-      const userMsg: ChatMessage = {
-        id: `${Date.now()}-user`,
-        type: 'user',
-        content: prompt,
-        timestamp: Date.now(),
-      };
-      const newMessages = [...messages, userMsg];
-      setMessages(newMessages);
-      updateCurrentConversation(newMessages);
 
       // Create AI message placeholder for streaming
       const aiMsgId = `${Date.now()}-ai`;
@@ -204,7 +210,8 @@ export function EmailGenerator() {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to generate email');
+        const errorText = await res.text();
+        throw new Error(`Failed to generate email: ${errorText}`);
       }
 
       const reader = res.body?.getReader();
@@ -214,25 +221,30 @@ export function EmailGenerator() {
       let subject = '';
       let body = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        const chunk = new TextDecoder().decode(value);
-        fullContent += chunk;
-        setStreamingContent(fullContent);
+          const chunk = new TextDecoder().decode(value);
+          fullContent += chunk;
+          setStreamingContent(fullContent);
 
-        // Try to parse JSON when we have complete content
-        try {
-          const parsed = JSON.parse(fullContent);
-          if (parsed.subject && parsed.body) {
-            subject = parsed.subject;
-            body = parsed.body;
-            break;
+          // Try to parse JSON when we have complete content
+          try {
+            const parsed = JSON.parse(fullContent);
+            if (parsed.subject && parsed.body) {
+              subject = parsed.subject;
+              body = parsed.body;
+              break;
+            }
+          } catch (e) {
+            // Continue streaming until we have complete JSON
           }
-        } catch (e) {
-          // Continue streaming until we have complete JSON
         }
+      } catch (streamError) {
+        console.error('Streaming error:', streamError);
+        throw new Error('Error reading streaming response');
       }
 
       // Update the AI message with final content
@@ -250,7 +262,36 @@ export function EmailGenerator() {
       await incrementUsage();
       setPrompt("");
     } catch (err: any) {
+      console.error('Generation error:', err);
       setError(err.message || "Something went wrong.");
+      
+      // Fallback to regular API if streaming fails
+      try {
+        const fallbackRes = await fetch("/api/generate-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, tone, recipient, sender }),
+        });
+        const fallbackData = await fallbackRes.json();
+        if (fallbackData.error) throw new Error(fallbackData.error);
+        
+        const fallbackAiMsg: ChatMessage = {
+          id: `${Date.now()}-ai`,
+          type: 'ai',
+          content: `Subject: ${fallbackData.subject || ''}\n\n${fallbackData.body || ''}`,
+          subject: fallbackData.subject || '',
+          body: fallbackData.body || '',
+          timestamp: Date.now(),
+        };
+        
+        const fallbackMessages = [...newMessages, fallbackAiMsg];
+        setMessages(fallbackMessages);
+        updateCurrentConversation(fallbackMessages);
+        setError("");
+      } catch (fallbackErr: any) {
+        console.error('Fallback error:', fallbackErr);
+        setError(fallbackErr.message || "Failed to generate email");
+      }
     } finally {
       setLoading(false);
       setIsStreaming(false);
@@ -457,41 +498,7 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
-      {/* Conversation Sidebar */}
-      <div className="w-64 bg-zinc-100 border-r border-zinc-200 flex flex-col">
-        <div className="p-4 border-b border-zinc-200">
-          <button
-            onClick={createNewConversation}
-            className="w-full flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Conversation
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-2">
-          {conversations.map((conv) => (
-            <button
-              key={conv.id}
-              onClick={() => switchConversation(conv.id)}
-              className={`w-full text-left p-3 rounded-lg mb-2 transition-colors ${
-                currentConversationId === conv.id 
-                  ? 'bg-zinc-200 text-zinc-900' 
-                  : 'hover:bg-zinc-100 text-zinc-600'
-              }`}
-            >
-              <div className="font-medium text-sm truncate">{conv.title}</div>
-              <div className="text-xs text-zinc-500 mt-1">
-                {conv.messages.length} messages
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
-        <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col h-full shadow-none">
+    <div className="max-w-3xl w-full mx-auto font-sans px-2 sm:px-4 md:px-6 bg-gradient-to-br from-zinc-50 via-white to-zinc-100 text-zinc-900 flex flex-col h-[80vh] shadow-none">
       <div className="flex-1 overflow-y-auto pb-4">
         {/* Suggested prompts when no messages */}
         {messages.length === 0 && (
@@ -930,8 +937,6 @@ export function EmailGenerator() {
           {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Go"}
         </button>
         </form>
-        </div>
-      </div>
       <style jsx global>{`
         @media (max-width: 640px) {
           .prose, .prose-invert, .prose-zinc {
