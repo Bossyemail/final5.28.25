@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { TrialButton } from "@/components/trial-button"
-import { Star, CheckCircle, Bell, ArrowRight, Play } from "lucide-react"
+import { Star, CheckCircle, Bell, ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 import { TryGeneratorCTA } from "./try-generator-cta"
 import Link from "next/link"
@@ -79,21 +79,16 @@ export function Hero() {
                 <div className="absolute inset-2 bg-gradient-to-br from-[#D1B4C6]/8 via-transparent to-transparent rounded-xl"></div>
                 
                 {/* Video content area */}
-                <div className="relative aspect-video bg-gradient-to-br from-zinc-700/80 to-zinc-800/80 rounded-xl m-2 md:m-4 flex items-center justify-center">
-                  {/* Play button with enhanced effects */}
-                  <motion.button 
-                    className="w-12 h-12 md:w-16 md:h-16 bg-[#D1B4C6] rounded-full flex items-center justify-center hover:bg-[#C4A7B9] transition-all duration-300 shadow-[0_0_30px_rgba(209,180,198,0.5)] hover:shadow-[0_0_40px_rgba(209,180,198,0.7)]"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
+                <div className="relative aspect-video rounded-xl m-2 md:m-4 overflow-hidden">
+                  <video 
+                    className="w-full h-full object-cover rounded-lg"
+                    controls
+                    preload="metadata"
+                    poster="/og-image.png"
                   >
-                    <Play className="w-4 h-4 md:w-6 md:h-6 text-black ml-0.5" fill="currentColor" />
-                  </motion.button>
-                  
-                  {/* Video label */}
-                  <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6 text-zinc-300 text-xs md:text-sm font-medium">
-                    <p>Product Demo Video</p>
-                    <p className="text-zinc-400 text-xs mt-1">See BossyEmail in action</p>
-                  </div>
+                    <source src="/bossyemail-vsl.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               </div>
               
