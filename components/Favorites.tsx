@@ -33,10 +33,19 @@ const CONTRACT_STAGES = {
   TITLE: "Title",
   PRE_CLOSING: "Pre-Closing",
   CLOSING: "Closing",
-  POST_CLOSING: "Post-Closing",
+  POST_CLOSING_COMPLETION: "Post-Closing & File Completion",
   SOUTH_FLORIDA: "South Florida",
   TC_TOOLS: "TC Tools",
-  DIFFICULT_CONVERSATIONS: "Difficult Conversations"
+  DIFFICULT_CONVERSATIONS: "Difficult Conversations",
+  LEAD_GENERATION: "Lead Generation & First Contact",
+  BUYER_COMMUNICATION: "Buyer Communication",
+  SELLER_COMMUNICATION: "Seller Communication",
+  TRANSACTION_COORDINATION: "Transaction Coordination",
+  REPAIRS_NEGOTIATIONS: "Repairs, Negotiations & Extensions",
+  TITLE_ASSOCIATION: "Title, Association & Closing Coordination",
+  CLOSING_WEEK: "Closing Week",
+  COMPLIANCE_DOCUMENTS: "Compliance & Document Requests",
+  REACTIVATION_NURTURE: "Reactivation & Past Client Nurture"
 } as const;
 
 export function Favorites() {
