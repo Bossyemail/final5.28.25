@@ -21,6 +21,7 @@ const MOCK_FAVORITES = [
   },
 ];
 
+// Updated CONTRACT_STAGES with all categories
 const CONTRACT_STAGES = {
   LISTING: "Listing",
   OFFER_STAGE: "Offer Stage",
