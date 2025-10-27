@@ -35,14 +35,15 @@ const CONTRACT_STAGES = {
   CLOSING: "Closing",
   POST_CLOSING: "Post-Closing",
   SOUTH_FLORIDA: "South Florida",
-  TC_TOOLS: "TC Tools"
+  TC_TOOLS: "TC Tools",
+  DIFFICULT_CONVERSATIONS: "Difficult Conversations"
 } as const;
 
 export function Favorites() {
   const { subscription } = useSubscription();
   const { user } = useUser();
   const isAdmin = user?.publicMetadata?.isAdmin === true;
-  const isRoyalty = subscription?.priceId === 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+  const isRoyalty = subscription?.priceId === 'price_1SMfAgEApsNPWe3P2oUBGwvg';
   const hasFullAccess = isRoyalty || isAdmin;
 
   if (!hasFullAccess) {
@@ -299,7 +300,7 @@ export function Favorites() {
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAddModal(false)}>
             <div
-              className="bg-white dark:bg-[#424242] rounded-2xl shadow-xl w-full max-w-xl p-8 relative flex flex-col"
+              className="bg-white dark:bg-[#424242] rounded-2xl shadow-xl w-full max-w-xl p-8 relative flex flex-col max-h-[90vh] overflow-y-auto"
               style={{ fontFamily: 'Inter, sans-serif', maxWidth: 600 }}
               onClick={e => e.stopPropagation()}
             >
@@ -349,9 +350,10 @@ export function Favorites() {
                   <textarea
                     value={newTemplate.body}
                     onChange={e => setNewTemplate(t => ({ ...t, body: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black resize-none min-h-[160px]"
-                    placeholder="Email body..."
+                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black resize-y min-h-[120px] max-h-[400px]"
+                    placeholder="Email body... (drag the bottom-right corner to resize)"
                     required
+                    rows={5}
                   />
                 </div>
                 <div>
@@ -378,7 +380,7 @@ export function Favorites() {
               </form>
               {/* Live Preview */}
               {(newTemplate.subject || newTemplate.body) && (
-                <div className="mt-6 p-4 rounded-xl bg-[#EFE1E1] dark:bg-[#616161] border border-zinc-200 dark:border-[#757575]">
+                <div className="mt-6 p-4 rounded-xl bg-[#EFE1E1] dark:bg-[#616161] border border-zinc-200 dark:border-[#757575] max-h-[200px] overflow-y-auto">
                   <div className="text-xs font-semibold text-zinc-500 dark:text-[#bdbdbd] mb-1">Preview</div>
                   <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] mb-1">{newTemplate.subject || <span className="italic text-zinc-400">(No title)</span>}</div>
                   <div className="text-sm text-zinc-700 dark:text-[#e0e0e0] whitespace-pre-line">{newTemplate.body || <span className="italic text-zinc-400">(No body)</span>}</div>

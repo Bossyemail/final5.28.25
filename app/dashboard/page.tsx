@@ -84,14 +84,52 @@ export default function DashboardPage() {
         >
           <Menu className="w-6 h-6" />
         </button>
-        <div className="flex items-center gap-2">
+        
+        {/* Mobile navigation menu */}
+        <div className="flex items-center gap-1">
           <Button 
-            className="rounded-lg bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black font-medium px-4 py-2 shadow hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] transition-all duration-300"
-            style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500 }}
-            asChild
+            variant="ghost"
+            size="sm"
+            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            onClick={(e) => handleSectionLink(e, "#features")}
           >
-            <Link href="/dashboard">Dashboard</Link>
+            Features
           </Button>
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            onClick={(e) => handleSectionLink(e, "#pricing")}
+          >
+            Pricing
+          </Button>
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            onClick={(e) => handleSectionLink(e, "#faq")}
+          >
+            FAQ
+          </Button>
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            onClick={(e) => handleSectionLink(e, "#about")}
+          >
+            About
+          </Button>
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            onClick={(e) => handleSectionLink(e, "#contact")}
+          >
+            Contact
+          </Button>
+        </div>
+        
+        <div className="flex items-center gap-2">
           <UserButton afterSignOutUrl="/" />
         </div>
       </div>

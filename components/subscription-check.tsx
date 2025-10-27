@@ -39,7 +39,7 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
     }
     try {
       setIsLoading(true);
-      const priceId = selectedPlan === 'lite' ? 'price_1S9zinEApsNPWe3PwzWoZfom' : 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+      const priceId = selectedPlan === 'lite' ? 'price_1S9zinEApsNPWe3PwzWoZfom' : 'price_1SMfAgEApsNPWe3P2oUBGwvg';
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -134,7 +134,7 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
                     <div className="flex flex-col flex-1">
                       <div className="flex items-center justify-between w-full">
                         <span className="text-lg font-semibold text-black">Inbox Royalty</span>
-                        <span className="text-xl font-bold text-black">$59<span className="text-base font-normal text-zinc-700">/mo</span></span>
+                        <span className="text-xl font-bold text-black">$39<span className="text-base font-normal text-zinc-700">/mo</span></span>
                       </div>
                       <span className="text-sm text-zinc-700 mt-1">Gives you the full suite: email generator, custom and built-in templates, saved files, and more.</span>
                     </div>

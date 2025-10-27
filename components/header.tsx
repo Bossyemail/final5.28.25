@@ -5,10 +5,26 @@ import { Button } from "@/components/ui/button"
 import { ArrowUpRight } from "lucide-react"
 import { useState } from "react"
 import { useUser, UserButton } from "@clerk/nextjs"
+import { usePathname, useRouter } from "next/navigation"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { isSignedIn, user } = useUser()
+  const pathname = usePathname()
+  const router = useRouter()
+  const isDashboard = pathname.startsWith("/dashboard")
+
+  const handleSectionLink = (e: React.MouseEvent, hash: string) => {
+    e.preventDefault()
+    if (isDashboard) {
+      // If we're in dashboard, navigate to home page and then scroll to section
+      router.push("/" + hash)
+    } else {
+      // If we're on home page, scroll to section
+      const el = document.getElementById(hash.replace("#", ""))
+      if (el) el.scrollIntoView({ behavior: "smooth" })
+    }
+  }
 
   return (
     <header className="w-full bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-sm">
@@ -22,25 +38,40 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link href="#features" className="text-zinc-300 hover:text-white transition-colors text-sm font-medium">
+            <button 
+              onClick={(e) => handleSectionLink(e, "#features")}
+              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
+            >
               FEATURES
-            </Link>
+            </button>
             
-            <Link href="#pricing" className="text-zinc-300 hover:text-white transition-colors text-sm font-medium">
+            <button 
+              onClick={(e) => handleSectionLink(e, "#pricing")}
+              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
+            >
               PRICING
-            </Link>
+            </button>
             
-            <Link href="#faq" className="text-zinc-300 hover:text-white transition-colors text-sm font-medium">
+            <button 
+              onClick={(e) => handleSectionLink(e, "#faq")}
+              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
+            >
               FAQ
-            </Link>
+            </button>
             
-            <Link href="#about" className="text-zinc-300 hover:text-white transition-colors text-sm font-medium">
+            <button 
+              onClick={(e) => handleSectionLink(e, "#about")}
+              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
+            >
               ABOUT
-            </Link>
+            </button>
             
-            <Link href="#contact" className="text-zinc-300 hover:text-white transition-colors text-sm font-medium">
+            <button 
+              onClick={(e) => handleSectionLink(e, "#contact")}
+              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
+            >
               CONTACT
-            </Link>
+            </button>
           </nav>
 
           {/* Action Buttons */}
@@ -98,41 +129,51 @@ export function Header() {
         {isMenuOpen && (
           <div className="lg:hidden border-t border-zinc-800 py-4">
             <nav className="flex flex-col space-y-4">
-              <Link 
-                href="#features" 
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
+              <button 
+                onClick={(e) => {
+                  handleSectionLink(e, "#features")
+                  setIsMenuOpen(false)
+                }}
+                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
               >
                 FEATURES
-              </Link>
-              <Link 
-                href="#pricing" 
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={(e) => {
+                  handleSectionLink(e, "#pricing")
+                  setIsMenuOpen(false)
+                }}
+                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
               >
                 PRICING
-              </Link>
-              <Link 
-                href="#faq" 
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={(e) => {
+                  handleSectionLink(e, "#faq")
+                  setIsMenuOpen(false)
+                }}
+                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
               >
                 FAQ
-              </Link>
-              <Link 
-                href="#about" 
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={(e) => {
+                  handleSectionLink(e, "#about")
+                  setIsMenuOpen(false)
+                }}
+                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
               >
                 ABOUT
-              </Link>
-              <Link 
-                href="#contact" 
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
+              </button>
+              <button 
+                onClick={(e) => {
+                  handleSectionLink(e, "#contact")
+                  setIsMenuOpen(false)
+                }}
+                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
               >
                 CONTACT
-              </Link>
+              </button>
               <div className="flex flex-col space-y-2 pt-4 border-t border-zinc-800">
                 {isSignedIn ? (
                   <>

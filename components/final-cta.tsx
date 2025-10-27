@@ -92,9 +92,9 @@ export function FinalCTA() {
             viewport={{ once: true }}
           >
             <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
-              <AnimatedCounter end={2.3} duration={1.5} suffix="s" />
+              <AnimatedCounter end={5} duration={1.5} suffix="s" />
             </div>
-            <p className="text-base text-zinc-400">Average email generation time</p>
+            <p className="text-base text-zinc-400">Average Generation Time</p>
           </motion.div>
           <motion.div 
             className="text-center"
@@ -104,9 +104,9 @@ export function FinalCTA() {
             viewport={{ once: true }}
           >
             <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
-              <AnimatedCounter end={247} duration={2} suffix="+" />
+              <AnimatedCounter end={320} duration={2} suffix="+" />
             </div>
-            <p className="text-base text-zinc-400">Professional templates</p>
+            <p className="text-base text-zinc-400">Professional Email Templates</p>
           </motion.div>
           <motion.div 
             className="text-center"
@@ -118,7 +118,7 @@ export function FinalCTA() {
             <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
               <AnimatedCounter end={98} duration={1.8} suffix="%" />
             </div>
-            <p className="text-base text-zinc-400">Customer satisfaction rate</p>
+            <p className="text-base text-zinc-400">Customer Satisfaction Rate</p>
           </motion.div>
         </motion.div>
       </div>

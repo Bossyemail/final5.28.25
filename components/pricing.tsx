@@ -118,7 +118,7 @@ export function Pricing() {
             </div>
             <h3 className="text-xl font-medium text-white">Inbox Royalty</h3>
             <div className="text-left mb-6">
-              <span className="text-4xl font-bold text-white">$59</span>
+              <span className="text-4xl font-bold text-white">$39</span>
               <span className="text-zinc-400 ml-2">per month</span>
             </div>
             <ul className="space-y-3 mb-6 text-left">

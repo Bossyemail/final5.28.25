@@ -53,7 +53,7 @@ export function History() {
   const { subscription } = useSubscription();
   const { user } = useUser();
   const isAdmin = user?.publicMetadata?.isAdmin === true;
-  const isRoyalty = subscription?.priceId === 'price_1RSlGrEApsNPWe3P5R6MkIAY';
+  const isRoyalty = subscription?.priceId === 'price_1SMfAgEApsNPWe3P2oUBGwvg';
   const hasFullAccess = isRoyalty || isAdmin;
 
   if (!hasFullAccess) {

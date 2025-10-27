@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin, Mic, MicOff, MessageSquare, Plus } from "lucide-react";
+import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin, Mic, MicOff, MessageSquare, Plus, Eye, EyeOff } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import {
   DropdownMenu,
@@ -94,6 +94,7 @@ export function EmailGenerator() {
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarHidden, setSidebarHidden] = useState(false);
 
   // Initialize voice recognition
   useEffect(() => {
@@ -525,18 +526,31 @@ export function EmailGenerator() {
   return (
     <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
       {/* Conversation Sidebar */}
-      <div className={`hidden md:flex ${sidebarCollapsed ? 'w-0' : 'w-64'} bg-white border-r border-zinc-200 flex-col transition-all duration-300 overflow-hidden`}>
+      <div className={`hidden md:flex ${sidebarHidden ? 'w-0' : (sidebarCollapsed ? 'w-0' : 'w-64')} bg-white border-r border-zinc-200 flex-col transition-all duration-300 overflow-hidden`}>
         {/* Sidebar Header */}
         <div className="p-4 border-b border-zinc-200">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold text-zinc-700">Conversations</h3>
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 hover:bg-zinc-100 rounded transition-colors"
-              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setSidebarHidden(!sidebarHidden)}
+                className="p-1 hover:bg-zinc-100 rounded transition-colors"
+                title={sidebarHidden ? 'Show conversations' : 'Hide conversations'}
+              >
+                {sidebarHidden ? (
+                  <Eye className="w-4 h-4 text-zinc-500" />
+                ) : (
+                  <EyeOff className="w-4 h-4 text-zinc-500" />
+                )}
+              </button>
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-1 hover:bg-zinc-100 rounded transition-colors"
+                title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
           </div>
           <button
             onClick={createNewConversation}
@@ -578,13 +592,39 @@ export function EmailGenerator() {
         </div>
       </div>
       
+      {/* Mobile Conversation Toggle */}
+      <div className="md:hidden flex justify-center p-4 border-b border-zinc-200">
+        <button
+          onClick={() => setSidebarHidden(!sidebarHidden)}
+          className="flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors"
+        >
+          {sidebarHidden ? (
+            <>
+              <Eye className="w-4 h-4 text-zinc-600" />
+              <span className="text-sm font-medium text-zinc-700">Show Conversations</span>
+            </>
+          ) : (
+            <>
+              <EyeOff className="w-4 h-4 text-zinc-600" />
+              <span className="text-sm font-medium text-zinc-700">Hide Conversations</span>
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Main Chat Area */}
       <div className="flex-1 max-w-3xl mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col shadow-none">
-        {/* Sidebar Toggle Button (when collapsed) */}
-        {sidebarCollapsed && (
+        {/* Sidebar Toggle Button (when collapsed or hidden) */}
+        {(sidebarCollapsed || sidebarHidden) && (
           <div className="absolute left-4 top-4 z-10">
             <button
-              onClick={() => setSidebarCollapsed(false)}
+              onClick={() => {
+                if (sidebarHidden) {
+                  setSidebarHidden(false);
+                } else {
+                  setSidebarCollapsed(false);
+                }
+              }}
               className="p-2 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition-colors"
               title="Show conversations"
             >
@@ -1014,6 +1054,68 @@ export function EmailGenerator() {
           }
         `}</style>
       </div>
+
+      {/* Mobile Conversation Panel */}
+      {!sidebarHidden && (
+        <div className="md:hidden fixed inset-0 z-50 bg-white">
+          <div className="flex flex-col h-full">
+            {/* Mobile Panel Header */}
+            <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-zinc-900">Conversations</h3>
+              <button
+                onClick={() => setSidebarHidden(true)}
+                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-zinc-600" />
+              </button>
+            </div>
+            
+            {/* New Conversation Button */}
+            <div className="p-4 border-b border-zinc-200">
+              <button
+                onClick={createNewConversation}
+                className="w-full flex items-center gap-2 px-4 py-3 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+                New Conversation
+              </button>
+            </div>
+            
+            {/* Conversation List */}
+            <div className="flex-1 overflow-y-auto">
+              {conversations.length === 0 ? (
+                <div className="p-4 text-center text-zinc-500 text-sm">
+                  No conversations yet
+                </div>
+              ) : (
+                <div className="p-2">
+                  {conversations.map((conversation) => (
+                    <button
+                      key={conversation.id}
+                      onClick={() => {
+                        switchConversation(conversation.id);
+                        setSidebarHidden(true);
+                      }}
+                      className={`w-full text-left p-4 rounded-lg mb-2 transition-colors ${
+                        currentConversationId === conversation.id
+                          ? 'bg-zinc-100 border border-zinc-300'
+                          : 'hover:bg-zinc-50'
+                      }`}
+                    >
+                      <div className="text-base font-medium text-zinc-900 truncate">
+                        {conversation.title}
+                      </div>
+                      <div className="text-sm text-zinc-500 mt-1">
+                        {conversation.messages.length} messages
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
