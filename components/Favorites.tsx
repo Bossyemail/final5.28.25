@@ -130,20 +130,29 @@ export function Favorites() {
         {/* Category Slider */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-6" style={{ WebkitOverflowScrolling: 'touch' }}>
           {[null,
-            CONTRACT_STAGES.LISTING,
-            CONTRACT_STAGES.OFFER_STAGE,
+            CONTRACT_STAGES.BUYER_COMMUNICATION,
+            CONTRACT_STAGES.CLOSING,
+            CONTRACT_STAGES.CLOSING_WEEK,
+            CONTRACT_STAGES.COMPLIANCE_DOCUMENTS,
             CONTRACT_STAGES.CONDO_HOA,
-            CONTRACT_STAGES.CONTRACT_SELLER,
             CONTRACT_STAGES.CONTRACT_BUYER,
+            CONTRACT_STAGES.CONTRACT_SELLER,
             CONTRACT_STAGES.DEPOSITS,
+            CONTRACT_STAGES.DIFFICULT_CONVERSATIONS,
             CONTRACT_STAGES.DUE_DILIGENCE,
             CONTRACT_STAGES.FINANCING,
-            CONTRACT_STAGES.TITLE,
+            CONTRACT_STAGES.LEAD_GENERATION,
+            CONTRACT_STAGES.LISTING,
+            CONTRACT_STAGES.OFFER_STAGE,
+            CONTRACT_STAGES.POST_CLOSING_COMPLETION,
             CONTRACT_STAGES.PRE_CLOSING,
-            CONTRACT_STAGES.CLOSING,
-            CONTRACT_STAGES.POST_CLOSING,
+            CONTRACT_STAGES.REACTIVATION_NURTURE,
+            CONTRACT_STAGES.REPAIRS_NEGOTIATIONS,
+            CONTRACT_STAGES.SELLER_COMMUNICATION,
             CONTRACT_STAGES.SOUTH_FLORIDA,
-            CONTRACT_STAGES.TC_TOOLS
+            CONTRACT_STAGES.TC_TOOLS,
+            CONTRACT_STAGES.TITLE,
+            CONTRACT_STAGES.TITLE_ASSOCIATION
           ].map(category => (
             <button
               key={category || 'All'}

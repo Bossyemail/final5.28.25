@@ -103,10 +103,10 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 0.9 }}
             viewport={{ once: true }}
           >
-            <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
-              <AnimatedCounter end={320} duration={2} suffix="+" />
-            </div>
-            <p className="text-base text-zinc-400">Professional Email Templates</p>
+        <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
+          <AnimatedCounter end={400} duration={2} suffix="+" />
+        </div>
+        <p className="text-base text-zinc-400">Professional Email Templates</p>
           </motion.div>
           <motion.div 
             className="text-center"
