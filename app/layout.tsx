@@ -86,7 +86,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        baseTheme: 'light',
+        variables: {
+          colorBackground: '#ffffff',
+          colorInputBackground: '#ffffff',
+          colorText: '#161616',
+          colorTextSecondary: '#505050',
+          colorPrimary: '#161616',
+        },
+      }}
+    >
       <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />

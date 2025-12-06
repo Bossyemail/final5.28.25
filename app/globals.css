@@ -208,3 +208,52 @@
   border-radius: 0 !important;
   border: 2px solid #232326 !important;
 }
+
+/* Force light theme for Clerk components */
+.cl-rootBox,
+.cl-card,
+.cl-main,
+.cl-form,
+.cl-formFieldInput,
+.cl-formButtonPrimary,
+.cl-socialButtonsBlockButton,
+.cl-footer,
+.cl-header,
+.cl-dividerLine {
+  background-color: #ffffff !important;
+  color: #161616 !important;
+}
+
+.cl-formFieldInput {
+  background-color: #ffffff !important;
+  border-color: #E3E3E3 !important;
+  color: #161616 !important;
+}
+
+.cl-formFieldLabel {
+  color: #161616 !important;
+}
+
+.cl-footerActionLink,
+.cl-formFieldAction,
+.cl-formResendCodeLink {
+  color: #161616 !important;
+}
+
+.cl-footerActionLink:hover,
+.cl-formFieldAction:hover,
+.cl-formResendCodeLink:hover {
+  color: #505050 !important;
+}
+
+.cl-dividerText {
+  color: #505050 !important;
+}
+
+/* Ensure no dark mode is applied */
+[data-theme="dark"],
+.cl-rootBox[data-theme="dark"],
+.cl-card[data-theme="dark"] {
+  background-color: #ffffff !important;
+  color: #161616 !important;
+}
