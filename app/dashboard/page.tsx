@@ -69,20 +69,21 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Header for desktop */}
       <div className="hidden md:block">
         <Header />
       </div>
       
       {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 w-full h-16 z-40 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between px-4 text-white">
+      <div className="md:hidden fixed top-0 left-0 w-full h-16 z-40 bg-white border-b border-[#E3E3E3] flex items-center justify-between px-4 text-black">
         <button
-          className="p-2 rounded-full hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#D1B4C6] transition-colors"
+          className="p-2 rounded-none hover:bg-[#FBFBFB] focus:outline-none focus:ring-2 transition-colors border border-[#E3E3E3]"
+          style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
           onClick={() => setSidebarOpen(true)}
           aria-label="Open sidebar menu"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-6 h-6 text-[#161616]" />
         </button>
         
         {/* Mobile navigation menu */}
@@ -90,7 +91,8 @@ export default function DashboardPage() {
           <Button 
             variant="ghost"
             size="sm"
-            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            className="text-[#505050] hover:text-[#161616] hover:bg-[#FBFBFB] text-xs font-medium px-2 py-1 rounded-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             onClick={(e) => handleSectionLink(e, "#features")}
           >
             Features
@@ -98,7 +100,8 @@ export default function DashboardPage() {
           <Button 
             variant="ghost"
             size="sm"
-            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            className="text-[#505050] hover:text-[#161616] hover:bg-[#FBFBFB] text-xs font-medium px-2 py-1 rounded-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             onClick={(e) => handleSectionLink(e, "#pricing")}
           >
             Pricing
@@ -106,7 +109,8 @@ export default function DashboardPage() {
           <Button 
             variant="ghost"
             size="sm"
-            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            className="text-[#505050] hover:text-[#161616] hover:bg-[#FBFBFB] text-xs font-medium px-2 py-1 rounded-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             onClick={(e) => handleSectionLink(e, "#faq")}
           >
             FAQ
@@ -114,7 +118,8 @@ export default function DashboardPage() {
           <Button 
             variant="ghost"
             size="sm"
-            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            className="text-[#505050] hover:text-[#161616] hover:bg-[#FBFBFB] text-xs font-medium px-2 py-1 rounded-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             onClick={(e) => handleSectionLink(e, "#about")}
           >
             About
@@ -122,7 +127,8 @@ export default function DashboardPage() {
           <Button 
             variant="ghost"
             size="sm"
-            className="text-zinc-300 hover:text-white hover:bg-zinc-800 text-xs font-medium px-2 py-1"
+            className="text-[#505050] hover:text-[#161616] hover:bg-[#FBFBFB] text-xs font-medium px-2 py-1 rounded-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             onClick={(e) => handleSectionLink(e, "#contact")}
           >
             Contact
@@ -143,7 +149,7 @@ export default function DashboardPage() {
         onCollapseChange={setSidebarCollapsed}
       />
       <main
-        className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-16 ml-0 pt-4"
+        className="flex-1 flex flex-col transition-all duration-300 w-full md:ml-16 ml-0 pt-4 bg-white"
         role="main"
         aria-live="polite"
       >

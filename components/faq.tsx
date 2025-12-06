@@ -7,112 +7,115 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { CreditCard, Wrench, Lock, MessageSquare, Zap, Star, ArrowUpRight } from "lucide-react"
+import { ArrowRight, ChevronRight, ChevronDown } from "lucide-react"
+import { motion } from "framer-motion"
 
 const faqs = [
   {
-    category: "general",
-    icon: Wrench,
-    question: "What is BossyEmail and how does it help real estate professionals?",
-    answer: "BossyEmail is a SaaS tool designed for real estate transaction coordinators and agents. It helps you write smart, professional emails fast — with a real estate–specific generator and a library of plug-and-send templates."
+    question: "Is this different from ChatGPT?",
+    answer: "Yes — BossyEmail is trained specifically for real estate communication. No prompting. No guessing."
   },
   {
-    category: "billing",
-    icon: CreditCard,
-    question: "Can I cancel BossyEmail anytime?",
-    answer: "Absolutely. Cancel, upgrade, or downgrade at any time — no contracts, no strings, no awkward \"are you sure?\" messages."
+    question: "Do I need templates?",
+    answer: "No — you can use them, but the generator can also customize emails from scratch."
   },
   {
-    category: "features",
-    icon: Star,
-    question: "What's the difference between Inbox Lite and Inbox Royalty plans?",
-    answer: "Inbox Lite gives you unlimited access to the email generator. Inbox Royalty includes the generator, our full real estate email template library, saved favorites, and early access to new features."
+    question: "What's the free trial?",
+    answer: "Generate your first 3 emails free. No credit card required."
   },
   {
-    category: "billing",
-    icon: CreditCard,
-    question: "What's included in the free trial?",
-    answer: "Your 7-day free trial gives you full access to all features, including the email generator, templates, and favorites."
-  },
-  {
-    category: "features",
-    icon: Wrench,
-    question: "How does the email generator work?",
-    answer: "Just describe what you need — like 'follow-up on missing docs' or 'remind about inspection' — and our AI crafts a professional email in seconds. No more staring at a blank screen."
-  },
-  {
-    category: "security",
-    icon: Lock,
-    question: "Is my data secure?",
-    answer: "Absolutely. We use enterprise-grade encryption and never store your email content. Your templates and favorites are private to your account."
-  },
-  {
-    category: "support",
-    icon: MessageSquare,
-    question: "What if I need help?",
-    answer: "We've got your back. Email us 24/7, and you'll hear from a real person (not a bot) within hours. Plus, our help center is packed with tips and examples."
-  },
-  {
-    category: "features",
-    icon: Zap,
-    question: "Can I customize the templates?",
-    answer: "Yes! Every template is fully editable. Add your voice, tweak the tone, or start from scratch. It's your email, your way."
+    question: "Can my team use this?",
+    answer: "Yes — team plans start at $99/mo."
   }
 ]
 
-const sortedFaqs = [...faqs].sort((a, b) => a.question.length - b.question.length);
-
-const iconColors = [
-  '#EFE1E1',
-  '#F0D2DA',
-  '#E0C1C6',
-  '#D1B4C6',
-  '#CBC4D6',
-];
-
 export function FAQ() {
   return (
-    <section id="faq" className="py-16 md:py-24 text-white relative">
-      <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-[#D1B4C6]/8 rounded-full blur-3xl"></div>
-      {/* Additional light source */}
-      <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-white/4 rounded-full blur-3xl"></div>
-      <div className="container px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight text-center">
-          <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+    <section id="faq" className="w-full py-16 md:py-24 text-black bg-white relative">
+      <div className="container px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
+        {/* Header */}
+        <motion.div 
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, margin: "-50px" }}
+        >
+          <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
             FAQ
-          </div>
-        </h2>
-        <p className="text-center mb-12 text-base text-zinc-300">
-          Still scrolling? That means you're either really thorough… or you're procrastinating writing another email. Either way, BossyEmail will save you time, make you sound sharp, and keep deals moving. Go on—your inbox will thank you.
-        </p>
-        <Accordion type="single" collapsible className="space-y-4">
-          {sortedFaqs.map((faq, idx) => (
-            <AccordionItem key={faq.question} value={faq.question} className="border border-zinc-800 rounded-lg hover:border-[#D1B4C6]/20 hover:shadow-[0_0_20px_rgba(209,180,198,0.05)] transition-all duration-300">
-              <AccordionTrigger className="px-6 py-4 text-left text-white hover:text-zinc-300 transition-colors duration-200">
-                <div className="flex items-center gap-3">
-                  <faq.icon className="w-5 h-5 text-[#D1B4C6]" />
-                  <span className="font-medium">{faq.question}</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="px-6 pb-4 text-zinc-300">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+          </p>
+          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+            Questions agents ask before getting started
+          </h2>
+          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            Quick answers to help you feel confident, informed, and ready to send your first email.
+          </p>
+        </motion.div>
+
+        {/* FAQ Accordion */}
+        <div className="bg-white border border-[#E3E3E3] rounded-none">
+          <Accordion type="single" collapsible className="w-full">
+            {faqs.map((faq, idx) => (
+              <AccordionItem 
+                key={idx}
+                value={`item-${idx}`} 
+                className="border-b border-[#E3E3E3] last:border-b-0"
+              >
+                <AccordionTrigger className="px-6 py-5 hover:no-underline group [&>svg]:hidden">
+                  <div className="flex items-center gap-6 w-full">
+                    {/* Number Square */}
+                    <div 
+                      className="w-12 h-12 flex items-center justify-center flex-shrink-0 border border-[#161616] rounded-none transition-colors duration-200 group-data-[state=open]:bg-[#161616] group-data-[state=open]:text-white"
+                      style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                    >
+                      <span className="text-sm font-medium">
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+                    
+                    {/* Question */}
+                    <span 
+                      className="flex-1 text-left font-medium text-[#161616] group-data-[state=open]:font-semibold transition-all duration-200"
+                      style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+                    >
+                      {faq.question}
+                    </span>
+
+                    {/* Custom Chevron Icon */}
+                    <ChevronRight className="w-5 h-5 text-[#505050] flex-shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-90" />
+                  </div>
+                </AccordionTrigger>
+                
+                <AccordionContent className="px-6 pb-5">
+                  <div className="flex items-start gap-6">
+                    {/* Spacer for number square */}
+                    <div className="w-12 flex-shrink-0"></div>
+                    {/* Answer */}
+                    <p 
+                      className="flex-1 text-[#505050] leading-relaxed"
+                      style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}
+                    >
+                      {faq.answer}
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <p className="text-base text-zinc-300 mb-4">Still not sure?</p>
+          <p className="paragraph-default text-[#505050] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Still not sure?</p>
           <Button
-            size="lg"
-            className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-6 py-3 rounded-lg font-medium text-base transition-all duration-200 flex items-center gap-2 mx-auto"
+            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mx-auto group h-12"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
           >
-            Just Try It.
-            <ArrowUpRight size={16} />
+            JUST TRY IT
+            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
           </Button>
         </div>
       </div>
     </section>
   )
-} 
+}

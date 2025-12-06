@@ -23,9 +23,9 @@ const buttonVariants = cva(
         pill: "rounded-full font-bold bg-gradient-to-r from-[#42275a] to-[#734b6d] text-white shadow-md px-8 py-3 text-base hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#734b6d] focus:ring-offset-2",
       },
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md gap-1.5 px-3",
+        lg: "h-10 rounded-md px-6",
         icon: "size-9",
       },
     },

@@ -58,11 +58,11 @@ export function Favorites() {
 
   if (!hasFullAccess) {
     return (
-      <div className="w-full font-sans pl-32 pr-32 sm:pl-8 sm:pr-8 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 dark:text-[#f5f5f5]">Favorites</h2>
-          <p className="text-lg font-medium mb-2">This feature is only available for Inbox Royalty subscribers.</p>
-          <p className="text-sm">Please upgrade your plan to access favorites.</p>
+      <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+        <div className="max-w-4xl mx-auto py-8">
+          <h2 className="text-2xl font-normal mb-6 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Favorites</h2>
+          <p className="text-base font-medium mb-2 text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>This feature is only available for Inbox Royalty subscribers.</p>
+          <p className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Please upgrade your plan to access favorites.</p>
         </div>
       </div>
     );
@@ -124,17 +124,18 @@ export function Favorites() {
   }, {} as Record<string, typeof MOCK_FAVORITES[0][]>);
 
   return (
-    <div className="w-full font-sans pl-32 pr-16 sm:pl-8 sm:pr-4 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', color: '#232326', WebkitFontSmoothing: 'antialiased' }}>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center mb-6 gap-3">
-          <h2 className="text-3xl font-bold dark:text-[#f5f5f5]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, color: '#232326' }}>Favorites</h2>
+    <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+      <div className="max-w-4xl mx-auto py-8">
+        <div className="flex items-center mb-8 gap-3">
+          <h2 className="text-2xl font-normal text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Favorites</h2>
           <button
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-black text-white hover:bg-zinc-800 transition-colors focus:outline-none focus:ring-2 focus:ring-black"
+            className="flex items-center justify-center w-10 h-10 rounded-none border border-[#161616] bg-[#161616] text-white hover:bg-[#292929] transition-colors focus:outline-none focus:ring-2 focus:ring-[#161616]"
             onClick={() => { setShowAddModal(true); setAddError(''); setAddSuccess(false); setNewTemplate({ subject: '', body: '', category: '' }); }}
             aria-label="Add New Template"
             title="Add New Template"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
           >
-            <Plus className="w-6 h-6" />
+            <Plus className="w-5 h-5" />
           </button>
         </div>
         {/* Category Slider */}
@@ -167,11 +168,12 @@ export function Favorites() {
             <button
               key={category || 'All'}
               onClick={() => setSelectedCategory(category)}
-              className={`flex items-center justify-center px-6 py-2 rounded border text-sm font-medium transition-colors whitespace-nowrap
+              className={`flex items-center justify-center px-3 py-1.5 rounded-none border text-xs font-medium transition-colors whitespace-nowrap
                 ${selectedCategory === category || (!selectedCategory && !category)
-                  ? 'bg-black text-white border-black'
-                  : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}
+                  ? 'bg-[#161616] border-[#161616] text-white'
+                  : 'bg-white border-[#E3E3E3] text-[#505050] hover:bg-[#FBFBFB] hover:text-[#161616] hover:border-[#ABABAB]'}
               `}
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               aria-pressed={selectedCategory === category || (!selectedCategory && !category)}
             >
               {category || 'All'}
@@ -180,86 +182,83 @@ export function Favorites() {
         </div>
       {/* Search Bar */}
       <div className="mb-6 w-full">
-        <div className="flex items-center w-full border border-zinc-300 bg-white dark:bg-[#616161] rounded-full h-12">
+        <div className="relative flex items-center w-full bg-white border border-[#E3E3E3] rounded-2xl shadow-sm hover:shadow-md transition-shadow focus-within:border-[#161616] focus-within:shadow-md h-12">
           <input
             type="text"
-            placeholder="Search away"
+            placeholder="Search favorites..."
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
-            style={{ borderRight: 'none' }}
+            className="flex-1 px-5 h-full text-base text-[#161616] placeholder-[#ABABAB] bg-transparent border-none rounded-2xl focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
           />
           {searchInput && (
             <button
               type="button"
               onClick={() => { setSearchInput(""); }}
-              className="text-black dark:text-[#e0e0e0] hover:text-zinc-700 dark:hover:text-[#f5f5f5] text-2xl focus:outline-none focus:ring-2 focus:ring-primary px-2"
+              className="text-[#ABABAB] hover:text-[#505050] text-xl focus:outline-none px-3"
               aria-label="Clear search"
               tabIndex={0}
-              style={{ background: 'none', border: 'none', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
             >
               ×
             </button>
           )}
-          <span
-            className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none flex items-center"
-            style={{ borderLeft: 'none', cursor: 'default', opacity: 0.5 }}
-          >
-            SEARCH
-          </span>
         </div>
       </div>
         {Object.keys(groupedFavorites).length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
-          <Mail className="w-12 h-12 mb-4" />
-          <p className="text-lg font-medium mb-2">No favorites yet</p>
-          <p className="text-sm">Save emails to your favorites and they'll show up here for quick access.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center text-[#ABABAB]">
+          <Mail className="w-12 h-12 mb-4 text-[#505050]" />
+          <p className="text-base font-medium mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>No favorites yet</p>
+          <p className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Save emails to your favorites and they'll show up here for quick access.</p>
         </div>
       ) : (
-          Object.entries(groupedFavorites).map(([category, favs]) => (
+          <div className="space-y-2">
+          {Object.entries(groupedFavorites).map(([category, favs]) => (
             <div key={category}>
-              <ul>
-                {favs.map((fav, idx) => (
+              {Object.keys(groupedFavorites).length > 1 && (
+                <h3 className="text-sm font-medium text-[#505050] mb-2 mt-4 first:mt-0" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{category}</h3>
+              )}
+              <ul className="space-y-2">
+                {favs.map((fav) => (
             <li
               key={fav.id}
-                    className={`flex items-center group px-2 py-4 transition hover:bg-zinc-50 dark:hover:bg-[#616161] cursor-pointer${idx !== favs.length - 1 ? ' border-b-2 border-black dark:border-[#616161]' : ''}`}
+                    className="flex items-center group px-4 py-3 transition hover:bg-[#FBFBFB] cursor-pointer border border-transparent hover:border-[#E3E3E3] rounded-lg"
               onClick={e => {
                 if ((e.target as HTMLElement).closest('.copy-btn,.edit-btn,.delete-btn')) return;
                 openFavoriteModal(fav);
               }}
             >
               <div className="flex-1 min-w-0">
-                      <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] truncate">{fav.subject}</div>
-                      <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1">{fav.body}</div>
+                      <div className="text-base font-medium text-[#161616] truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{fav.subject}</div>
+                      <div className="text-sm text-[#505050] truncate mt-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{fav.body}</div>
               </div>
               <div className="flex items-center gap-2 ml-4">
                 <button
                   onClick={() => handleCopy(fav)}
-                        className="ml-2 w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative copy-btn"
+                        className="w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative copy-btn"
                   aria-label="Copy Email"
                 >
-                        <Copy className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
+                        <Copy className="w-4 h-4 text-[#505050]" />
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
                     {copiedId === fav.id ? "Copied!" : "Copy"}
                   </span>
                 </button>
                 <button
                   onClick={() => handleEdit(fav)}
-                        className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative edit-btn"
+                        className="w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative edit-btn"
                   aria-label="Edit Email"
                 >
-                        <Pencil className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity">
+                        <Pencil className="w-4 h-4 text-[#505050]" />
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/edit:opacity-100 pointer-events-none transition-opacity">
                     Edit
                   </span>
                 </button>
                 <button
                   onClick={() => handleDelete(fav.id)}
-                        className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#616161] transition relative delete-btn"
+                        className="w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative delete-btn"
                   aria-label="Delete Email"
                 >
-                        <Trash2 className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 px-2 py-1 text-xs text-white opacity-0 group-hover/delete:opacity-100 pointer-events-none transition-opacity">
+                        <Trash2 className="w-4 h-4 text-[#505050]" />
+                  <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/delete:opacity-100 pointer-events-none transition-opacity">
                     Delete
                   </span>
                 </button>
@@ -268,7 +267,8 @@ export function Favorites() {
           ))}
         </ul>
             </div>
-          ))
+          ))}
+          </div>
       )}
       {/* Modal for favorite preview */}
       {showModal && selectedFavorite && (
@@ -277,37 +277,39 @@ export function Favorites() {
           onClick={closeFavoriteModal}
         >
           <div
-              className="bg-white dark:bg-[#424242] rounded-xl shadow-xl w-full max-w-3xl sm:max-w-lg p-6 relative"
-              style={{ maxHeight: '90vh', overflowY: 'auto' }}
+              className="bg-white rounded-lg shadow-xl w-full max-w-3xl sm:max-w-lg p-6 relative"
+              style={{ maxHeight: '90vh', overflowY: 'auto', fontFamily: 'var(--font-inter-tight), sans-serif' }}
             onClick={e => e.stopPropagation()}
           >
             <button
-                className="absolute top-3 right-3 text-zinc-400 dark:text-[#bdbdbd] hover:text-zinc-700 dark:hover:text-[#e0e0e0] text-2xl"
+                className="absolute top-3 right-3 text-[#ABABAB] hover:text-[#505050] text-2xl"
               onClick={closeFavoriteModal}
               aria-label="Close"
             >
               ×
             </button>
             <div className="mb-6">
-                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Subject:</div>
-                <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
+                <div className="font-medium text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Subject:</div>
+                <div className="mb-4 text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
                 {selectedFavorite.subject}
               </div>
-                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Body:</div>
-                <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line">
+                <div className="font-medium text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Body:</div>
+                <div className="text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
                 {selectedFavorite.body}
               </div>
             </div>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => handleCopy(selectedFavorite)}
-                className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#161616] bg-[#161616] text-white hover:bg-[#292929] transition"
+                style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 <Copy className="w-4 h-4" /> Copy
               </button>
               <button
                 onClick={closeFavoriteModal}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
+                  className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition"
+                style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 Close
               </button>
@@ -319,18 +321,18 @@ export function Favorites() {
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAddModal(false)}>
             <div
-              className="bg-white dark:bg-[#424242] rounded-2xl shadow-xl w-full max-w-xl p-8 relative flex flex-col max-h-[90vh] overflow-y-auto"
-              style={{ fontFamily: 'Inter, sans-serif', maxWidth: 600 }}
+              className="bg-white rounded-lg shadow-xl w-full max-w-xl p-8 relative flex flex-col max-h-[90vh] overflow-y-auto"
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif', maxWidth: 600 }}
               onClick={e => e.stopPropagation()}
             >
               <button
-                className="absolute top-3 right-3 text-zinc-400 dark:text-[#bdbdbd] hover:text-zinc-700 dark:hover:text-[#e0e0e0] text-2xl"
+                className="absolute top-3 right-3 text-[#ABABAB] hover:text-[#505050] text-2xl"
                 onClick={() => setShowAddModal(false)}
                 aria-label="Close"
               >
                 ×
               </button>
-              <h3 className="text-base font-bold mb-4 text-black dark:text-[#e0e0e0]">Add New Template</h3>
+              <h3 className="text-base font-medium mb-4 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Add New Template</h3>
               <form
                 onSubmit={e => {
                   e.preventDefault();
@@ -354,33 +356,36 @@ export function Favorites() {
                 className="flex flex-col gap-4"
               >
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-zinc-700 dark:text-[#e0e0e0]">Title<span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium mb-1 text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Title<span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     value={newTemplate.subject}
                     onChange={e => setNewTemplate(t => ({ ...t, subject: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-3 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] placeholder-[#ABABAB] focus:outline-none focus:ring-2 focus:ring-[#161616] focus:border-[#161616]"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
                     placeholder="Template title"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-zinc-700 dark:text-[#e0e0e0]">Body<span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium mb-1 text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Body<span className="text-red-500">*</span></label>
                   <textarea
                     value={newTemplate.body}
                     onChange={e => setNewTemplate(t => ({ ...t, body: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black resize-y min-h-[120px] max-h-[400px]"
+                    className="w-full px-3 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] placeholder-[#ABABAB] focus:outline-none focus:ring-2 focus:ring-[#161616] focus:border-[#161616] resize-y min-h-[120px] max-h-[400px]"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
                     placeholder="Email body... (drag the bottom-right corner to resize)"
                     required
                     rows={5}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1 text-zinc-700 dark:text-[#e0e0e0]">Category</label>
+                  <label className="block text-sm font-medium mb-1 text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Category</label>
                   <select
                     value={newTemplate.category}
                     onChange={e => setNewTemplate(t => ({ ...t, category: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-[#757575] bg-white dark:bg-[#616161] text-zinc-900 dark:text-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-3 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] focus:outline-none focus:ring-2 focus:ring-[#161616] focus:border-[#161616]"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
                   >
                     <option value="">Uncategorized</option>
                     {Object.values(CONTRACT_STAGES).map(cat => (
@@ -388,21 +393,22 @@ export function Favorites() {
                     ))}
                   </select>
                 </div>
-                {addError && <div className="text-red-500 text-sm">{addError}</div>}
-                {addSuccess && <div className="text-green-600 text-sm">Template added!</div>}
+                {addError && <div className="text-red-500 text-sm" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{addError}</div>}
+                {addSuccess && <div className="text-green-600 text-sm" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Template added!</div>}
                 <button
                   type="submit"
-                  className="mt-2 px-4 py-2 rounded-full bg-black text-white font-bold hover:bg-zinc-800 transition-colors"
+                  className="mt-2 px-4 py-2 rounded-none border border-[#161616] bg-[#161616] text-white font-medium hover:bg-[#292929] transition-colors"
+                  style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
                 >
                   Save
                 </button>
               </form>
               {/* Live Preview */}
               {(newTemplate.subject || newTemplate.body) && (
-                <div className="mt-6 p-4 rounded-xl bg-[#EFE1E1] dark:bg-[#616161] border border-zinc-200 dark:border-[#757575] max-h-[200px] overflow-y-auto">
-                  <div className="text-xs font-semibold text-zinc-500 dark:text-[#bdbdbd] mb-1">Preview</div>
-                  <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] mb-1">{newTemplate.subject || <span className="italic text-zinc-400">(No title)</span>}</div>
-                  <div className="text-sm text-zinc-700 dark:text-[#e0e0e0] whitespace-pre-line">{newTemplate.body || <span className="italic text-zinc-400">(No body)</span>}</div>
+                <div className="mt-6 p-4 rounded-lg bg-[#FBFBFB] border border-[#E3E3E3] max-h-[200px] overflow-y-auto">
+                  <div className="text-xs font-medium text-[#505050] mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Preview</div>
+                  <div className="text-base font-medium text-[#161616] mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{newTemplate.subject || <span className="italic text-[#ABABAB]">(No title)</span>}</div>
+                  <div className="text-sm text-[#505050] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{newTemplate.body || <span className="italic text-[#ABABAB]">(No body)</span>}</div>
                 </div>
               )}
             </div>

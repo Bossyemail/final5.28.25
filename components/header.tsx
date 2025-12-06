@@ -2,90 +2,123 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight } from "lucide-react"
-import { useState } from "react"
+import { ArrowRight, ArrowUp } from "lucide-react"
+import { useState, useEffect } from "react"
 import { useUser, UserButton } from "@clerk/nextjs"
 import { usePathname, useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { isSignedIn, user } = useUser()
+  const [activeSection, setActiveSection] = useState("")
+  const { isSignedIn } = useUser()
   const pathname = usePathname()
   const router = useRouter()
   const isDashboard = pathname.startsWith("/dashboard")
 
+  const navItems = [
+    { label: "Features", hash: "#features" },
+    { label: "Pricing", hash: "#pricing" },
+    { label: "FAQ", hash: "#faq" },
+    { label: "About", hash: "#about" },
+    { label: "Contact", hash: "#contact" },
+  ]
+
+  // Track active section on scroll
+  useEffect(() => {
+    if (isDashboard) return
+
+    const handleScroll = () => {
+      const sections = navItems.map(item => item.hash.replace("#", ""))
+      const scrollPosition = window.scrollY + 100
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i])
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(sections[i])
+          break
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll() // Check on mount
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [isDashboard])
+
   const handleSectionLink = (e: React.MouseEvent, hash: string) => {
     e.preventDefault()
+    setActiveSection(hash.replace("#", ""))
     if (isDashboard) {
-      // If we're in dashboard, navigate to home page and then scroll to section
       router.push("/" + hash)
     } else {
-      // If we're on home page, scroll to section
       const el = document.getElementById(hash.replace("#", ""))
-      if (el) el.scrollIntoView({ behavior: "smooth" })
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" })
+      }
     }
   }
 
   return (
-    <header className="w-full bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 border-b border-zinc-800 sticky top-0 z-50 backdrop-blur-sm">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 lg:h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/transparent 2.png" alt="BossyEmail" className="h-8 w-8" />
-            <span className="text-xl font-bold text-white">BossyEmail</span>
+    <header className="w-full bg-white border-b border-[#E3E3E3] sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo - Left */}
+          <Link href="/" className="flex items-center gap-2 z-20">
+            <img src="/transparent 1.png" alt="BossyEmail" className="h-8 w-8" />
+            <span className="text-xl text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, letterSpacing: '-0.02em' }}>BossyEmail</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            <button 
-              onClick={(e) => handleSectionLink(e, "#features")}
-              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-            >
-              FEATURES
-            </button>
-            
-            <button 
-              onClick={(e) => handleSectionLink(e, "#pricing")}
-              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-            >
-              PRICING
-            </button>
-            
-            <button 
-              onClick={(e) => handleSectionLink(e, "#faq")}
-              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-            >
-              FAQ
-            </button>
-            
-            <button 
-              onClick={(e) => handleSectionLink(e, "#about")}
-              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-            >
-              ABOUT
-            </button>
-            
-            <button 
-              onClick={(e) => handleSectionLink(e, "#contact")}
-              className="text-zinc-300 hover:text-white transition-colors text-sm font-medium"
-            >
-              CONTACT
-            </button>
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden lg:flex items-center space-x-6 absolute left-1/2 transform -translate-x-1/2">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.hash.replace("#", "")
+              return (
+                <button
+                  key={item.hash}
+                  onClick={(e) => handleSectionLink(e, item.hash)}
+                  className="relative text-[#161616] hover:text-[#505050] transition-colors text-sm font-medium uppercase tracking-normal py-2 px-1 group"
+                  style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}
+                >
+                  <motion.span 
+                    className="relative z-10 inline-flex items-center gap-2"
+                    animate={isActive ? { y: -2 } : { y: 0 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    {item.label}
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.span
+                          initial={{ opacity: 0, y: 4, rotate: -90 }}
+                          animate={{ opacity: 1, y: 0, rotate: 0 }}
+                          exit={{ opacity: 0, y: 4, rotate: -90 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                        >
+                          <ArrowUp className="w-4 h-4" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.span>
+                </button>
+              )
+            })}
           </nav>
 
-          {/* Action Buttons */}
-          <div className="hidden lg:flex items-center space-x-4">
+          {/* Action Button - Right */}
+          <div className="hidden lg:flex items-center space-x-3 z-20">
             {isSignedIn ? (
               <>
                 <Link href="/dashboard">
-                  <Button 
-                    className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black text-sm font-medium px-6 py-2 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] rounded-lg"
+                  <Button
+                    className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 h-12 group"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
                   >
-                    Dashboard
+                    DASHBOARD
+                    <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
                   </Button>
                 </Link>
-                <UserButton 
+                <UserButton
                   appearance={{
                     elements: {
                       avatarBox: "w-8 h-8"
@@ -96,18 +129,20 @@ export function Header() {
             ) : (
               <>
                 <Link href="/sign-in">
-                  <Button 
-                    variant="outline" 
-                    className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 text-sm font-medium px-6 py-2 rounded-lg"
+                  <Button
+                    variant="outline"
+                    className="border border-[#161616] text-[#161616] hover:bg-[#FBFBFB] hover:text-[#161616] focus:text-[#161616] active:text-[#161616] transition-all duration-200 text-sm font-medium px-8 py-4 rounded-none uppercase tracking-wide h-12"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
                   >
-                    Log In
+                    LOG IN
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button 
-                    className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black text-sm font-medium px-6 py-2 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(209,180,198,0.4)] rounded-lg"
+                  <Button
+                    className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide h-12"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
                   >
-                    Sign Up
+                    SIGN UP
                   </Button>
                 </Link>
               </>
@@ -116,7 +151,7 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-zinc-300 hover:text-white"
+            className="lg:hidden p-2 text-[#161616] hover:text-[#505050] z-20"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,97 +161,106 @@ export function Header() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden border-t border-zinc-800 py-4">
-            <nav className="flex flex-col space-y-4">
-              <button 
-                onClick={(e) => {
-                  handleSectionLink(e, "#features")
-                  setIsMenuOpen(false)
-                }}
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
-              >
-                FEATURES
-              </button>
-              <button 
-                onClick={(e) => {
-                  handleSectionLink(e, "#pricing")
-                  setIsMenuOpen(false)
-                }}
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
-              >
-                PRICING
-              </button>
-              <button 
-                onClick={(e) => {
-                  handleSectionLink(e, "#faq")
-                  setIsMenuOpen(false)
-                }}
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
-              >
-                FAQ
-              </button>
-              <button 
-                onClick={(e) => {
-                  handleSectionLink(e, "#about")
-                  setIsMenuOpen(false)
-                }}
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
-              >
-                ABOUT
-              </button>
-              <button 
-                onClick={(e) => {
-                  handleSectionLink(e, "#contact")
-                  setIsMenuOpen(false)
-                }}
-                className="text-zinc-300 hover:text-white transition-colors text-sm font-medium text-left"
-              >
-                CONTACT
-              </button>
-              <div className="flex flex-col space-y-2 pt-4 border-t border-zinc-800">
-                {isSignedIn ? (
-                  <>
-                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                      <Button 
-                        className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black justify-start text-sm font-medium transition-all duration-300 rounded-lg w-full"
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden border-t border-[#E3E3E3] bg-white overflow-hidden"
+            >
+              <nav className="flex flex-col space-y-4 py-4">
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.hash.replace("#", "")
+                  return (
+                    <button
+                      key={item.hash}
+                      onClick={(e) => {
+                        handleSectionLink(e, item.hash)
+                        setIsMenuOpen(false)
+                      }}
+                      className="relative text-[#161616] hover:text-[#505050] transition-colors text-sm font-medium text-left uppercase tracking-wide py-2 px-4 group"
+                      style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}
+                    >
+                      <motion.span 
+                        className="relative z-10 inline-flex items-center gap-2"
+                        animate={isActive ? { x: -4 } : { x: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                       >
-                        Dashboard
-                      </Button>
-                    </Link>
-                    <div className="flex justify-center">
-                      <UserButton 
-                        appearance={{
-                          elements: {
-                            avatarBox: "w-8 h-8"
-                          }
-                        }}
+                        {item.label}
+                        <AnimatePresence>
+                          {isActive && (
+                            <motion.span
+                              initial={{ opacity: 0, y: 4, rotate: -90 }}
+                              animate={{ opacity: 1, y: 0, rotate: 0 }}
+                              exit={{ opacity: 0, y: 4, rotate: -90 }}
+                              transition={{ duration: 0.3, ease: "easeOut" }}
+                            >
+                              <ArrowUp className="w-4 h-4" />
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
+                      </motion.span>
+                      
+                      {/* Slide animation indicator */}
+                      <motion.div
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-[#161616]"
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: isActive ? 1 : 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                       />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
-                      <Button 
-                        variant="outline" 
-                        className="border-zinc-600 text-zinc-300 hover:text-white hover:bg-white hover:text-black transition-all duration-300 justify-start text-sm font-medium rounded-lg w-full"
-                      >
-                        Log In
-                      </Button>
-                    </Link>
-                    <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                      <Button 
-                        className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black justify-start text-sm font-medium transition-all duration-300 rounded-lg w-full"
-                      >
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+                    </button>
+                  )
+                })}
+                <div className="flex flex-col space-y-2 pt-4 border-t border-[#E3E3E3]">
+                  {isSignedIn ? (
+                    <>
+                      <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                        <Button
+                          className="bg-[#161616] hover:bg-[#292929] text-white justify-start text-sm font-medium transition-all duration-200 rounded-none uppercase tracking-wide w-full inline-flex items-center gap-2 h-12 group"
+                          style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+                        >
+                          DASHBOARD
+                          <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45 ml-auto" />
+                        </Button>
+                      </Link>
+                      <div className="flex justify-center">
+                        <UserButton
+                          appearance={{
+                            elements: {
+                              avatarBox: "w-8 h-8"
+                            }
+                          }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
+                        <Button
+                          variant="outline"
+                          className="border border-[#161616] text-[#161616] hover:bg-[#FBFBFB] hover:text-[#161616] focus:text-[#161616] active:text-[#161616] transition-all duration-200 justify-start text-sm font-medium rounded-none uppercase tracking-wide w-full h-12"
+                          style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+                        >
+                          LOG IN
+                        </Button>
+                      </Link>
+                      <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
+                        <Button
+                          className="bg-[#161616] hover:bg-[#292929] text-white justify-start text-sm font-medium transition-all duration-200 rounded-none uppercase tracking-wide w-full h-12"
+                          style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+                        >
+                          SIGN UP
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )

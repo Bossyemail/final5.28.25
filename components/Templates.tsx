@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Mail, Clipboard, Pencil, Trash2, Filter, Star } from "lucide-react";
+import { Mail, Clipboard, Pencil, Trash2, Filter, Star, Clock } from "lucide-react";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useUser } from "@clerk/nextjs";
 import Fuse from "fuse.js";
@@ -2322,7 +2322,7 @@ export function Templates() {
   const [searchInput, setSearchInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [templates, setTemplates] = useState(MOCK_TEMPLATES);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<Set<string>>(new Set());
   const [selectedTemplate, setSelectedTemplate] = useState<any | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -2368,14 +2368,12 @@ export function Templates() {
     alert(`Edit template: ${template.title}`);
   }
 
-  function handleDelete(template: typeof MOCK_TEMPLATES[0]) {
+  function handleRemoveFromFavorites(templateId: string) {
     if (!hasFullAccess) {
       alert("This action is only available for Inbox Royalty subscribers.");
       return;
     }
-    if (window.confirm(`Are you sure you want to delete the template: "${template.title}"? This cannot be undone.`)) {
-      setTemplates(prev => prev.filter(t => t.id !== template.id));
-    }
+    setFavorites(favs => favs.filter(id => id !== templateId));
   }
 
   function handleFavorite(templateId: string) {
@@ -2390,10 +2388,29 @@ export function Templates() {
     );
   }
 
+
+  function handleToggleCategory(category: string | null) {
+    if (category === null) {
+      // "All" button - clear all selections
+      setSelectedCategories(new Set());
+    } else {
+      // Toggle individual category
+      setSelectedCategories(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(category)) {
+          newSet.delete(category);
+        } else {
+          newSet.add(category);
+        }
+        return newSet;
+      });
+    }
+  }
+
   const filteredTemplates = searchInput.trim()
     ? fuse.search(searchInput).map(result => result.item)
     : templates.filter(t => {
-    const matchesCategory = !selectedCategory || t.category === selectedCategory;
+    const matchesCategory = selectedCategories.size === 0 || selectedCategories.has(t.category);
     const matchesView = view === 'all' || 
       (view === 'favorites' && favorites.includes(t.id)) ||
       (view === 'recent' && recentlyUsed.includes(t.id));
@@ -2412,33 +2429,54 @@ export function Templates() {
   }
 
   return (
-    <div className="w-full font-sans pl-32 pr-32 sm:pl-8 sm:pr-8 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]">
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 dark:text-[#f5f5f5]">Templates</h2>
-      {/* View Selector */}
-      <div className="flex gap-2 mb-6">
-        <button
-          onClick={() => setView('all')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-              ${view === 'all' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
-        >
-          All Templates
-        </button>
-        <button
-          onClick={() => setView('favorites')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2
-              ${view === 'favorites' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
-        >
-          <Star className="w-4 h-4" fill={view === 'favorites' ? 'white' : 'none'} />
-          Favorites
-        </button>
-        <button
-          onClick={() => setView('recent')}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors
-              ${view === 'recent' ? 'bg-black text-white' : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}`}
-        >
-          Recently Used
-        </button>
+    <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+      <div className="max-w-4xl mx-auto py-8">
+        <h2 className="text-2xl font-normal text-[#161616] mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Templates</h2>
+      {/* Search Bar and View Selector */}
+      <div className="flex items-center gap-3 mb-6">
+        {/* Search Bar */}
+        <div className="relative flex items-center flex-1 max-w-2xl bg-white border border-[#E3E3E3] rounded-lg shadow-sm hover:shadow-md transition-shadow focus-within:border-[#161616] focus-within:shadow-md h-12">
+          <input
+            type="text"
+            placeholder="Search templates..."
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            className="flex-1 px-4 h-full text-base text-[#161616] placeholder-[#ABABAB] bg-transparent border-none rounded-lg focus:outline-none"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+          />
+          {searchInput && (
+            <button
+              type="button"
+              onClick={() => { setSearchInput(""); }}
+              className="text-[#ABABAB] hover:text-[#505050] text-lg focus:outline-none px-2"
+              aria-label="Clear search"
+              tabIndex={0}
+            >
+              ×
+            </button>
+          )}
+        </div>
+        {/* View Selector */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setView('favorites')}
+            className={`w-9 h-9 flex items-center justify-center rounded-none border transition-colors
+                ${view === 'favorites' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'bg-white border-[#E3E3E3] text-[#505050] hover:bg-[#FBFBFB] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+            aria-label="Favorites"
+            title="Favorites"
+          >
+            <Star className="w-4 h-4" fill={view === 'favorites' ? 'currentColor' : 'none'} />
+          </button>
+          <button
+            onClick={() => setView('recent')}
+            className={`w-9 h-9 flex items-center justify-center rounded-none border transition-colors
+                ${view === 'recent' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'bg-white border-[#E3E3E3] text-[#505050] hover:bg-[#FBFBFB] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+            aria-label="Recents"
+            title="Recents"
+          >
+            <Clock className="w-4 h-4" />
+          </button>
+        </div>
       </div>
       {/* Category Selector */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
@@ -2466,83 +2504,79 @@ export function Templates() {
           CONTRACT_STAGES.TC_TOOLS,
           CONTRACT_STAGES.TITLE,
           CONTRACT_STAGES.TITLE_ASSOCIATION
-        ].map(category => (
-          <button
-            key={category || 'All'}
-            onClick={() => setSelectedCategory(category)}
-            className={`flex items-center justify-center px-6 py-2 rounded border text-sm font-medium transition-colors whitespace-nowrap
-              ${selectedCategory === category || (!selectedCategory && !category)
-                  ? 'bg-black text-white'
-                  : 'bg-white dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] border border-zinc-300 dark:border-[#757575] hover:bg-zinc-100 dark:hover:bg-[#757575]'}
-            `}
-            aria-pressed={selectedCategory === category || (!selectedCategory && !category)}
-          >
-            {category || 'All'}
-          </button>
-        ))}
+        ].map(category => {
+          const isSelected = category === null 
+            ? selectedCategories.size === 0 
+            : selectedCategories.has(category);
+          
+          return (
+            <button
+              key={category || 'All'}
+              onClick={() => handleToggleCategory(category)}
+              className={`flex items-center justify-center px-3 py-1.5 rounded-none border text-xs font-medium transition-colors whitespace-nowrap
+                ${isSelected
+                    ? 'bg-[#161616] border-[#161616] text-white'
+                    : 'bg-white border-[#E3E3E3] text-[#505050] hover:bg-[#FBFBFB] hover:text-[#161616] hover:border-[#ABABAB]'}
+              `}
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+              aria-pressed={isSelected}
+            >
+              {category || 'All'}
+            </button>
+          );
+        })}
       </div>
-      {/* Search Bar */}
-        <div className="mb-6 w-full">
-          <div className="flex items-center w-full border border-zinc-300 bg-white dark:bg-[#616161] rounded-full h-12">
-        <input
-          type="text"
-          placeholder="Search away"
-          value={searchInput}
-          onChange={e => setSearchInput(e.target.value)}
-          className="flex-1 px-5 h-full text-lg text-zinc-700 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] bg-transparent border-none rounded-l-full focus:outline-none focus:ring-0"
-          style={{ borderRight: 'none' }}
-        />
-        {searchInput && (
-          <button
-            type="button"
-            onClick={() => { setSearchInput(""); }}
-                className="text-black dark:text-[#e0e0e0] hover:text-zinc-700 dark:hover:text-[#f5f5f5] text-2xl focus:outline-none focus:ring-2 focus:ring-primary px-2"
-            aria-label="Clear search"
-            tabIndex={0}
-                style={{ background: 'none', border: 'none', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}
-          >
-            ×
-          </button>
-        )}
-        <span
-          className="h-full px-6 font-bold text-lg text-white bg-black rounded-r-full border-none flex items-center"
-          style={{ borderLeft: 'none', cursor: 'default', opacity: 0.5 }}
-        >
-          SEARCH
-        </span>
-          </div>
-      </div>
+      {/* Template count and results */}
+      {filteredTemplates.length > 0 && (
+        <div className="mb-4">
+          <p className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+            {filteredTemplates.length} {filteredTemplates.length === 1 ? 'template' : 'templates'} found
+          </p>
+        </div>
+      )}
       {filteredTemplates.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 dark:text-[#bdbdbd]">
-          <Mail className="w-12 h-12 mb-4" />
-          <p className="text-lg font-medium mb-2">No templates found</p>
-          <p className="text-sm">Try a different search or create a new template.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center text-[#ABABAB]">
+          <Mail className="w-12 h-12 mb-4 text-[#505050]" />
+          <p className="text-base font-medium mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>No templates found</p>
+          <p className="text-sm text-[#505050] mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Try adjusting your search or category filter.</p>
+          {(searchInput || selectedCategories.size > 0) && (
+            <button
+              onClick={() => { setSearchInput(""); setSelectedCategories(new Set()); }}
+              className="mt-3 text-sm text-[#161616] hover:text-[#505050] underline"
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       ) : (
-          <ul className="divide-y divide-zinc-200 dark:divide-[#616161]">
+          <ul className="space-y-2">
           {filteredTemplates.map(t => (
             <li
               key={t.id}
-                className="flex items-center group px-2 py-4 transition hover:bg-zinc-50 dark:hover:bg-[#616161] cursor-pointer"
-              onClick={() => openTemplateModal(t)}
+                className="flex items-center group px-4 py-3 transition hover:bg-[#FBFBFB] cursor-pointer border border-transparent hover:border-[#E3E3E3] rounded-lg"
+              onClick={(e) => {
+                if ((e.target as HTMLElement).closest('.action-button')) return;
+                openTemplateModal(t);
+              }}
             >
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                    <div className="text-base font-semibold text-zinc-900 dark:text-[#e0e0e0] truncate">{t.title}</div>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
+                <div className="flex items-center gap-2 mb-1">
+                    <div className="text-base font-medium text-[#161616] truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{t.title}</div>
+                    <span className="text-xs px-2 py-0.5 rounded-md bg-[#FBFBFB] border border-[#E3E3E3] text-[#505050]">
                     {t.category}
                   </span>
                   {hasFullAccess && (
                   <button
-                      className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${favorites.includes(t.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'}`}
+                      className={`ml-2 w-5 h-5 flex items-center justify-center transition ${favorites.includes(t.id) ? 'text-[#161616]' : 'text-[#ABABAB] hover:text-[#505050]'}`}
                     onClick={e => { e.stopPropagation(); handleFavorite(t.id); }}
                     aria-label={favorites.includes(t.id) ? 'Unfavorite' : 'Favorite'}
                   >
-                    <Star fill={favorites.includes(t.id) ? '#facc15' : 'none'} className="w-5 h-5" />
+                    <Star fill={favorites.includes(t.id) ? 'currentColor' : 'none'} className="w-4 h-4" />
                   </button>
                   )}
                 </div>
-                  <div className="text-sm text-zinc-500 dark:text-[#bdbdbd] truncate mt-1" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
+                  <div className="text-sm text-[#505050] truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
                     <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{t.body}</span>
                     {!hasFullAccess && (
                       <span
@@ -2569,16 +2603,16 @@ export function Templates() {
                     )}
                   </div>
               </div>
-              <div className="flex items-center gap-2 ml-4">
-                <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2 ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 action-button">
                   {hasFullAccess && (
                   <button
                     onClick={e => { e.stopPropagation(); handleCopy(t); }}
-                      className="copy-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/copy"
+                      className="copy-btn w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative group/copy"
                     aria-label="Copy Template"
                   >
-                      <Clipboard className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 dark:bg-[#616161] px-2 py-1 text-xs text-white dark:text-[#e0e0e0] opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
+                      <Clipboard className="w-4 h-4 text-[#505050]" />
+                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/copy:opacity-100 pointer-events-none transition-opacity">
                       {copiedId === t.id ? "Copied!" : "Copy"}
                     </span>
                   </button>
@@ -2586,17 +2620,29 @@ export function Templates() {
                   {hasFullAccess && (
                   <a
                     href={`mailto:?subject=${encodeURIComponent(t.title)}&body=${encodeURIComponent(t.body)}`}
-                      className="send-btn w-9 h-9 flex items-center justify-center rounded-full hover:bg-zinc-200 dark:hover:bg-[#757575] transition relative group/send"
+                      className="send-btn w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative group/send"
                     aria-label="Send Template"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={e => e.stopPropagation()}
                   >
-                      <Mail className="w-5 h-5 text-zinc-700 dark:text-[#e0e0e0]" />
-                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-zinc-900 dark:bg-[#616161] px-2 py-1 text-xs text-white dark:text-[#e0e0e0] opacity-0 group-hover/send:opacity-100 pointer-events-none transition-opacity">
+                      <Mail className="w-4 h-4 text-[#505050]" />
+                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/send:opacity-100 pointer-events-none transition-opacity">
                       Send
                     </span>
                   </a>
+                  )}
+                  {hasFullAccess && view === 'favorites' && (
+                  <button
+                    onClick={e => { e.stopPropagation(); handleRemoveFromFavorites(t.id); }}
+                      className="delete-btn w-9 h-9 flex items-center justify-center rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition relative group/delete"
+                    aria-label="Remove from Favorites"
+                  >
+                      <Trash2 className="w-4 h-4 text-[#505050]" />
+                      <span className="absolute left-1/2 -translate-x-1/2 top-10 z-30 whitespace-nowrap rounded bg-[#161616] px-2 py-1 text-xs text-white opacity-0 group-hover/delete:opacity-100 pointer-events-none transition-opacity">
+                      Remove
+                    </span>
+                  </button>
                   )}
                 </div>
               </div>
@@ -2611,105 +2657,62 @@ export function Templates() {
           onClick={closeTemplateModal}
         >
           <div 
-              className="bg-white dark:bg-[#424242] rounded-xl shadow-xl w-full max-w-3xl p-6 relative" 
-            style={{ maxHeight: '80vh', overflowY: 'auto' }} 
+              className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 relative" 
+            style={{ maxHeight: '80vh', overflowY: 'auto', fontFamily: 'var(--font-inter-tight), sans-serif' }} 
             onClick={e => e.stopPropagation()}
           >
             <button 
-                className="absolute top-3 right-3 text-zinc-400 dark:text-[#bdbdbd] hover:text-zinc-700 dark:hover:text-[#e0e0e0] text-2xl" 
+                className="absolute top-3 right-3 text-[#ABABAB] hover:text-[#505050] text-2xl" 
               onClick={closeTemplateModal} 
               aria-label="Close"
             >
               ×
             </button>
-            <div className="flex items-center gap-2 mb-2">
-                <div className="text-base font-bold text-zinc-900 dark:text-[#e0e0e0]">{selectedTemplate.title}</div>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-[#616161] text-zinc-600 dark:text-[#bdbdbd]">
+            <div className="flex items-center gap-2 mb-4">
+                <div className="text-base font-medium text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{selectedTemplate.title}</div>
+                <span className="text-xs px-2 py-0.5 rounded-md bg-[#FBFBFB] border border-[#E3E3E3] text-[#505050]">
                 {selectedTemplate.category}
               </span>
               {hasFullAccess && (
               <button
-                className={`star-btn ml-2 w-6 h-6 flex items-center justify-center rounded-full transition ${
-                      favorites.includes(selectedTemplate.id) ? 'text-yellow-400' : 'text-zinc-400 dark:text-[#bdbdbd] hover:text-yellow-400'
+                className={`ml-2 w-5 h-5 flex items-center justify-center transition ${
+                      favorites.includes(selectedTemplate.id) ? 'text-[#161616]' : 'text-[#ABABAB] hover:text-[#505050]'
                 }`}
                 onClick={() => handleFavorite(selectedTemplate.id)}
                 aria-label={favorites.includes(selectedTemplate.id) ? 'Unfavorite' : 'Favorite'}
               >
                 <Star 
-                  fill={favorites.includes(selectedTemplate.id) ? '#facc15' : 'none'} 
-                  className="w-5 h-5" 
+                  fill={favorites.includes(selectedTemplate.id) ? 'currentColor' : 'none'} 
+                  className="w-4 h-4" 
                 />
               </button>
               )}
             </div>
-            <div className="mb-6">
-                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Subject:</div>
-                <div className="mb-4 text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
-                    <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.title}</span>
-                    {!hasFullAccess && (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: 0,
-                          width: '100%',
-                          height: '100%',
-                          background: 'rgba(255,255,255,0.7)',
-                          color: '#222',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 600,
-                          fontSize: '1.1em',
-                          borderRadius: '0.5em',
-                          zIndex: 2,
-                          pointerEvents: 'auto',
-                        }}
-                      >
-                        Upgrade to copy
-                      </span>
-                    )}
-              </div>
-                <div className="font-semibold text-zinc-800 dark:text-[#e0e0e0] mb-2">Body:</div>
-                <div className="text-base text-zinc-900 dark:text-[#e0e0e0] whitespace-pre-line" style={!hasFullAccess ? { userSelect: 'none' } : {}}>
+            <div className="mb-6 space-y-4">
+                <div>
+                  <div className="font-medium text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Subject:</div>
+                  <div className="text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
+                      <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.title}</span>
+                  </div>
+                </div>
+                <div className="text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
                     <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.body}</span>
-                    {!hasFullAccess && (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          left: 0,
-                          top: 0,
-                          width: '100%',
-                          height: '100%',
-                          background: 'rgba(255,255,255,0.7)',
-                          color: '#222',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 600,
-                          fontSize: '1.1em',
-                          borderRadius: '0.5em',
-                          zIndex: 2,
-                          pointerEvents: 'auto',
-                        }}
-                      >
-                        Upgrade to copy
-                      </span>
-                    )}
-              </div>
+                </div>
             </div>
             <div className="flex gap-3 justify-end">
               {hasFullAccess && (
               <button
                 onClick={() => handleCopy(selectedTemplate)}
-                  className="flex items-center gap-2 px-4 py-2 rounded bg-black text-white hover:bg-zinc-800 dark:hover:bg-[#757575] transition"
+                  className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#161616] bg-[#161616] text-white hover:bg-[#292929] transition"
+                style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 <Clipboard className="w-4 h-4" /> Copy
               </button>
               )}
               <button
                 onClick={closeTemplateModal}
-                className="flex items-center gap-2 px-4 py-2 rounded bg-zinc-200 dark:bg-[#616161] text-zinc-700 dark:text-[#e0e0e0] hover:bg-zinc-300 dark:hover:bg-[#757575] transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition"
+                style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 Close
               </button>

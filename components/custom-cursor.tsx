@@ -54,18 +54,20 @@ export function CustomCursor() {
     <>
       {/* Main cursor */}
       <div
-        className="fixed top-0 left-0 w-6 h-6 bg-[#D1B4C6] rounded-full pointer-events-none z-50 mix-blend-difference transition-transform duration-150 ease-out"
+        className="fixed top-0 left-0 w-6 h-6 rounded-full pointer-events-none z-50 mix-blend-difference transition-transform duration-150 ease-out"
         style={{
+          backgroundColor: 'var(--accent-1)',
           transform: `translate(${mousePosition.x - 12}px, ${mousePosition.y - 12}px)`,
         }}
       />
       
       {/* Outer ring */}
       <div
-        className={`fixed top-0 left-0 w-12 h-12 border-2 border-[#D1B4C6]/30 rounded-full pointer-events-none z-50 transition-all duration-300 ease-out ${
-          isHovering ? 'scale-150 border-[#D1B4C6]/60' : 'scale-100'
+        className={`fixed top-0 left-0 w-12 h-12 border-2 rounded-full pointer-events-none z-50 transition-all duration-300 ease-out ${
+          isHovering ? 'scale-150' : 'scale-100'
         }`}
         style={{
+          borderColor: isHovering ? 'var(--accent-1-50)' : 'var(--accent-1-30)',
           transform: `translate(${mousePosition.x - 24}px, ${mousePosition.y - 24}px)`,
         }}
       />

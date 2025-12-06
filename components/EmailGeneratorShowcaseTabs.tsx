@@ -9,7 +9,7 @@ export default function EmailGeneratorShowcaseTabs() {
     '#EFE1E1', // light pink
     '#F0D2DA', // blush
     '#E0C1C6', // soft mauve
-    '#D1B4C6', // lavender
+    'var(--accent-1)', // lavender
     '#CBC4D6', // pastel purple
     '#B6D6E8', // soft blue
     '#F7E6C4', // pastel peach

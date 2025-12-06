@@ -2,167 +2,164 @@
 
 import { Button } from "@/components/ui/button"
 import { TrialButton } from "@/components/trial-button"
-import { ArrowUpRight, X, Star } from "lucide-react"
+import { ArrowRight, X, Star, Check } from "lucide-react"
 import { motion } from "framer-motion"
 
-const features = [
-  {
-    name: "Email Generator",
-    lite: "Unlimited",
-    royalty: "Unlimited"
-  },
-  {
-    name: "Template Library",
-    lite: false,
-    royalty: "100+ templates"
-  },
-  {
-    name: "Favorites Bar",
-    lite: false,
-    royalty: true
-  },
-  {
-    name: "Exclusive Template Drops",
-    lite: false,
-    royalty: true
-  },
-  {
-    name: "Priority Feature Access",
-    lite: false,
-    royalty: true
-  },
+const liteFeatures = [
+  "AI Email Generator",
+  "300+ real-estate templates",
+  "Tone control",
+  "Generate 3 emails free to start",
+  "Email history",
+  "Mobile-friendly workflow"
 ]
 
-const planIncludes = {
-  lite: [
-    "3 Free Emails to Start",
-    "Unlimited Smart Email Generator"
-  ],
-  royalty: [
-    "Everything in Lite, plus:",
-    "Built-In Favorite Vault",
-    "Custom Template Builder",
-    "Full Email Template Library",
-    "TC Tools & South Florida Library"
-  ]
-}
+const royaltyFeatures = [
+  "Unlimited generated emails",
+  "Deal-context logic",
+  "Offer package builder",
+  "Saved styles & signatures",
+  "Priority support"
+]
 
 export function Pricing() {
+
   return (
-    <section className="py-16 md:py-24 text-white relative">
-      <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-[#D1B4C6]/8 rounded-full blur-3xl"></div>
-      {/* Additional light source */}
-      <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-white/5 rounded-full blur-3xl"></div>
+    <section className="w-full py-16 md:py-24 text-black bg-white relative">
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight">
-            <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-              <div>SIMPLE,</div>
-              <div>TRANSPARENT PRICING</div>
-            </div>
-          </h2>
-          <p className="text-base text-zinc-300 max-w-2xl leading-relaxed mb-8">
-            Choose the plan that works for you. Start with 3 free emails.<br />
-            Stay for the sanity-saving genius.
+        <motion.div 
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+            PRICING
           </p>
-        </div>
+          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+            Simple, transparent pricing
+          </h2>
+          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            Start free. Upgrade only if you love clarity, sanity, and faster closings.
+          </p>
+        </motion.div>
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto items-start">
-          {/* Inbox Lite */}
+          {/* Lite */}
           <motion.div 
-            className="bg-zinc-800 rounded-lg border border-zinc-700 p-6 md:p-8 flex flex-col gap-6 hover:border-[#D1B4C6]/30 hover:shadow-[0_0_30px_rgba(209,180,198,0.1)] hover:shadow-[#D1B4C6]/10 transition-all duration-300 group"
-            initial={{ opacity: 0, y: 30 }}
+            className="bg-[#FBFBFB] rounded-none border border-[#CBC4D6] p-6 md:p-8 flex flex-col gap-6 hover:border-[#CBC4D6] hover:shadow-[0_0_30px_rgba(203,196,214,0.15)] transition-all duration-300 group"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-50px" }}
+            whileHover={{ y: -3, scale: 1.01 }}
           >
-            <h3 className="text-xl font-medium text-white">Inbox Lite</h3>
-            <div className="text-left">
-              <span className="text-4xl font-bold text-white">$19</span>
-              <span className="text-zinc-400 ml-2">per month</span>
-            </div>
-            <ul className="space-y-3 mb-4 text-left">
-              {planIncludes.lite.map((item, index) => (
-                <li key={index} className="flex items-center gap-3">
-                  <ArrowUpRight className="w-4 h-4 text-[#D1B4C6]" />
-                  <span className="text-zinc-300">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href="#pricing"
-              className="w-full bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
-            >
-              Start Free Trial
-              <ArrowUpRight className="w-5 h-5" />
-            </a>
-            <div className="pt-4 border-t border-zinc-700">
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Just type what you need — like "ask for HOA docs" — and get a polished, real estate-ready email in seconds. Perfect for follow-ups, document chases, updates, and putting out fires without rewriting the same line 12 different ways.
+            <div>
+              <h3 className="display-5 text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>Lite</h3>
+              <div className="text-left mb-4">
+                <span className="display-8 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, letterSpacing: '-0.02em' }}>$29</span>
+                <span className="paragraph-default text-[#505050] ml-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>/month</span>
+              </div>
+              <p className="paragraph-default text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                Perfect for solo agents & new TCs
+              </p>
+              <p className="paragraph-small text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                Includes:
               </p>
             </div>
+            <div>
+              <ul className="space-y-3 mb-6 text-left">
+                {liteFeatures.map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--accent-1)' }} />
+                    <span className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <a
+              href="#pricing"
+              className="w-full bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+            >
+              START FREE
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
+            </a>
           </motion.div>
 
-          {/* Inbox Royalty */}
+          {/* Royalty */}
           <motion.div 
-            className="bg-zinc-800 rounded-lg border border-[#D1B4C6] p-6 md:p-8 relative hover:shadow-[0_0_40px_rgba(209,180,198,0.2)] hover:shadow-[#D1B4C6]/20 transition-all duration-300 group"
-            initial={{ opacity: 0, y: 30 }}
+            className="bg-[#FBFBFB] rounded-none border p-6 md:p-8 relative transition-all duration-300 group"
+            style={{ borderColor: 'var(--accent-1)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 40px var(--accent-1-20)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: "-50px" }}
+            whileHover={{ y: -3, scale: 1.01 }}
           >
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-[#D1B4C6] text-black px-4 py-1 rounded-full text-sm font-medium">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-black px-4 py-1 rounded-none text-sm font-medium" style={{ backgroundColor: 'var(--accent-1)' }}>
               Most Popular
             </div>
-            <h3 className="text-xl font-medium text-white">Inbox Royalty</h3>
-            <div className="text-left mb-6">
-              <span className="text-4xl font-bold text-white">$39</span>
-              <span className="text-zinc-400 ml-2">per month</span>
+            <div>
+              <h3 className="display-5 text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>Royalty</h3>
+              <div className="text-left mb-4">
+                <span className="display-8 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, letterSpacing: '-0.02em' }}>$39</span>
+                <span className="paragraph-default text-[#505050] ml-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>/month</span>
+              </div>
+              <p className="paragraph-default text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                For agents who want to sound like a 10-year pro
+              </p>
             </div>
-            <ul className="space-y-3 mb-6 text-left">
-              {planIncludes.royalty.map((item, index) => (
-                <li key={index} className="flex items-center gap-3">
-                  <ArrowUpRight className="w-4 h-4 text-[#D1B4C6]" />
-                  <span className="text-zinc-300">{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div>
+              <p className="paragraph-small font-medium text-[#505050] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Everything in Lite, plus:</p>
+              <ul className="space-y-3 mb-6 text-left">
+                {royaltyFeatures.map((item, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <Check className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: 'var(--accent-1)' }} />
+                    <span className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
             <a
               href="#pricing"
-              className="w-full bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center justify-center gap-2 mb-6 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
+              className="w-full bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
+              style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             >
-              Start Free Trial
-              <ArrowUpRight className="w-5 h-5" />
+              START FREE
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
             </a>
-            
-            {/* Testimonial */}
-            <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-700">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="flex text-[#D1B4C6]">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-              </div>
-              <p className="text-sm italic text-zinc-300 mb-2">
-                "The template library alone is worth it. I've saved hours every week on follow-ups and document requests."
-              </p>
-              <p className="text-sm text-zinc-400">- Sarah K., Transaction Coordinator</p>
-            </div>
           </motion.div>
         </div>
 
-        {/* Upgrade Note */}
-        <div className="text-center mt-12">
-          <p className="text-base text-zinc-300 mb-2">
-            Start with Lite and upgrade anytime. No commitment required.
+        {/* Bottom CTA */}
+        <motion.div
+          className="text-center mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          <a
+            href="#pricing"
+            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mb-4 group h-12"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+          >
+            GENERATE MY FIRST EMAIL — FREE
+            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
+          </a>
+          <p className="paragraph-small text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            Cancel anytime. No contracts. No BS.
           </p>
-          <p className="text-base text-zinc-300">
-            Have questions? Check out our <a href="#faq" className="text-[#D1B4C6] hover:underline">FAQ section</a>
-          </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

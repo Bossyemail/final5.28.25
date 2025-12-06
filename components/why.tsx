@@ -1,34 +1,185 @@
 "use client"
 
-import { ArrowUpRight } from "lucide-react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import { Mail, FileText, Clock, AlertCircle, Users, ArrowRight, HelpCircle, Heart } from "lucide-react"
+import { useState, useRef } from "react"
+
+const tabs = [
+  { 
+    id: 'docs', 
+    label: 'Docs', 
+    icon: FileText, 
+    description: 'Chasing documents, handling requests, and keeping paperwork organized throughout the transaction.'
+  },
+  { 
+    id: 'timeline', 
+    label: 'Timeline', 
+    icon: Clock, 
+    description: 'Clarifying deadlines, explaining delays, and keeping everyone on track with critical dates.'
+  },
+  { 
+    id: 'fire', 
+    label: 'Fire', 
+    icon: AlertCircle, 
+    description: 'Handling urgent issues, putting out fires, and managing crisis situations that threaten deals.'
+  },
+  { 
+    id: 'update', 
+    label: 'Update', 
+    icon: Users, 
+    description: 'Updating lenders, HOA, attorneys, and coordinating with all parties involved in the transaction.'
+  },
+  { 
+    id: 'offer', 
+    label: 'Offer', 
+    icon: Mail, 
+    description: 'Writing compelling offer emails that get taken seriously and stand out in competitive markets.'
+  },
+  { 
+    id: 'delay', 
+    label: 'Delay', 
+    icon: Clock, 
+    description: 'Explaining delays professionally, managing expectations, and keeping clients informed without panic.'
+  },
+  { 
+    id: 'calm', 
+    label: 'Calm', 
+    icon: Heart, 
+    description: 'Calming anxious clients, managing emotions, and maintaining relationships during stressful moments.'
+  },
+  { 
+    id: 'fix', 
+    label: 'Fix', 
+    icon: HelpCircle, 
+    description: 'Fixing misunderstandings, clarifying confusion, and ensuring everyone is on the same page.'
+  },
+  { 
+    id: 'followup', 
+    label: 'Follow Up', 
+    icon: ArrowRight, 
+    description: 'Following up on pending items, checking in with parties, and ensuring nothing falls through the cracks.'
+  }
+]
 
 export function Why() {
+  const [activeTab, setActiveTab] = useState('fire')
+  const sectionRef = useRef<HTMLElement>(null)
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  })
+
+  // Subtle opacity fade on scroll
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5])
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId)
+  }
+
+  const activeTabData = tabs.find(tab => tab.id === activeTab) || tabs[0]
+
   return (
-    <section id="why" className="w-full py-16 md:py-24 text-white relative">
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
-      {/* Additional light source */}
-      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-white/6 rounded-full blur-2xl"></div>
+    <motion.section 
+      ref={sectionRef}
+      id="why" 
+      className="w-full py-16 md:py-24 text-black bg-white relative"
+      style={{
+        opacity: opacity
+      }}
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-tight">
-            <div className="bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-              <div>WHY BossyEmail</div>
-              <div>EXISTS</div>
-            </div>
-          </h2>
-          <p className="text-base text-zinc-300 max-w-2xl leading-relaxed mb-8">
-            Every deal lives or dies on communication. The agents who win aren't just the hardest workers—they're the clearest communicators. BossyEmail helps you show up sharp, fast, and professional in every inbox, so your clients trust you, your colleagues respect you, and your pipeline never clogs.
+        <motion.div 
+          className="mb-12 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+            WHY THIS EXISTS
           </p>
-          <a
-            href="#pricing"
-            className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center gap-2 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
-          >
-            Get Started
-            <ArrowUpRight className="w-5 h-5" />
-          </a>
-        </div>
+          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+            Deals don't die because of contracts.
+            <br />
+            They die because of communication.
+          </h2>
+          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto mb-12" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            Real estate is 10% paperwork and 90% emails:
+          </p>
+        </motion.div>
+
+        {/* Main Content Container - 3 Column Grid */}
+        <motion.div 
+          className="bg-white"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          <div className="grid grid-cols-2 gap-8">
+            {/* Left Column - Icons in 3 columns grid */}
+            <div className="grid grid-cols-3 gap-1.5">
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id
+                const TabIcon = tab.icon
+                return (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`px-2 py-2.5 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 border rounded-none ${
+                      isActive
+                        ? 'bg-[#FBFBFB] border-[#161616]'
+                        : 'bg-white border-[#E3E3E3] hover:border-[#ABABAB]'
+                    }`}
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <TabIcon 
+                      className={`w-4 h-4 ${isActive ? 'text-[#161616]' : 'text-[#ABABAB]'}`} 
+                      strokeWidth={isActive ? 2 : 1.5}
+                    />
+                    <span className={`text-xs font-medium ${isActive ? 'text-[#161616]' : 'text-[#ABABAB]'}`}>
+                      {tab.label}
+                    </span>
+                  </motion.button>
+                )
+              })}
+            </div>
+
+            {/* Right Column - Text Description for Selected Item */}
+            <div>
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className="space-y-8"
+              >
+                {/* Selected Item Description */}
+                <div>
+                  <p className="paragraph-large text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.6em' }}>
+                    {activeTabData.description}
+                  </p>
+                </div>
+                
+                {/* Closing Statement */}
+                <div className="pt-6 border-t border-[#E3E3E3] space-y-2">
+                  <p className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                    Nobody teaches agents how to write.
+                  </p>
+                  <p className="display-5 text-[#161616] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+                    BossyEmail does.
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.section>
   )
 } 

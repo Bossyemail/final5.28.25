@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
 import * as Sentry from "@sentry/nextjs"
@@ -7,7 +7,21 @@ import Script from "next/script"
 import React from "react"
 import AppShell from "@/components/AppShell"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+})
+
+// Inter Tight is not available via next/font/google, so we'll use a local import or CSS
+// For now, we can use Inter with tighter letter-spacing as an alternative
+// Or we can add Inter Tight via CSS @import
 
 export const metadata: Metadata = {
   title: "BossyEmail - Real Estate Emails That Don't Suck",
@@ -73,7 +87,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+      <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="icon" href="/transparent 2.png" type="image/png" />

@@ -5,7 +5,7 @@ import { TryGeneratorCTA } from "./try-generator-cta"
 
 export function FinalCTA() {
   return (
-    <section className="w-full py-16 md:py-24 flex items-center justify-center font-sans bg-[#D1B4C6] dark:bg-[#efe1e1]">
+    <section className="w-full py-16 md:py-24 flex items-center justify-center font-sans dark:bg-[#efe1e1]" style={{ backgroundColor: 'var(--accent-1)' }}>
       <div className="max-w-2xl w-full flex flex-col items-center text-center px-4">
         <h2 className="mb-2 text-black dark:text-black text-center" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '20px' }}>
           Still drafting emails from scratch?

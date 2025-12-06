@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUpRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { motion, useInView } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
@@ -36,53 +36,66 @@ function AnimatedCounter({ end, duration = 2, suffix = "" }: { end: number; dura
 
 export function FinalCTA() {
   return (
-    <section className="py-16 md:py-24 text-white relative">
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D1B4C6]/12 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#D1B4C6]/10 rounded-full blur-3xl"></div>
-      {/* Additional light source */}
-      <div className="absolute top-1/2 right-1/3 w-72 h-72 bg-white/6 rounded-full blur-3xl"></div>
+    <section className="py-16 md:py-24 pb-32 md:pb-40 text-black bg-white relative">
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <motion.h2 
-          className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 text-white leading-tight"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          Ready to Stop Typing the Same Email<br />47 Times?
-        </motion.h2>
-        <motion.p 
-          className="text-lg text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-8"
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, margin: "-50px" }}
         >
-          Join hundreds of real estate professionals who've already saved hours every week with BossyEmail. Your inbox (and your sanity) will thank you.
-        </motion.p>
+          <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+            GET STARTED
+          </p>
+          <h2 
+            className="display-6 sm:display-7 md:display-8 mb-4 text-black"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}
+          >
+            Generate your first 3 emails free
+          </h2>
+          <p 
+            className="paragraph-default text-[#505050] max-w-2xl mx-auto mb-8"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}
+          >
+            No credit card. No learning curve. Just clear, professional communication — instantly.
+          </p>
+        </motion.div>
         
         <motion.div 
-          className="mb-16"
+          className="mb-16 flex flex-col sm:flex-row items-center justify-center gap-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, margin: "-50px" }}
         >
-          <a
+          <motion.a
             href="#pricing"
-            className="bg-[#D1B4C6] hover:bg-[#C4A7B9] text-black px-8 py-4 rounded-lg font-medium text-lg transition-all duration-300 inline-flex items-center gap-2 hover:scale-105 hover:shadow-[0_0_20px_rgba(209,180,198,0.4)] active:scale-95"
+            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-wide inline-flex items-center gap-2 group h-12"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            Get Started
-            <ArrowUpRight className="w-5 h-5" />
-          </a>
+            GENERATE MY FIRST EMAIL
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" />
+          </motion.a>
+          <motion.a
+            href="#video-demo"
+            className="bg-white hover:bg-[#FBFBFB] text-black border border-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-wide inline-flex items-center gap-2 group h-12"
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            SEE LIVE DEMO
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" />
+          </motion.a>
         </motion.div>
         
         <motion.div 
           className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-4xl mx-auto"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true, margin: "-50px" }}
         >
           <motion.div 
             className="text-center"
@@ -91,10 +104,10 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 0.8 }}
             viewport={{ once: true }}
           >
-            <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
+            <div className="display-10 mb-3" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.15em', color: 'var(--accent-1)' }}>
               <AnimatedCounter end={5} duration={1.5} suffix="s" />
             </div>
-            <p className="text-base text-zinc-400">Average Generation Time</p>
+            <p className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Average Generation Time</p>
           </motion.div>
           <motion.div 
             className="text-center"
@@ -103,10 +116,10 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 0.9 }}
             viewport={{ once: true }}
           >
-        <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
-          <AnimatedCounter end={400} duration={2} suffix="+" />
+        <div className="display-10 mb-3" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.15em', color: 'var(--accent-1)' }}>
+          <AnimatedCounter end={300} duration={2} suffix="+" />
         </div>
-        <p className="text-base text-zinc-400">Professional Email Templates</p>
+        <p className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Professional Email Templates</p>
           </motion.div>
           <motion.div 
             className="text-center"
@@ -115,10 +128,10 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 1.0 }}
             viewport={{ once: true }}
           >
-            <div className="text-5xl sm:text-6xl font-bold text-[#D1B4C6] mb-3">
+            <div className="display-10 mb-3" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.15em', color: 'var(--accent-1)' }}>
               <AnimatedCounter end={98} duration={1.8} suffix="%" />
             </div>
-            <p className="text-base text-zinc-400">Customer Satisfaction Rate</p>
+            <p className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Customer Satisfaction Rate</p>
           </motion.div>
         </motion.div>
       </div>

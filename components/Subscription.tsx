@@ -41,20 +41,17 @@ export function Subscription() {
   };
 
   return (
-    <div className="w-full pl-32 pr-16 sm:pl-8 sm:pr-4 xs:pl-2 xs:pr-2 dark:bg-[#424242] dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', color: '#232326', WebkitFontSmoothing: 'antialiased' }}>
-      <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-normal mb-2 dark:text-[#e0e0e0]" style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '32px' }}>Subscription</h2>
-        <p className="mb-6 sm:text-base dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Inter, sans-serif' }}>
+    <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+      <div className="max-w-2xl mx-auto py-8">
+        <h2 className="text-2xl font-normal mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Subscription</h2>
+        <p className="mb-6 text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
           Manage your subscription and billing details.
         </p>
-        <p className="mb-8 sm:text-base dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '16px', fontFamily: 'Inter, sans-serif' }}>
-          Need to make changes? We've got you covered.
-        </p>
-        <div className="bg-white dark:bg-[#424242] rounded-2xl shadow-xl p-8 mb-8 w-full">
-          <div className="space-y-6">
+        <div className="bg-white rounded-none border border-[#E3E3E3] p-6 w-full">
+          <div className="space-y-4">
             <div>
-              <div className="text-base font-semibold mb-1 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Current Plan</div>
-              <div className="mb-6 dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
+              <div className="text-sm font-medium mb-1 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Current Plan</div>
+              <div className="mb-4 text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
             {isSubscribed ? (
               isTrialing ? (
                 "You're currently in your free trial period"
@@ -62,22 +59,22 @@ export function Subscription() {
                 "You're currently on the paid plan"
               )
             ) : (
-              "Start your free trial to get unlimited access"
+              "Start your free trial to unlock full access."
             )}
               </div>
             </div>
             {subscription && (
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>Status</span>
-                  <span className="font-semibold capitalize dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontSize: '18px' }}>{subscription.status}</span>
+                  <span className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Status</span>
+                  <span className="text-sm font-medium capitalize text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>{subscription.status}</span>
                 </div>
                 {subscription.currentPeriodEnd && (
                   <div className="flex justify-between">
-                    <span className="dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '18px' }}>
+                    <span className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
                     {isCanceled ? "Access until" : "Next billing date"}
                   </span>
-                    <span className="font-semibold dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontSize: '18px' }}>
+                    <span className="text-sm font-medium text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
                     {new Date(subscription.currentPeriodEnd * 1000).toLocaleDateString()}
                   </span>
                 </div>
@@ -86,27 +83,27 @@ export function Subscription() {
           )}
             <div>
           {isSubscribed ? (
-                <Button onClick={handleManageSubscription} disabled={isLoading} size="lg" className="w-1/2 mx-auto block bg-black text-white rounded-full px-8 py-3 font-medium text-base text-center flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]" style={{ fontWeight: 500 }}>
-                  {isLoading ? 'Loading...' : <><span>Manage Subscription</span> <ArrowUpRight size={20} /></>}
+                <Button onClick={handleManageSubscription} disabled={isLoading} className="w-full bg-[#161616] text-white rounded-none px-4 py-2 font-medium text-sm text-center flex items-center justify-center gap-2 hover:bg-[#292929] border border-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+                  {isLoading ? 'Loading...' : <><span>Manage Subscription</span> <ArrowUpRight size={16} /></>}
             </Button>
           ) : (
-                <Button onClick={handleSubscribe} disabled={isLoading} size="lg" className="w-1/2 mx-auto block bg-black text-white rounded-full px-8 py-3 font-medium text-base text-center flex items-center justify-center gap-2 dark:bg-white dark:text-[#212121] dark:hover:bg-[#f5f5f5] dark:border dark:border-[#424242]" style={{ fontWeight: 500 }}>
-                  {isLoading ? 'Loading...' : <><span>Start Free Trial</span> <ArrowUpRight size={20} /></>}
+                <Button onClick={handleSubscribe} disabled={isLoading} className="w-full bg-[#161616] text-white rounded-none px-4 py-2 font-medium text-sm text-center flex items-center justify-center gap-2 hover:bg-[#292929] border border-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+                  {isLoading ? 'Loading...' : <><span>Start Free Trial</span> <ArrowUpRight size={16} /></>}
             </Button>
           )}
             </div>
-            <div className="mt-8" style={{ fontWeight: 400, fontSize: '18px' }}>
-              <div className="font-semibold text-base mb-2 dark:text-[#e0e0e0]" style={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>What You Get (Besides Your Sanity Back)</div>
-              <ul className="mb-4 space-y-1 pl-0 dark:text-[#e0e0e0]">
-                <li>✍️ Real estate-specific emails, generated in seconds</li>
-                <li>💬 Smart, editable templates that don't sound like a robot wrote them</li>
-                <li>🧠 A brain trained on FAR/BAR, addenda, awkward inspections, and ghosting clients</li>
-                <li>🛠️ Tools that make you look pro — even when you're in leggings answering emails from your car</li>
-                <li>⏱️ More time for closings, less time rewriting "just following up..." for the 100th time.</li>
+            <div className="mt-6">
+              <div className="font-medium text-sm mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>What You Get (Beyond Your Sanity Back)</div>
+              <ul className="mb-4 space-y-1.5 pl-0 text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                <li>✨ Real-estate fluent emails, generated in seconds — complete, deal-specific, and written like a seasoned pro.</li>
+                <li>💬 Smart, editable templates — polished communication without the "robot wrote this" feeling.</li>
+                <li>🧠 Trained on real contracts + real chaos — FAR/BAR, addenda, inspections, financing delays, HOA black holes, and everything in between.</li>
+                <li>🛠️ Tools that elevate your professionalism — even when you're writing emails from your car between showings.</li>
+                <li>⏱️ More time for actual closings — less time rewriting "just following up…" for the hundredth time.</li>
               </ul>
-              <div className="font-semibold mb-1 dark:text-[#e0e0e0]" style={{ fontWeight: 600 }}>Try It Free — No Strings, No Card, No BS</div>
-              <div className="dark:text-[#e0e0e0]">We'll give you 3 emails on the house so you can see what the hype's about.</div>
-              <div className="mt-2 text-sm dark:text-[#e0e0e0]" style={{ fontWeight: 400, fontSize: '16px' }}>Because if you're gonna pay for a tool, it should actually work. (And look good doing it.)</div>
+              <div className="font-medium mb-1 text-sm text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Try It Free — No Card, No Commitment</div>
+              <div className="text-sm text-[#505050] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Your first 3 emails are on us so you can see exactly why agents and TCs rely on BossyEmail every day.</div>
+              <div className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>If you're going to pay for a tool, it should actually work — and make you look good while you use it.</div>
             </div>
           </div>
         </div>

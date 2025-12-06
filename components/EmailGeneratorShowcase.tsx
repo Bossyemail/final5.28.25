@@ -142,7 +142,7 @@ function TemplateLibraryPreviewHero() {
       {/* End category bar */}
       <div className="mb-4 text-left">
         <span className="text-xs font-normal text-zinc-500 uppercase tracking-wider">Time-Saving Templates</span>
-        <div className="text-zinc-700 text-lg font-normal mt-1 mb-2">Browse 100+ plug-and-play templates</div>
+        <div className="text-zinc-700 text-lg font-normal mt-1 mb-2">Browse 300+ plug-and-play templates</div>
       </div>
       <div
         className="divide-y divide-zinc-200 bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden"

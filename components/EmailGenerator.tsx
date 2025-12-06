@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, ChevronDown, Edit2, Check, X, ThumbsUp, ThumbsDown, Pin, Mic, MicOff, MessageSquare, Plus, Eye, EyeOff } from "lucide-react";
+import { Copy, Loader2, Save, Sparkles, RefreshCw, Trash2, Mail, Check, X, ThumbsUp, ThumbsDown, Mic, MicOff, ArrowRight, SlidersHorizontal, ChevronDown } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import {
   DropdownMenu,
@@ -89,12 +89,9 @@ export function EmailGenerator() {
   // New features
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
-  const [conversations, setConversations] = useState<Array<{id: string, title: string, messages: ChatMessage[]}>>([]);
-  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [sidebarHidden, setSidebarHidden] = useState(false);
+  const [optionsExpanded, setOptionsExpanded] = useState(false);
 
   // Initialize voice recognition
   useEffect(() => {
@@ -115,6 +112,17 @@ export function EmailGenerator() {
         recognition.onerror = (event: any) => {
           console.log('Speech recognition error:', event.error);
           setIsListening(false);
+          
+          // Show user-friendly error messages
+          if (event.error === 'not-allowed') {
+            toast.error('Microphone permission denied. Please enable microphone access in your browser settings.');
+          } else if (event.error === 'no-speech') {
+            toast.error('No speech detected. Please try again.');
+          } else if (event.error === 'network') {
+            toast.error('Network error. Please check your connection and try again.');
+          } else {
+            toast.error('Voice input error. Please try again.');
+          }
         };
         
         recognition.onend = () => {
@@ -151,7 +159,7 @@ export function EmailGenerator() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load signature and name from localStorage on mount
+  // Load signature and account info from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("bossyemail_account");
     if (stored) {
@@ -161,10 +169,31 @@ export function EmailGenerator() {
     }
   }, []);
 
-  // Helper to get the signature with name replaced
-  function getFinalSignature() {
-    if (!signature) return "";
-    return signature.replace('[Your Name]', accountName || 'Your Name');
+  // Helper to get the full signature with all account details
+  function getFullSignature() {
+    const stored = localStorage.getItem("bossyemail_account");
+    if (!stored) return "";
+    
+    try {
+      const info = JSON.parse(stored);
+      if (!info.signature) return "";
+      
+      let fullSig = info.signature.replace('[Your Name]', info.name || 'Your Name');
+      
+      // Append additional account details if they exist
+      if (info.title) fullSig += `\n${info.title}`;
+      if (info.company) fullSig += `\n${info.company}`;
+      if (info.address) fullSig += `\n${info.address}`;
+      if (info.phone) fullSig += `\nPhone: ${info.phone}`;
+      if (info.office) fullSig += `\nOffice: ${info.office}`;
+      if (info.fax) fullSig += `\nFax: ${info.fax}`;
+      if (info.email) fullSig += `\n${info.email}`;
+      
+      return fullSig;
+    } catch (e) {
+      console.error("Failed to parse account info:", e);
+      return "";
+    }
   }
 
   async function handleGenerate(e?: React.FormEvent) {
@@ -187,7 +216,6 @@ export function EmailGenerator() {
     };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
-    updateCurrentConversation(newMessages);
     
     try {
 
@@ -205,19 +233,33 @@ export function EmailGenerator() {
       setMessages(messagesWithAI);
 
       // Call streaming API
-      const res = await fetch("/api/generate-email-stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, tone, recipient, sender }),
-      });
+      let res: Response;
+      try {
+        res = await fetch("/api/generate-email-stream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, tone, recipient, sender }),
+        });
+      } catch (fetchError: any) {
+        console.error('Fetch error:', fetchError);
+        throw new Error(fetchError.message || "Network error. Please check your connection and try again.");
+      }
 
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Failed to generate email: ${errorText}`);
+        let errorText = '';
+        try {
+          errorText = await res.text();
+        } catch (e) {
+          errorText = `Server error (${res.status})`;
+        }
+        console.error('API error response:', errorText, 'Status:', res.status);
+        throw new Error(errorText || `Failed to generate email (${res.status})`);
       }
 
       const reader = res.body?.getReader();
-      if (!reader) throw new Error('No response body');
+      if (!reader) {
+        throw new Error('No response body from server');
+      }
 
       let fullContent = '';
       let subject = '';
@@ -228,24 +270,45 @@ export function EmailGenerator() {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const chunk = new TextDecoder().decode(value);
+          const chunk = new TextDecoder().decode(value, { stream: true });
           fullContent += chunk;
           setStreamingContent(fullContent);
 
           // Try to parse JSON when we have complete content
-          try {
-            const parsed = JSON.parse(fullContent);
-            if (parsed.subject && parsed.body) {
-              subject = parsed.subject;
-              body = parsed.body;
-              break;
+          // Look for JSON object boundaries
+          const jsonMatch = fullContent.match(/\{[\s\S]*"subject"[\s\S]*"body"[\s\S]*\}/);
+          if (jsonMatch) {
+            try {
+              const parsed = JSON.parse(jsonMatch[0]);
+              if (parsed.subject && parsed.body) {
+                subject = parsed.subject;
+                body = parsed.body;
+                break;
+              }
+            } catch (e) {
+              // JSON might still be incomplete, continue
             }
-          } catch (e) {
-            // Continue streaming until we have complete JSON
           }
         }
 
-        // If we didn't get JSON, try to extract subject and body from the content
+        // After streaming is complete, try to parse the full content as JSON
+        if (!subject || !body) {
+          // Try to find and parse JSON in the content
+          const jsonMatch = fullContent.match(/\{[\s\S]*"subject"[\s\S]*"body"[\s\S]*\}/);
+          if (jsonMatch) {
+            try {
+              const parsed = JSON.parse(jsonMatch[0]);
+              if (parsed.subject && parsed.body) {
+                subject = parsed.subject;
+                body = parsed.body;
+              }
+            } catch (e) {
+              console.error('Failed to parse JSON:', e);
+            }
+          }
+        }
+
+        // If we still didn't get JSON, try to extract subject and body from the content
         if (!subject || !body) {
           const lines = fullContent.split('\n');
           let subjectLine = '';
@@ -262,61 +325,99 @@ export function EmailGenerator() {
           if (subjectLine && bodyStart > 0) {
             subject = subjectLine;
             body = lines.slice(bodyStart).join('\n').trim();
-          } else {
+          } else if (fullContent.trim()) {
             // Fallback: use the full content as body
             subject = 'Email Response';
-            body = fullContent;
+            body = fullContent.trim();
+          } else {
+            throw new Error('No content received from server');
           }
         }
-      } catch (streamError) {
+      } catch (streamError: any) {
         console.error('Streaming error:', streamError);
-        throw new Error('Error reading streaming response');
+        throw new Error(streamError.message || 'Error reading streaming response');
       }
+
+      // Append signature to body
+      const fullSignature = getFullSignature();
+      const bodyWithSignature = fullSignature ? `${body}\n\n${fullSignature}` : body;
 
       // Update the AI message with final content
       const finalAiMsg: ChatMessage = {
         ...aiMsg,
-        content: `Subject: ${subject}\n\n${body}`,
+        content: `Subject: ${subject}\n\n${bodyWithSignature}`,
         subject,
-        body,
+        body: bodyWithSignature,
       };
 
       const finalMessages = [...newMessages, finalAiMsg];
       setMessages(finalMessages);
-      updateCurrentConversation(finalMessages);
       
       await incrementUsage();
       setPrompt("");
     } catch (err: any) {
       console.error('Generation error:', err);
-      setError(err.message || "Something went wrong.");
+      
+      // Provide more specific error messages
+      let errorMessage = "Something went wrong.";
+      if (err.message) {
+        errorMessage = err.message;
+      } else if (err.name === 'TypeError' && err.message?.includes('fetch')) {
+        errorMessage = "Network error. Please check your connection and try again.";
+      } else if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
+        errorMessage = "Please sign in to generate emails.";
+      } else if (err.message?.includes('403') || err.message?.includes('limit')) {
+        errorMessage = "You've reached your free email limit. Please subscribe to continue.";
+      }
+      
+      setError(errorMessage);
+      
+      // Remove the placeholder AI message if it was added
+      setMessages(newMessages);
       
       // Fallback to regular API if streaming fails
       try {
+        console.log('Attempting fallback to non-streaming API...');
         const fallbackRes = await fetch("/api/generate-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ prompt, tone, recipient, sender }),
         });
+        
+        if (!fallbackRes.ok) {
+          const errorText = await fallbackRes.text();
+          throw new Error(errorText || `Failed to generate email (${fallbackRes.status})`);
+        }
+        
         const fallbackData = await fallbackRes.json();
         if (fallbackData.error) throw new Error(fallbackData.error);
         
+        // Append signature to fallback body
+        const fullSignature = getFullSignature();
+        const fallbackBodyWithSignature = fullSignature 
+          ? `${fallbackData.body || ''}\n\n${fullSignature}` 
+          : (fallbackData.body || '');
+
         const fallbackAiMsg: ChatMessage = {
           id: `${Date.now()}-ai`,
           type: 'ai',
-          content: `Subject: ${fallbackData.subject || ''}\n\n${fallbackData.body || ''}`,
+          content: `Subject: ${fallbackData.subject || ''}\n\n${fallbackBodyWithSignature}`,
           subject: fallbackData.subject || '',
-          body: fallbackData.body || '',
+          body: fallbackBodyWithSignature,
           timestamp: Date.now(),
         };
         
         const fallbackMessages = [...newMessages, fallbackAiMsg];
         setMessages(fallbackMessages);
-        updateCurrentConversation(fallbackMessages);
+        await incrementUsage();
+        setPrompt("");
         setError("");
       } catch (fallbackErr: any) {
         console.error('Fallback error:', fallbackErr);
-        setError(fallbackErr.message || "Failed to generate email");
+        // Only update error if fallback also failed
+        if (!errorMessage.includes('limit') && !errorMessage.includes('Unauthorized')) {
+          setError(fallbackErr.message || "Failed to generate email. Please try again.");
+        }
       }
     } finally {
       setLoading(false);
@@ -371,8 +472,20 @@ export function EmailGenerator() {
   // Voice input functions
   const startListening = () => {
     if (recognition) {
-      setIsListening(true);
-      recognition.start();
+      try {
+        setIsListening(true);
+        recognition.start();
+      } catch (error: any) {
+        console.error('Error starting voice recognition:', error);
+        setIsListening(false);
+        if (error.name === 'InvalidStateError') {
+          toast.error('Voice recognition is already running. Please wait.');
+        } else {
+          toast.error('Unable to start voice input. Please try again.');
+        }
+      }
+    } else {
+      toast.error('Voice input is not supported in your browser. Please use Chrome, Edge, or Safari.');
     }
   };
 
@@ -384,36 +497,6 @@ export function EmailGenerator() {
   };
 
   // Conversation management
-  const createNewConversation = () => {
-    const newId = Date.now().toString();
-    const newConversation = {
-      id: newId,
-      title: "New Conversation",
-      messages: []
-    };
-    setConversations(prev => [newConversation, ...prev]);
-    setCurrentConversationId(newId);
-    setMessages([]);
-  };
-
-  const switchConversation = (conversationId: string) => {
-    const conversation = conversations.find(c => c.id === conversationId);
-    if (conversation) {
-      setCurrentConversationId(conversationId);
-      setMessages(conversation.messages);
-    }
-  };
-
-  const updateCurrentConversation = (newMessages: ChatMessage[]) => {
-    if (currentConversationId) {
-      setConversations(prev => prev.map(conv => 
-        conv.id === currentConversationId 
-          ? { ...conv, messages: newMessages, title: newMessages[0]?.content?.slice(0, 30) + "..." || "New Conversation" }
-          : conv
-      ));
-    }
-  };
-
   function handlePromptClear() {
     setPrompt("");
   }
@@ -427,7 +510,8 @@ export function EmailGenerator() {
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${value === opt ? 'bg-[#D1B4C6] text-black border-[#D1B4C6]' : 'bg-zinc-100 text-zinc-700 border-zinc-200 hover:bg-zinc-200'}`}
+            className={`px-4 py-2 rounded-none text-sm font-medium transition-colors border ${value === opt ? 'text-[#161616] bg-[#FBFBFB] border-[#161616]' : 'bg-white text-[#505050] border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB]'}`}
+            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: value === opt ? 500 : 400 }}
             aria-pressed={value === opt}
           >
             {opt}
@@ -516,7 +600,7 @@ export function EmailGenerator() {
     return parts.map((part, i) => {
       if (/^\[.*\]$/.test(part)) {
         return (
-          <span key={i} className="italic text-[#D1B4C6] bg-[#D1B4C6]/10 px-1 rounded">{part}</span>
+          <span key={i} className="italic px-1 rounded" style={{ color: 'var(--accent-1)', backgroundColor: 'var(--accent-1-10)' }}>{part}</span>
         );
       }
       return part;
@@ -524,144 +608,39 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="flex h-[80vh] bg-gradient-to-br from-zinc-50 via-white to-zinc-100">
-      {/* Conversation Sidebar */}
-      <div className={`hidden md:flex ${sidebarHidden ? 'w-0' : (sidebarCollapsed ? 'w-0' : 'w-64')} bg-white border-r border-zinc-200 flex-col transition-all duration-300 overflow-hidden`}>
-        {/* Sidebar Header */}
-        <div className="p-4 border-b border-zinc-200">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-zinc-700">Conversations</h3>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setSidebarHidden(!sidebarHidden)}
-                className="p-1 hover:bg-zinc-100 rounded transition-colors"
-                title={sidebarHidden ? 'Show conversations' : 'Hide conversations'}
-              >
-                {sidebarHidden ? (
-                  <Eye className="w-4 h-4 text-zinc-500" />
-                ) : (
-                  <EyeOff className="w-4 h-4 text-zinc-500" />
-                )}
-              </button>
-              <button
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="p-1 hover:bg-zinc-100 rounded transition-colors"
-                title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              >
-                <ChevronDown className={`w-4 h-4 text-zinc-500 transition-transform ${sidebarCollapsed ? 'rotate-180' : ''}`} />
-              </button>
-            </div>
-          </div>
-          <button
-            onClick={createNewConversation}
-            className="w-full flex items-center gap-2 px-3 py-2 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            New Conversation
-          </button>
-        </div>
-        
-        {/* Conversation List */}
-        <div className="flex-1 overflow-y-auto">
-          {conversations.length === 0 ? (
-            <div className="p-4 text-center text-zinc-500 text-sm">
-              No conversations yet
-            </div>
-          ) : (
-            <div className="p-2">
-              {conversations.map((conversation) => (
-                <button
-                  key={conversation.id}
-                  onClick={() => switchConversation(conversation.id)}
-                  className={`w-full text-left p-3 rounded-lg mb-1 transition-colors ${
-                    currentConversationId === conversation.id
-                      ? 'bg-zinc-100 border border-zinc-300'
-                      : 'hover:bg-zinc-50'
-                  }`}
-                >
-                  <div className="text-sm font-medium text-zinc-900 truncate">
-                    {conversation.title}
-                  </div>
-                  <div className="text-xs text-zinc-500 mt-1">
-                    {conversation.messages.length} messages
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Mobile Conversation Toggle */}
-      <div className="md:hidden flex justify-center p-4 border-b border-zinc-200">
-        <button
-          onClick={() => setSidebarHidden(!sidebarHidden)}
-          className="flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors"
-        >
-          {sidebarHidden ? (
-            <>
-              <Eye className="w-4 h-4 text-zinc-600" />
-              <span className="text-sm font-medium text-zinc-700">Show Conversations</span>
-            </>
-          ) : (
-            <>
-              <EyeOff className="w-4 h-4 text-zinc-600" />
-              <span className="text-sm font-medium text-zinc-700">Hide Conversations</span>
-            </>
-          )}
-        </button>
-      </div>
-
+    <div className="flex h-[80vh] bg-white">
       {/* Main Chat Area */}
-      <div className="flex-1 max-w-3xl mx-auto font-sans px-2 sm:px-4 md:px-6 text-zinc-900 flex flex-col shadow-none">
-        {/* Sidebar Toggle Button (when collapsed or hidden) */}
-        {(sidebarCollapsed || sidebarHidden) && (
-          <div className="absolute left-4 top-4 z-10">
-            <button
-              onClick={() => {
-                if (sidebarHidden) {
-                  setSidebarHidden(false);
-                } else {
-                  setSidebarCollapsed(false);
-                }
-              }}
-              className="p-2 bg-white border border-zinc-200 rounded-lg shadow-sm hover:bg-zinc-50 transition-colors"
-              title="Show conversations"
-            >
-              <MessageSquare className="w-4 h-4 text-zinc-600" />
-            </button>
-          </div>
-        )}
+      <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 md:px-8 text-[#161616] flex flex-col" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
       <div className="flex-1 overflow-y-auto pb-4">
         
         {/* Pinned section */}
         {pinnedMessages.length > 0 && (
           <div className="mb-6">
-            <div className="text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wide">Pinned</div>
+            <div className="text-xs font-semibold text-[#ABABAB] mb-2 uppercase tracking-wide" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Pinned</div>
             {pinnedMessages.map((msg, idx) => (
               <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                <div className={`rounded-xl px-4 py-3 max-w-[80%] bg-yellow-50 border border-yellow-300 text-yellow-900`} style={{ fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <div className={`rounded-none px-4 py-3 max-w-[80%] bg-white border border-[#E3E3E3] text-[#161616]`} style={{ fontFamily: 'var(--font-inter-tight), sans-serif', position: 'relative', fontSize: '1em', wordBreak: 'break-word' }}>
                   {msg.type === 'ai' && msg.subject && (
-                    <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
+                    <div className="font-normal text-base mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Subject: {msg.subject}</div>
                   )}
                   {msg.type === 'ai' && msg.body ? (
                     <>
                       <div className="mb-2">
                         <ReactMarkdown
                           components={{
-                            p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} />,
+                            p: ({node, ...props}) => <p className="text-base text-[#161616] leading-relaxed mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }} {...props} />,
                             text: ({children}) => <>{renderWithPlaceholders(children as string)}</>
                           }}
                         >
                           {msg.body}
                         </ReactMarkdown>
                       </div>
-                      <div className="flex flex-row justify-between mt-6 pt-3 border-t border-zinc-100 dark:border-[#333] items-end">
+                      <div className="flex flex-row justify-between mt-6 pt-3 border-t border-[#E3E3E3] items-end">
                         {/* Left group: Like, Dislike, Favorite */}
                         <div className="flex flex-row gap-2 items-center">
                           <button
                             aria-label="Like"
-                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                            className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${feedback[msg.id]==='like' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'hover:bg-[#FBFBFB] text-[#ABABAB] hover:text-[#161616] hover:border-[#ABABAB]'}`}
                             onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
                             type="button"
                             style={{ width: 36, height: 36 }}
@@ -670,7 +649,7 @@ export function EmailGenerator() {
                           </button>
                           <button
                             aria-label="Dislike"
-                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                            className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${feedback[msg.id]==='dislike' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'hover:bg-[#FBFBFB] text-[#ABABAB] hover:text-[#161616] hover:border-[#ABABAB]'}`}
                             onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
                             type="button"
                             style={{ width: 36, height: 36 }}
@@ -679,7 +658,7 @@ export function EmailGenerator() {
                           </button>
                           <button
                             aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
-                            className={`rounded-full p-2 transition-colors flex items-center justify-center ${favorites[msg.id] ? 'text-yellow-500' : 'hover:text-yellow-500 text-zinc-500 dark:text-zinc-400'}`}
+                            className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${favorites[msg.id] ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'hover:bg-[#FBFBFB] text-[#ABABAB] hover:text-[#161616] hover:border-[#ABABAB]'}`}
                             style={{ width: 36, height: 36 }}
                             onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
                             type="button"
@@ -689,24 +668,10 @@ export function EmailGenerator() {
                             </svg>
                           </button>
                         </div>
-                        {/* Reference button below left group */}
-                        <div className="flex flex-col items-start">
-                          <button
-                            aria-label="Reference this email"
-                            className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 text-xs font-semibold mt-1"
-                            type="button"
-                            onClick={() => {
-                              const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n\"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}\"`;
-                              setPrompt(summary);
-                            }}
-                          >
-                            Reference
-                          </button>
-                        </div>
-                        {/* Right group: Copy, Send, Edit, Delete */}
+                        {/* Right group: Copy, Send, Delete */}
                         <div className="flex flex-row gap-1 items-center">
                           <button
-                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                             style={{ width: 36, height: 36 }}
                             onClick={() => {
                               navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
@@ -719,7 +684,7 @@ export function EmailGenerator() {
                           </button>
                           <a
                             href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
-                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                             style={{ width: 36, height: 36 }}
                             title="Send"
                             target="_blank"
@@ -728,16 +693,7 @@ export function EmailGenerator() {
                             <Mail className="w-5 h-5" />
                           </a>
                           <button
-                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
-                            style={{ width: 36, height: 36 }}
-                            onClick={handleEdit}
-                            title="Edit"
-                            type="button"
-                          >
-                            <Edit2 className="w-5 h-5" />
-                          </button>
-                          <button
-                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                             style={{ width: 36, height: 36 }}
                             onClick={() => {
                               setPrompt(msg.content.split('\n\n')[0] || '');
@@ -749,7 +705,7 @@ export function EmailGenerator() {
                             <RefreshCw className="w-5 h-5" />
                           </button>
                           <button
-                            className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                            className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                             style={{ width: 36, height: 36 }}
                             onClick={() => {
                               setMessages(prev => prev.filter(m => m.id !== msg.id));
@@ -765,16 +721,6 @@ export function EmailGenerator() {
                   ) : (
                     <div>{msg.content}</div>
                   )}
-                  {/* Pin button */}
-                  <button
-                    aria-label="Unpin"
-                    className="absolute top-2 right-2 rounded-full p-2 transition-colors bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-black dark:bg-[#232323] dark:hover:bg-[#333] dark:text-zinc-400"
-                    onClick={() => setPinned(p => ({ ...p, [msg.id]: false }))}
-                    type="button"
-                    style={{ width: 36, height: 36 }}
-                  >
-                    <Pin className="w-5 h-5" fill="none" />
-                  </button>
                 </div>
               </div>
             ))}
@@ -782,7 +728,7 @@ export function EmailGenerator() {
               )}
         {/* Error display */}
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          <div className="mb-4 p-4 bg-[#FBFBFB] border border-[#E3E3E3] rounded-none text-[#161616]">
             <p className="font-medium">Error:</p>
             <p>{error}</p>
           </div>
@@ -790,17 +736,164 @@ export function EmailGenerator() {
         
         {/* Main chat thread (filtered) */}
         {filteredMessages.length === 0 && !loading && (
-          <div className="text-center text-zinc-400 mt-12">No messages yet. Start by entering a prompt below.</div>
+          <div className="flex flex-col items-center justify-center mt-20 mb-8 w-full">
+            <div className="text-2xl font-normal text-[#161616] mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>How can I help you today?</div>
+            
+            {/* Input form - shown when no messages */}
+            <div className="w-full max-w-2xl">
+              <form onSubmit={handleGenerate} className="w-full" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                {/* Selected options tags */}
+                {(sender || recipient || tone) && !optionsExpanded && (
+                  <div className="flex flex-row gap-2 items-center flex-wrap mb-3">
+                    {sender && (
+                      <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                        From: {sender}
+                      </span>
+                    )}
+                    {recipient && (
+                      <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                        To: {recipient}
+                      </span>
+                    )}
+                    {tone && (
+                      <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                        Tone: {tone}
+                      </span>
+                    )}
+                  </div>
+                )}
+                
+                {/* Main input area */}
+                <div className="relative">
+                  {/* Text input container */}
+                  <div className="flex-1 relative bg-white rounded-2xl border border-[#E3E3E3] shadow-sm hover:shadow-md transition-all focus-within:border-[#161616] focus-within:shadow-md">
+                    <div className="relative flex items-center">
+                      <textarea
+                        className="w-full pl-12 pr-20 py-4 bg-transparent text-base text-[#161616] placeholder-[#ABABAB] focus:outline-none resize-none overflow-hidden rounded-t-2xl"
+                        placeholder={typing || placeholder || 'Message BossyEmail...'}
+                        value={prompt}
+                        onChange={e => {
+                          setPrompt(e.target.value);
+                          e.target.style.height = 'auto';
+                          e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                        }}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleGenerate();
+                          }
+                        }}
+                        required
+                        rows={1}
+                        style={{ minHeight: 56, maxHeight: 200, fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                      />
+                      
+                      {/* Expand options button - left side, vertically centered */}
+                      <button
+                        type="button"
+                        onClick={() => setOptionsExpanded(!optionsExpanded)}
+                        className={`absolute left-4 z-10 p-1.5 rounded-lg transition-colors flex items-center justify-center ${
+                          optionsExpanded || sender || recipient || tone
+                            ? 'text-[#161616] bg-[#FBFBFB]' 
+                            : 'text-[#ABABAB] hover:text-[#505050] hover:bg-[#FBFBFB]'
+                        }`}
+                        style={{ top: '50%', transform: 'translateY(-50%)', height: '24px', width: '24px' }}
+                        title="Expand options"
+                      >
+                        <SlidersHorizontal className="w-4 h-4" />
+                      </button>
+                      
+                      {/* Mic and Send buttons - right side, vertically centered */}
+                      <div className="absolute right-3 flex items-center gap-2" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                        <button
+                          type="button"
+                          onClick={isListening ? stopListening : startListening}
+                          disabled={!recognition && !isListening}
+                          className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${
+                            isListening 
+                              ? 'text-[#161616] bg-[#FBFBFB] animate-pulse' 
+                              : !recognition
+                              ? 'text-[#ABABAB] opacity-40 cursor-not-allowed'
+                              : 'text-[#ABABAB] hover:text-[#505050] hover:bg-[#FBFBFB]'
+                          }`}
+                          style={{ height: '24px', width: '24px' }}
+                          title={!recognition ? 'Voice input not supported in this browser' : isListening ? 'Stop listening' : 'Start voice input'}
+                        >
+                          {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                        </button>
+                        <button
+                          type="submit"
+                          className="flex items-center justify-center bg-[#161616] text-white w-9 h-9 rounded-full hover:bg-[#292929] transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                          disabled={loading || !prompt.trim()}
+                          style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                        >
+                          {loading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <ArrowRight className="w-4 h-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                    
+                    {/* Expandable options section - inside input at bottom */}
+                    {optionsExpanded && (
+                      <div className="px-4 pb-3 pt-3 rounded-b-2xl">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="relative">
+                            <select
+                              value={sender}
+                              onChange={e => setSender(e.target.value)}
+                              className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                            >
+                              <option value="">From</option>
+                              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                          </div>
+                          <div className="relative">
+                            <select
+                              value={recipient}
+                              onChange={e => setRecipient(e.target.value)}
+                              className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                            >
+                              <option value="">To</option>
+                              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                          </div>
+                          <div className="relative">
+                            <select
+                              value={tone}
+                              onChange={e => setTone(e.target.value)}
+                              className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                              style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                            >
+                              <option value="">Tone</option>
+                              {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
         
         {/* Loading indicator */}
         {loading && !isStreaming && (
           <div className="flex justify-start mb-4">
-            <div className="rounded-xl px-4 py-3 bg-zinc-100 border border-zinc-200">
+            <div className="rounded-none px-4 py-3 bg-[#FBFBFB] border border-[#E3E3E3]">
               <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-zinc-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-[#505050] rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-[#505050] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-[#505050] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
             </div>
           </div>
@@ -810,53 +903,53 @@ export function EmailGenerator() {
         {filteredMessages.map((msg, idx) => (
           <div
             key={msg.id}
-            className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
+            className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} mb-6`}
             onTouchStart={msg.type === 'ai' ? (e) => handleTouchStart(e, msg.id) : undefined}
             onTouchEnd={msg.type === 'ai' ? (e) => handleTouchEnd(e, msg) : undefined}
           >
             <div
-              className={`rounded-xl px-4 py-3 max-w-[80%] ${msg.type === 'user' ? 'bg-black text-white' : 'text-black dark:text-[#e0e0e0]'} ${favorites[msg.id] ? 'ring-2 ring-yellow-400' : ''}`}
-              style={{ whiteSpace: 'pre-line', fontFamily: 'Inter, sans-serif', position: 'relative', fontSize: '1.1em', wordBreak: 'break-word', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+              className={`px-4 py-3 max-w-[85%] ${msg.type === 'user' ? 'bg-[#161616] text-white' : 'bg-white text-[#161616]'} ${favorites[msg.id] ? 'ring-2 ring-[#161616]' : ''}`}
+              style={{ whiteSpace: 'pre-line', fontFamily: 'var(--font-inter-tight), sans-serif', position: 'relative', fontSize: '1em', wordBreak: 'break-word', lineHeight: '1.6' }}
             >
               {msg.type === 'ai' && msg.subject && (
-                <div className="font-bold text-lg mb-1">Subject: {msg.subject}</div>
+                <div className="font-normal text-base mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Subject: {msg.subject}</div>
               )}
               {msg.type === 'ai' && msg.body ? (
                 <>
                   <div className="mb-2">
                     <ReactMarkdown
                       components={{
-                        p: ({node, ...props}) => <p className="prose prose-zinc dark:prose-invert max-w-none text-base leading-relaxed" {...props} />,
+                        p: ({node, ...props}) => <p className="text-base text-[#161616] leading-relaxed mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }} {...props} />,
                         text: ({children}) => <>{renderWithPlaceholders(children as string)}</>
                       }}
                     >
                       {msg.body}
                     </ReactMarkdown>
                   </div>
-                  <div className="flex flex-row justify-between mt-6 pt-3 border-t border-zinc-100 dark:border-[#333] items-end">
+                  <div className="flex flex-row justify-between mt-6 pt-3 border-t border-[#E3E3E3] items-end">
                     {/* Left group: Like, Dislike, Favorite */}
                     <div className="flex flex-row gap-1 items-center">
                       <button
                         aria-label="Like"
-                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='like' ? 'bg-green-100 text-green-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                        className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${feedback[msg.id]==='like' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'bg-white text-[#ABABAB] hover:text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB]'}`}
                         onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='like' ? undefined : 'like' }))}
                         type="button"
                         style={{ width: 36, height: 36 }}
                       >
-                        <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? '#22c55e' : 'none'} />
+                        <ThumbsUp className="w-5 h-5" fill={feedback[msg.id]==='like' ? 'currentColor' : 'none'} />
                       </button>
                       <button
                         aria-label="Dislike"
-                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${feedback[msg.id]==='dislike' ? 'bg-red-100 text-red-700' : 'hover:bg-zinc-200 text-zinc-500 dark:text-zinc-400'}`}
+                        className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${feedback[msg.id]==='dislike' ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'bg-white text-[#ABABAB] hover:text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB]'}`}
                         onClick={() => setFeedback(f => ({ ...f, [msg.id]: f[msg.id]==='dislike' ? undefined : 'dislike' }))}
                         type="button"
                         style={{ width: 36, height: 36 }}
                       >
-                        <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? '#ef4444' : 'none'} />
+                        <ThumbsDown className="w-5 h-5" fill={feedback[msg.id]==='dislike' ? 'currentColor' : 'none'} />
                       </button>
                       <button
                         aria-label={favorites[msg.id] ? 'Unfavorite' : 'Favorite'}
-                        className={`rounded-full p-2 transition-colors flex items-center justify-center ${favorites[msg.id] ? 'text-yellow-500' : 'hover:text-yellow-500 text-zinc-500 dark:text-zinc-400'}`}
+                        className={`rounded-none p-2 transition-colors flex items-center justify-center border border-[#E3E3E3] ${favorites[msg.id] ? 'bg-[#FBFBFB] border-[#161616] text-[#161616]' : 'bg-white text-[#ABABAB] hover:text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB]'}`}
                         style={{ width: 36, height: 36 }}
                         onClick={() => setFavorites(f => ({ ...f, [msg.id]: !f[msg.id] }))}
                         type="button"
@@ -866,24 +959,10 @@ export function EmailGenerator() {
                         </svg>
                       </button>
                     </div>
-                    {/* Reference button below left group */}
-                    <div className="flex flex-col items-start">
-                      <button
-                        aria-label="Reference this email"
-                        className="rounded-full p-2 transition-colors hover:bg-blue-100 text-blue-700 text-xs font-semibold mt-1"
-                        type="button"
-                        onClick={() => {
-                          const summary = `Follow up on: ${msg.subject || 'previous email'}\n\n\"${(msg.body || msg.content).slice(0, 200)}${(msg.body || msg.content).length > 200 ? '...' : ''}\"`;
-                          setPrompt(summary);
-                        }}
-                      >
-                        Reference
-                      </button>
-                    </div>
-                    {/* Right group: Copy, Send, Edit, Delete */}
+                    {/* Right group: Copy, Send, Delete */}
                     <div className="flex flex-row gap-1 items-center">
                       <button
-                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                         style={{ width: 36, height: 36 }}
                         onClick={() => {
                           navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
@@ -896,7 +975,7 @@ export function EmailGenerator() {
                       </button>
                       <a
                         href={`mailto:?subject=${encodeURIComponent(msg.subject || '')}&body=${encodeURIComponent(msg.body || '')}`}
-                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                         style={{ width: 36, height: 36 }}
                         title="Send"
                         target="_blank"
@@ -905,16 +984,7 @@ export function EmailGenerator() {
                         <Mail className="w-5 h-5" />
                       </a>
                       <button
-                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
-                        style={{ width: 36, height: 36 }}
-                        onClick={handleEdit}
-                        title="Edit"
-                        type="button"
-                      >
-                        <Edit2 className="w-5 h-5" />
-                      </button>
-                      <button
-                        className="flex items-center justify-center text-zinc-500 hover:text-black dark:hover:text-white rounded-full p-2 transition"
+                        className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                         style={{ width: 36, height: 36 }}
                         onClick={() => {
                           setMessages(prev => prev.filter(m => m.id !== msg.id));
@@ -930,111 +1000,163 @@ export function EmailGenerator() {
               ) : (
                 <div>{msg.content}</div>
               )}
-              {/* Pin button */}
-              {msg.type === 'ai' && (
-                <button
-                  aria-label={pinned[msg.id] ? 'Unpin' : 'Pin'}
-                  className={`absolute top-2 right-2 rounded-full p-2 transition-colors ${pinned[msg.id] ? 'bg-yellow-100 text-yellow-700' : 'bg-zinc-100 text-zinc-500 hover:bg-zinc-200 dark:bg-[#232323] dark:hover:bg-[#333] dark:text-zinc-400'}`}
-                  onClick={() => setPinned(p => ({ ...p, [msg.id]: !p[msg.id] }))}
-                  type="button"
-                  style={{ width: 36, height: 36 }}
-                >
-                  <Pin className="w-5 h-5" fill={pinned[msg.id] ? 'currentColor' : 'none'} />
-                </button>
-              )}
             </div>
           </div>
         ))}
         {loading && (
           <div className="flex justify-start mb-4">
-            <div className="rounded-xl px-4 py-3 max-w-[80%] bg-zinc-100 dark:bg-[#616161] text-black dark:text-[#e0e0e0] font-sans">
+            <div className="rounded-none px-4 py-3 max-w-[80%] bg-[#FBFBFB] border border-[#E3E3E3] text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
               <TypingIndicator />
             </div>
           </div>
         )}
       </div>
-      {/* Sticky input at bottom */}
-      <form onSubmit={handleGenerate} className="w-full relative flex flex-col bg-white dark:bg-[#424242] rounded-[2.5rem] px-6 pt-5 pb-6 border border-black" style={{ minHeight: 140, maxWidth: '100%' }}>
-        {/* Prompt input on top */}
-        <textarea
-          className="w-full px-4 py-3 bg-transparent border-none text-lg text-zinc-900 dark:text-[#e0e0e0] placeholder-zinc-400 dark:placeholder-[#bdbdbd] focus:outline-none focus:ring-0 mb-4 resize-none overflow-hidden"
-          placeholder={typing || placeholder || 'Message BossyEmail...'}
-          value={prompt}
-          onChange={e => {
-            setPrompt(e.target.value);
-            e.target.style.height = 'auto';
-            e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              handleGenerate();
-            }
-          }}
-          required
-          rows={1}
-          style={{ minWidth: 120, minHeight: 48, maxHeight: 200, borderRadius: '0.75rem' }}
-        />
-        {/* Dropdowns row */}
-        <div className="flex flex-row gap-2 items-center flex-wrap mb-4 pr-16" style={{ paddingBottom: 0 }}>
-          <div className="relative flex-shrink-0">
-            <select
-              value={sender}
-              onChange={e => setSender(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
-            >
-              <option value="" className="font-bold">From</option>
-              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
-          </div>
-          <div className="relative flex-shrink-0">
-            <select
-              value={recipient}
-              onChange={e => setRecipient(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
-            >
-              <option value="" className="font-bold">To</option>
-              {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
-          </div>
-          <div className="relative flex-shrink-0">
-            <select
-              value={tone}
-              onChange={e => setTone(e.target.value)}
-              className="appearance-none font-bold text-zinc-900 dark:text-[#f5f5f5] bg-[#f5f5f5] dark:bg-[#333] rounded-lg px-3 py-2 text-sm border-none focus:outline-none focus:ring-2 focus:ring-black transition min-w-[100px] max-w-[120px]"
-            >
-              <option value="" className="font-bold">Tone</option>
-              {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
-            </select>
-            <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 text-xs">▼</span>
-          </div>
+      {/* Sticky input at bottom - ChatGPT style (only show when there are messages) */}
+      {filteredMessages.length > 0 && (
+      <div className="sticky bottom-0 bg-white border-t border-[#E3E3E3] pt-4 pb-4">
+        <form onSubmit={handleGenerate} className="w-full max-w-4xl mx-auto px-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+          {/* Selected options tags */}
+          {(sender || recipient || tone) && !optionsExpanded && (
+            <div className="flex flex-row gap-2 items-center flex-wrap mb-3">
+              {sender && (
+                <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                  From: {sender}
+                </span>
+              )}
+              {recipient && (
+                <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                  To: {recipient}
+                </span>
+              )}
+              {tone && (
+                <span className="text-xs text-[#505050] px-2 py-1 bg-[#FBFBFB] border border-[#E3E3E3] rounded-md">
+                  Tone: {tone}
+                </span>
+              )}
+            </div>
+          )}
           
-          {/* Voice Input Button */}
-          <button
-            type="button"
-            onClick={isListening ? stopListening : startListening}
-            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors flex-shrink-0 ${
-              isListening 
-                ? 'bg-red-500 text-white animate-pulse' 
-                : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-600'
-            }`}
-            title={isListening ? 'Stop listening' : 'Start voice input'}
-          >
-            {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-          </button>
-        </div>
-        {/* Circular Go button at bottom right */}
-        <button
-          type="submit"
-          className="absolute bottom-4 right-4 flex items-center justify-center bg-black text-white rounded-full w-12 h-12 font-bold text-lg hover:brightness-110 transition disabled:opacity-60 z-10"
-          disabled={loading || !prompt}
-          style={{ minWidth: 48, minHeight: 48 }}
-        >
-          {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Go"}
-        </button>
+          {/* Main input area */}
+          <div className="relative">
+            {/* Text input container */}
+            <div className="flex-1 relative bg-white rounded-2xl border border-[#E3E3E3] shadow-sm hover:shadow-md transition-all focus-within:border-[#161616] focus-within:shadow-md">
+              <div className="relative flex items-center">
+                <textarea
+                  className="w-full pl-12 pr-20 py-4 bg-transparent text-base text-[#161616] placeholder-[#ABABAB] focus:outline-none resize-none overflow-hidden rounded-t-2xl"
+                  placeholder={typing || placeholder || 'Message BossyEmail...'}
+                  value={prompt}
+                  onChange={e => {
+                    setPrompt(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleGenerate();
+                    }
+                  }}
+                  required
+                  rows={1}
+                  style={{ minHeight: 56, maxHeight: 200, fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                />
+                
+                {/* Expand options button - left side, vertically centered */}
+                <button
+                  type="button"
+                  onClick={() => setOptionsExpanded(!optionsExpanded)}
+                  className={`absolute left-4 z-10 p-1.5 rounded-lg transition-colors flex items-center justify-center ${
+                    optionsExpanded || sender || recipient || tone
+                      ? 'text-[#161616] bg-[#FBFBFB]' 
+                      : 'text-[#ABABAB] hover:text-[#505050] hover:bg-[#FBFBFB]'
+                  }`}
+                  style={{ top: '50%', transform: 'translateY(-50%)', height: '24px', width: '24px' }}
+                  title="Expand options"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                </button>
+                
+                {/* Mic and Send buttons - right side, vertically centered */}
+                <div className="absolute right-3 flex items-center gap-2" style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                  <button
+                    type="button"
+                    onClick={isListening ? stopListening : startListening}
+                    disabled={!recognition && !isListening}
+                    className={`p-1.5 rounded-lg transition-colors flex items-center justify-center ${
+                      isListening 
+                        ? 'text-[#161616] bg-[#FBFBFB] animate-pulse' 
+                        : !recognition
+                        ? 'text-[#ABABAB] opacity-40 cursor-not-allowed'
+                        : 'text-[#ABABAB] hover:text-[#505050] hover:bg-[#FBFBFB]'
+                    }`}
+                    style={{ height: '24px', width: '24px' }}
+                    title={!recognition ? 'Voice input not supported in this browser' : isListening ? 'Stop listening' : 'Start voice input'}
+                  >
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center bg-[#161616] text-white w-9 h-9 rounded-full hover:bg-[#292929] transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                    disabled={loading || !prompt.trim()}
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                  >
+                    {loading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <ArrowRight className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              
+              {/* Expandable options section - inside input at bottom */}
+              {optionsExpanded && (
+                <div className="px-4 pb-3 pt-3 rounded-b-2xl">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="relative">
+                      <select
+                        value={sender}
+                        onChange={e => setSender(e.target.value)}
+                        className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                        style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                      >
+                        <option value="">From</option>
+                        {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                    </div>
+                    <div className="relative">
+                      <select
+                        value={recipient}
+                        onChange={e => setRecipient(e.target.value)}
+                        className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                        style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                      >
+                        <option value="">To</option>
+                        {ROLES.map(role => <option key={role} value={role}>{role}</option>)}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                    </div>
+                    <div className="relative">
+                      <select
+                        value={tone}
+                        onChange={e => setTone(e.target.value)}
+                        className="w-full px-3 py-2 pr-8 text-sm text-[#161616] bg-[#FBFBFB] border-none rounded-lg focus:outline-none focus:bg-white transition-colors appearance-none cursor-pointer"
+                        style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                      >
+                        <option value="">Tone</option>
+                        {TONES.map(toneOpt => <option key={toneOpt} value={toneOpt}>{toneOpt}</option>)}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#505050] pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </form>
+      </div>
+      )}
         <style jsx global>{`
           @media (max-width: 640px) {
             .prose, .prose-invert, .prose-zinc {
@@ -1055,67 +1177,6 @@ export function EmailGenerator() {
         `}</style>
       </div>
 
-      {/* Mobile Conversation Panel */}
-      {!sidebarHidden && (
-        <div className="md:hidden fixed inset-0 z-50 bg-white">
-          <div className="flex flex-col h-full">
-            {/* Mobile Panel Header */}
-            <div className="p-4 border-b border-zinc-200 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-zinc-900">Conversations</h3>
-              <button
-                onClick={() => setSidebarHidden(true)}
-                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-zinc-600" />
-              </button>
-            </div>
-            
-            {/* New Conversation Button */}
-            <div className="p-4 border-b border-zinc-200">
-              <button
-                onClick={createNewConversation}
-                className="w-full flex items-center gap-2 px-4 py-3 bg-black text-white rounded-lg hover:bg-zinc-800 transition-colors"
-              >
-                <Plus className="w-5 h-5" />
-                New Conversation
-              </button>
-            </div>
-            
-            {/* Conversation List */}
-            <div className="flex-1 overflow-y-auto">
-              {conversations.length === 0 ? (
-                <div className="p-4 text-center text-zinc-500 text-sm">
-                  No conversations yet
-                </div>
-              ) : (
-                <div className="p-2">
-                  {conversations.map((conversation) => (
-                    <button
-                      key={conversation.id}
-                      onClick={() => {
-                        switchConversation(conversation.id);
-                        setSidebarHidden(true);
-                      }}
-                      className={`w-full text-left p-4 rounded-lg mb-2 transition-colors ${
-                        currentConversationId === conversation.id
-                          ? 'bg-zinc-100 border border-zinc-300'
-                          : 'hover:bg-zinc-50'
-                      }`}
-                    >
-                      <div className="text-base font-medium text-zinc-900 truncate">
-                        {conversation.title}
-                      </div>
-                      <div className="text-sm text-zinc-500 mt-1">
-                        {conversation.messages.length} messages
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 
