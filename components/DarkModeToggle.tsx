@@ -20,16 +20,20 @@ export default function DarkModeToggle() {
   };
 
   return (
-    <button onClick={toggle} aria-label="Toggle dark mode" className="rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-primary">
+    <button 
+      onClick={toggle} 
+      aria-label="Toggle dark mode" 
+      className="rounded-full p-2 transition-colors hover:bg-[#F3F3F3] dark:hover:bg-[#292929] focus:outline-none focus:ring-2 focus:ring-[#161616] dark:focus:ring-white"
+    >
       <span className="sr-only">Toggle dark mode</span>
       {isDark ? (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79z" fill="white" />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79z" fill="currentColor" />
         </svg>
       ) : (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="5" fill="black" />
-          <g stroke="black" strokeWidth="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#161616]">
+          <circle cx="12" cy="12" r="5" fill="currentColor" />
+          <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="12" y1="1" x2="12" y2="3" />
             <line x1="12" y1="21" x2="12" y2="23" />
             <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />

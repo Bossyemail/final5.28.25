@@ -83,7 +83,7 @@ export function Why() {
     <motion.section 
       ref={sectionRef}
       id="why" 
-      className="w-full py-16 md:py-24 text-black bg-white relative"
+      className="w-full py-16 md:py-24 text-black dark:text-white bg-white dark:bg-[#161616] relative transition-colors"
       style={{
         opacity: opacity
       }}
@@ -97,22 +97,22 @@ export function Why() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
+          <p className="text-sm text-[#ABABAB] dark:text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
             WHY THIS EXISTS
           </p>
-          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
             Deals don't die because of contracts.
             <br />
             They die because of communication.
           </h2>
-          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto mb-12" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+          <p className="paragraph-default text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-12" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
             Real estate is 10% paperwork and 90% emails:
           </p>
         </motion.div>
 
         {/* Main Content Container - 3 Column Grid */}
         <motion.div 
-          className="bg-white"
+          className="bg-white dark:bg-[#1a1a1a]"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -130,8 +130,8 @@ export function Why() {
                     onClick={() => handleTabChange(tab.id)}
                     className={`px-2 py-2.5 transition-all duration-300 flex flex-col items-center justify-center gap-1.5 border rounded-none ${
                       isActive
-                        ? 'bg-[#FBFBFB] border-[#161616]'
-                        : 'bg-white border-[#E3E3E3] hover:border-[#ABABAB]'
+                        ? 'bg-[#FBFBFB] dark:bg-[#292929] border-[#161616] dark:border-white'
+                        : 'bg-white dark:bg-[#1a1a1a] border-[#E3E3E3] dark:border-[#292929] hover:border-[#ABABAB] dark:hover:border-[#505050]'
                     }`}
                     style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
                     whileHover={{ scale: 1.05 }}
@@ -139,10 +139,10 @@ export function Why() {
                     transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                   >
                     <TabIcon 
-                      className={`w-4 h-4 ${isActive ? 'text-[#161616]' : 'text-[#ABABAB]'}`} 
+                      className={`w-4 h-4 ${isActive ? 'text-[#161616] dark:text-white' : 'text-[#ABABAB] dark:text-[#ABABAB]'}`} 
                       strokeWidth={isActive ? 2 : 1.5}
                     />
-                    <span className={`text-xs font-medium ${isActive ? 'text-[#161616]' : 'text-[#ABABAB]'}`}>
+                    <span className={`text-xs font-medium ${isActive ? 'text-[#161616] dark:text-white' : 'text-[#ABABAB] dark:text-[#ABABAB]'}`}>
                       {tab.label}
                     </span>
                   </motion.button>
@@ -161,17 +161,17 @@ export function Why() {
               >
                 {/* Selected Item Description */}
                 <div>
-                  <p className="paragraph-large text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.6em' }}>
+                  <p className="paragraph-large text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.6em' }}>
                     {activeTabData.description}
                   </p>
                 </div>
                 
                 {/* Closing Statement */}
-                <div className="pt-6 border-t border-[#E3E3E3] space-y-2">
-                  <p className="paragraph-default text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                <div className="pt-6 border-t border-[#E3E3E3] dark:border-[#292929] space-y-2">
+                  <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
                     Nobody teaches agents how to write.
                   </p>
-                  <p className="display-5 text-[#161616] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+                  <p className="display-5 text-[#161616] dark:text-white font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
                     BossyEmail does.
                   </p>
                 </div>

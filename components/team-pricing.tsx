@@ -36,7 +36,7 @@ export function TeamPricing() {
         >
           <Button
             onClick={() => setIsTeamPricingOpen(true)}
-            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 h-12 group"
+            className="bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 h-12 group"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
           >
             BOOK A TEAM DEMO

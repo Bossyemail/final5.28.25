@@ -21,7 +21,7 @@ export function TryGeneratorCTA({ label = "Try the Email Generator", className =
   };
 
   // Default to primary button style (black background, white text) if no className provided
-  const defaultClassName = className || "bg-[#161616] hover:bg-[#292929] text-white";
+  const defaultClassName = className || "bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616]";
   
   return (
     <Button

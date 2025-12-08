@@ -608,9 +608,9 @@ export function EmailGenerator() {
   }
 
   return (
-    <div className="flex h-[80vh] bg-white">
+    <div className="flex h-[80vh] bg-white dark:bg-[#161616] transition-colors">
       {/* Main Chat Area */}
-      <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 md:px-8 text-[#161616] flex flex-col" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+      <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 md:px-8 text-[#161616] dark:text-white flex flex-col" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
       <div className="flex-1 overflow-y-auto pb-4">
         
         {/* Pinned section */}
@@ -628,7 +628,7 @@ export function EmailGenerator() {
                       <div className="mb-2">
                         <ReactMarkdown
                           components={{
-                            p: ({node, ...props}) => <p className="text-base text-[#161616] leading-relaxed mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }} {...props} />,
+                            p: ({node, ...props}) => <p className="text-base text-[#161616] dark:text-white leading-relaxed mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }} {...props} />,
                             text: ({children}) => <>{renderWithPlaceholders(children as string)}</>
                           }}
                         >
@@ -728,7 +728,7 @@ export function EmailGenerator() {
               )}
         {/* Error display */}
         {error && (
-          <div className="mb-4 p-4 bg-[#FBFBFB] border border-[#E3E3E3] rounded-none text-[#161616]">
+                  <div className="mb-4 p-4 bg-[#FBFBFB] dark:bg-[#292929] border border-[#E3E3E3] dark:border-[#292929] rounded-none text-[#161616] dark:text-white">
             <p className="font-medium">Error:</p>
             <p>{error}</p>
           </div>
@@ -737,7 +737,7 @@ export function EmailGenerator() {
         {/* Main chat thread (filtered) */}
         {filteredMessages.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center mt-20 mb-8 w-full">
-            <div className="text-2xl font-normal text-[#161616] mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>How can I help you today?</div>
+            <div className="text-2xl font-normal text-[#161616] dark:text-white mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>How can I help you today?</div>
             
             {/* Input form - shown when no messages */}
             <div className="w-full max-w-2xl">
@@ -766,10 +766,10 @@ export function EmailGenerator() {
                 {/* Main input area */}
                 <div className="relative">
                   {/* Text input container */}
-                  <div className="flex-1 relative bg-white rounded-2xl border border-[#E3E3E3] shadow-sm hover:shadow-md transition-all focus-within:border-[#161616] focus-within:shadow-md">
+                  <div className="flex-1 relative bg-white dark:bg-[#1a1a1a] rounded-2xl border border-[#E3E3E3] dark:border-[#292929] shadow-sm hover:shadow-md transition-all focus-within:border-[#161616] dark:focus-within:border-white focus-within:shadow-md">
                     <div className="relative flex items-center">
                       <textarea
-                        className="w-full pl-12 pr-20 py-4 bg-transparent text-base text-[#161616] placeholder-[#ABABAB] focus:outline-none resize-none overflow-hidden rounded-t-2xl"
+                        className="w-full pl-12 pr-20 py-4 bg-transparent text-base text-[#161616] dark:text-white placeholder-[#ABABAB] focus:outline-none resize-none overflow-hidden rounded-t-2xl"
                         placeholder={typing || placeholder || 'Message BossyEmail...'}
                         value={prompt}
                         onChange={e => {

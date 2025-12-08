@@ -24,7 +24,7 @@ export function Hero() {
   const textOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0])
 
   return (
-    <section ref={sectionRef} className="relative text-black bg-white pt-8 pb-20 lg:pb-32 overflow-x-hidden">
+    <section ref={sectionRef} className="relative text-black dark:text-white bg-white dark:bg-[#161616] pt-8 pb-20 lg:pb-32 overflow-x-hidden transition-colors">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Main Headline */}
@@ -39,7 +39,7 @@ export function Hero() {
             }}
           >
             <h1 
-              className="display-6 sm:display-7 md:display-8 mb-4 text-black" 
+              className="display-6 sm:display-7 md:display-8 mb-4 text-black dark:text-white" 
               style={{ 
                 fontFamily: 'var(--font-inter-tight), sans-serif',
                 fontWeight: 400,
@@ -50,7 +50,7 @@ export function Hero() {
               The AI Email Generator Built for Real Estate Pros
             </h1>
             <p 
-              className="paragraph-default text-[#505050] max-w-2xl mx-auto mb-8 font-normal" 
+              className="paragraph-default text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-8 font-normal" 
               style={{ 
                 fontFamily: 'var(--font-inter-tight), sans-serif',
                 fontWeight: 400,
@@ -70,7 +70,7 @@ export function Hero() {
             >
               <TryGeneratorCTA 
                 label="GENERATE MY FIRST EMAIL — FREE" 
-                className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-wide inline-flex items-center gap-2 h-12 whitespace-nowrap group hover:scale-[1.02]"
+                className="bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-wide inline-flex items-center gap-2 h-12 whitespace-nowrap group hover:scale-[1.02]"
               />
               <Link
                 href="#video-demo"

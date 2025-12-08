@@ -106,9 +106,9 @@ export function FAQ() {
 
         {/* CTA */}
         <div className="mt-12 text-center">
-          <p className="paragraph-default text-[#505050] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Still not sure?</p>
+          <p className="paragraph-default text-[#505050] dark:text-[#ABABAB] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>Still not sure?</p>
           <Button
-            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mx-auto group h-12"
+            className="bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mx-auto group h-12"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
           >
             JUST TRY IT

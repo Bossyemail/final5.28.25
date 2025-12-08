@@ -98,8 +98,22 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+      <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }} suppressHydrationWarning>
         <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  const theme = localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                })();
+              `,
+            }}
+          />
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="icon" href="/transparent 2.png" type="image/png" />
           <link rel="apple-touch-icon" href="/transparent 2.png" />

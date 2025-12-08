@@ -81,7 +81,7 @@ export function Pricing() {
             </div>
             <a
               href="#pricing"
-              className="w-full bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
+              className="w-full bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
               style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             >
               START FREE
@@ -131,7 +131,7 @@ export function Pricing() {
             </div>
             <a
               href="#pricing"
-              className="w-full bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
+              className="w-full bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center justify-center gap-2 mt-auto group h-12"
               style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
             >
               START FREE
@@ -150,7 +150,7 @@ export function Pricing() {
         >
           <a
             href="#pricing"
-            className="bg-[#161616] hover:bg-[#292929] text-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mb-4 group h-12"
+            className="bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mb-4 group h-12"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
           >
             GENERATE MY FIRST EMAIL — FREE

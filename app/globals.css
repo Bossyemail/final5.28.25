@@ -83,6 +83,17 @@
     @apply bg-background text-foreground;
     margin: 0;
     font-family: var(--font-inter), sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  html {
+    background-color: hsl(var(--background));
+    transition: background-color 0.3s ease;
+  }
+  
+  .dark body,
+  .dark html {
+    background-color: #161616;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-inter-tight), sans-serif;
@@ -108,6 +119,109 @@
   .paragraph-small { font-size: 0.875rem; line-height: 1.5em; }
   .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
     color: #f5f5f5 !important;
+  }
+  
+  /* Global dark mode background fixes for elements with bg-white */
+  .dark div.bg-white,
+  .dark section.bg-white {
+    background-color: #161616 !important;
+  }
+  
+  /* Ensure main content areas get dark background */
+  .dark main:not([class*="bg-"]) {
+    background-color: #161616;
+  }
+  
+  /* Global dark mode text color fixes */
+  .dark .text-black,
+  .dark h1.text-black,
+  .dark h2.text-black,
+  .dark h3.text-black,
+  .dark p.text-black {
+    color: #ffffff !important;
+  }
+  
+  .dark .text-\[#161616\] {
+    color: #ffffff !important;
+  }
+  
+  .dark .text-\[#505050\] {
+    color: #ABABAB !important;
+  }
+  
+  .dark .text-zinc-700,
+  .dark .text-zinc-900 {
+    color: #ABABAB !important;
+  }
+  
+  .dark .text-zinc-600 {
+    color: #ABABAB !important;
+  }
+  
+  .dark .text-zinc-500 {
+    color: #ABABAB !important;
+  }
+  
+  /* Fix buttons with black background - make them white in dark mode */
+  .dark button.bg-\[#161616\],
+  .dark .bg-\[#161616\].text-white,
+  .dark button[class*="bg-[#161616]"] {
+    background-color: #ffffff !important;
+    color: #161616 !important;
+  }
+  
+  .dark button.bg-\[#161616\]:hover,
+  .dark .bg-\[#161616\].text-white:hover,
+  .dark button[class*="bg-[#161616]"]:hover {
+    background-color: #FBFBFB !important;
+    color: #161616 !important;
+  }
+  
+  /* Fix black buttons */
+  .dark button.bg-black,
+  .dark .bg-black.text-white {
+    background-color: #ffffff !important;
+    color: #161616 !important;
+  }
+  
+  .dark button.bg-black:hover,
+  .dark .bg-black.text-white:hover {
+    background-color: #FBFBFB !important;
+    color: #161616 !important;
+  }
+  
+  /* Dashboard components dark mode fixes */
+  .dark .bg-white {
+    background-color: #1a1a1a !important;
+  }
+  
+  .dark .text-\[#161616\] {
+    color: #ffffff !important;
+  }
+  
+  .dark .border-\[#E3E3E3\] {
+    border-color: #292929 !important;
+  }
+  
+  .dark .bg-\[#FBFBFB\] {
+    background-color: #292929 !important;
+  }
+  
+  .dark input.bg-white,
+  .dark textarea.bg-white,
+  .dark div.bg-white {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+  }
+  
+  .dark input.text-\[#161616\],
+  .dark textarea.text-\[#161616\],
+  .dark div.text-\[#161616\] {
+    color: #ffffff !important;
+  }
+  
+  .dark .placeholder-\[#ABABAB\]::placeholder {
+    color: #ABABAB !important;
   }
   /* Subheadings - p tags that act as subheadings */
   p.text-xl, p.text-2xl, p.text-3xl, p.text-lg.font-semibold, p.text-lg.font-bold {
@@ -141,9 +255,8 @@
     --footer-text: #232326;
   }
   .dark {
-    /* Remove or comment out the --background and --foreground overrides to avoid interfering with dashboard explicit styles */
-    /* --background: 0 0% 46%; */
-    /* --foreground: 300 20% 98%; */
+    --background: 22 15% 9%; /* #161616 - dark background */
+    --foreground: 0 0% 98%; /* light text */
     --card: 270 10% 14%;
     --card-foreground: 300 20% 98%;
     --popover: 270 10% 14%;
@@ -215,13 +328,116 @@
 .cl-main,
 .cl-form,
 .cl-formFieldInput,
-.cl-formButtonPrimary,
 .cl-socialButtonsBlockButton,
 .cl-footer,
 .cl-header,
 .cl-dividerLine {
+  background-color: transparent !important;
+  color: #0f172a !important;
+}
+
+/* Remove all padding and margins from Clerk wrappers */
+.cl-rootBox {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+
+.cl-card {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.cl-main {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.cl-form {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+/* Remove any wrapper spacing */
+.cl-card > *,
+.cl-main > *,
+.cl-form > * {
+  width: 100% !important;
+}
+
+/* Ensure form fields container has no extra spacing */
+.cl-formFields {
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+/* Ensure input fields are light */
+.cl-formFieldInput,
+input[class*="formFieldInput"] {
   background-color: #ffffff !important;
-  color: #161616 !important;
+  background: #ffffff !important;
+}
+
+/* Button styling - matching image design - must override everything */
+.cl-formButtonPrimary,
+button[class*="formButtonPrimary"],
+.cl-button[type="submit"],
+button[type="submit"] {
+  background-color: #161616 !important;
+  background: #161616 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+}
+
+.cl-formButtonPrimary:hover,
+button[class*="formButtonPrimary"]:hover,
+.cl-button[type="submit"]:hover,
+button[type="submit"]:hover {
+  background-color: #292929 !important;
+  background: #292929 !important;
+  color: #ffffff !important;
+}
+
+.cl-formButtonPrimary:focus,
+button[class*="formButtonPrimary"]:focus {
+  background-color: #161616 !important;
+  color: #ffffff !important;
+}
+
+
+/* Hide Clerk logo completely */
+.cl-headerLogo,
+.cl-logoBox,
+.cl-logoImage,
+.cl-logo {
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .cl-formFieldInput {
@@ -256,4 +472,256 @@
 .cl-card[data-theme="dark"] {
   background-color: #ffffff !important;
   color: #161616 !important;
+}
+
+/* Social login buttons container styling */
+.cl-socialButtons,
+[class*="socialButtons"]:not(button) {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 0.5rem !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-bottom: 1rem !important;
+  width: 100% !important;
+}
+
+/* Target all social button variants - circular matching reference */
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsIconButton,
+button[class*="socialButtons"],
+button[class*="socialButton"] {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: #ffffff !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.cl-socialButtonsBlockButton:hover,
+.cl-socialButtonsIconButton:hover,
+button[class*="socialButtons"]:hover,
+button[class*="socialButton"]:hover {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Hide text and arrows in social buttons */
+.cl-socialButtonsBlockButtonArrow,
+.cl-socialButtonsBlockButtonText,
+.cl-socialButtonsIconButtonText,
+[class*="socialButtons"][class*="Arrow"],
+[class*="socialButtons"][class*="Text"] {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Ensure icons are properly sized and centered for 48px buttons - all black */
+.cl-socialButtonsBlockButton svg,
+.cl-socialButtonsIconButton svg,
+button[class*="socialButtons"] svg,
+button[class*="socialButton"] svg,
+.cl-socialButtonsBlockButton img,
+.cl-socialButtonsIconButton img,
+button[class*="socialButtons"] img,
+button[class*="socialButton"] img {
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  display: block !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  filter: brightness(0) !important;
+  opacity: 1 !important;
+}
+
+/* Force ALL social icons (Google, Apple) to be black - Facebook handled separately */
+button[data-provider="google"] svg,
+button[data-provider="apple"] svg,
+button[aria-label*="Google" i] svg,
+button[aria-label*="Apple" i] svg,
+button[aria-label*="google" i] svg,
+button[aria-label*="apple" i] svg,
+.cl-socialButtonsBlockButton:not([data-provider="facebook"]) svg,
+.cl-socialButtonsIconButton:not([data-provider="facebook"]) svg,
+button[class*="socialButtons"]:not([data-provider="facebook"]):not([aria-label*="Facebook" i]):not([aria-label*="facebook" i]) svg,
+button[class*="socialButton"]:not([data-provider="facebook"]):not([aria-label*="Facebook" i]):not([aria-label*="facebook" i]) svg {
+  filter: brightness(0) !important;
+}
+
+/* Force all icon paths to be black (excluding Facebook which is handled separately) */
+.cl-socialButtonsBlockButton:not([data-provider="facebook"]) svg path,
+.cl-socialButtonsIconButton:not([data-provider="facebook"]) svg path,
+button[class*="socialButtons"]:not([data-provider="facebook"]):not([aria-label*="Facebook" i]):not([aria-label*="facebook" i]) svg path,
+button[class*="socialButton"]:not([data-provider="facebook"]):not([aria-label*="Facebook" i]):not([aria-label*="facebook" i]) svg path,
+button[data-provider="google"] svg path,
+button[data-provider="apple"] svg path,
+button[aria-label*="Google" i] svg path,
+button[aria-label*="Apple" i] svg path,
+button[aria-label*="google" i] svg path,
+button[aria-label*="apple" i] svg path {
+  fill: #000000 !important;
+  stroke: #000000 !important;
+  filter: brightness(0) !important;
+}
+
+/* Hide all Facebook icon content (SVG, images, text) */
+button[data-provider="facebook"] svg,
+button[data-provider="facebook"] img,
+button[data-provider="facebook"] *,
+button[aria-label*="Facebook" i] svg,
+button[aria-label*="Facebook" i] img,
+button[aria-label*="Facebook" i] *,
+button[aria-label*="facebook" i] svg,
+button[aria-label*="facebook" i] img,
+button[aria-label*="facebook" i] *,
+button[title*="Facebook" i] svg,
+button[title*="Facebook" i] img,
+button[title*="Facebook" i] *,
+button[title*="facebook" i] svg,
+button[title*="facebook" i] img,
+button[title*="facebook" i] *,
+.cl-socialButtonsBlockButton[data-provider="facebook"] svg,
+.cl-socialButtonsBlockButton[data-provider="facebook"] img,
+.cl-socialButtonsBlockButton[data-provider="facebook"] *,
+.cl-socialButtonsIconButton[data-provider="facebook"] svg,
+.cl-socialButtonsIconButton[data-provider="facebook"] img,
+.cl-socialButtonsIconButton[data-provider="facebook"] *,
+.cl-socialButtonsBlockButton[aria-label*="Facebook" i] svg,
+.cl-socialButtonsBlockButton[aria-label*="Facebook" i] img,
+.cl-socialButtonsBlockButton[aria-label*="Facebook" i] *,
+.cl-socialButtonsIconButton[aria-label*="Facebook" i] svg,
+.cl-socialButtonsIconButton[aria-label*="Facebook" i] img,
+.cl-socialButtonsIconButton[aria-label*="Facebook" i] *,
+.cl-socialButtonsBlockButton[aria-label*="facebook" i] svg,
+.cl-socialButtonsBlockButton[aria-label*="facebook" i] img,
+.cl-socialButtonsBlockButton[aria-label*="facebook" i] *,
+.cl-socialButtonsIconButton[aria-label*="facebook" i] svg,
+.cl-socialButtonsIconButton[aria-label*="facebook" i] img,
+.cl-socialButtonsIconButton[aria-label*="facebook" i] * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Apply Facebook icon as background image directly to the button */
+button[data-provider="facebook"],
+button[aria-label*="Facebook" i],
+button[aria-label*="facebook" i],
+button[title*="Facebook" i],
+button[title*="facebook" i],
+.cl-socialButtonsBlockButton[data-provider="facebook"],
+.cl-socialButtonsIconButton[data-provider="facebook"],
+.cl-socialButtonsBlockButton[aria-label*="Facebook" i],
+.cl-socialButtonsIconButton[aria-label*="Facebook" i],
+.cl-socialButtonsBlockButton[aria-label*="facebook" i],
+.cl-socialButtonsIconButton[aria-label*="facebook" i] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/%3E%3C/svg%3E") !important;
+  background-size: 24px 24px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-color: #ffffff !important;
+}
+
+/* Ensure proper centering of icons in buttons */
+.cl-socialButtonsBlockButton,
+.cl-socialButtonsIconButton,
+button[class*="socialButtons"],
+button[class*="socialButton"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Force black color for all social icon elements */
+.cl-socialButtonsBlockButton *,
+.cl-socialButtonsIconButton *,
+button[class*="socialButtons"] *,
+button[class*="socialButton"] * {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* Divider line - matching reference (solid line, slate color) */
+.cl-dividerLine {
+  border-style: none !important;
+  border-width: 0 !important;
+  background-color: #e2e8f0 !important;
+  height: 1px !important;
+  flex: 1 !important;
+}
+
+/* Input field styling - matching reference (slate colors, rounded-2xl) */
+.cl-formFieldInput,
+input[class*="formFieldInput"] {
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-radius: 16px !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.cl-formFieldInput:focus,
+input[class*="formFieldInput"]:focus {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-color: #000000 !important;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Remove input icons - reference design doesn't use them */
+.cl-formFieldInput[type="email"],
+input[type="email"][class*="formFieldInput"],
+.cl-formFieldInput[type="password"],
+input[type="password"][class*="formFieldInput"] {
+  background-image: none !important;
+}
+
+/* Ensure form field action (Forgot password) is right-aligned */
+.cl-formFieldAction {
+  text-align: right !important;
+  margin-top: 0.25rem !important;
+}
+
+/* Form field spacing - matching Aura (significant spacing) */
+.cl-formField {
+  margin-bottom: 1.25rem !important;
+}
+
+/* Header spacing adjustments - reduced spacing after subtitle */
+.cl-header {
+  margin-bottom: 0.75rem !important;
+}
+
+.cl-headerTitle {
+  margin-bottom: 0.5rem !important;
+}
+
+.cl-headerSubtitle {
+  margin-bottom: 0.75rem !important;
+}
+
+/* Divider spacing - reduced spacing */
+.cl-dividerRow {
+  margin: 0.75rem 0 !important;
+}
+
+/* Social buttons spacing - reduced spacing to divider */
+.cl-socialButtons {
+  margin-bottom: 0.75rem !important;
 }

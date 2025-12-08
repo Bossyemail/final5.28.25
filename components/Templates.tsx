@@ -2431,17 +2431,17 @@ export function Templates() {
   return (
     <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
       <div className="max-w-4xl mx-auto py-8">
-        <h2 className="text-2xl font-normal text-[#161616] mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Templates</h2>
+        <h2 className="text-2xl font-normal text-[#161616] dark:text-white mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>Templates</h2>
       {/* Search Bar and View Selector */}
       <div className="flex items-center gap-3 mb-6">
         {/* Search Bar */}
-        <div className="relative flex items-center flex-1 max-w-2xl bg-white border border-[#E3E3E3] rounded-lg shadow-sm hover:shadow-md transition-shadow focus-within:border-[#161616] focus-within:shadow-md h-12">
+        <div className="relative flex items-center flex-1 max-w-2xl bg-white dark:bg-[#1a1a1a] border border-[#E3E3E3] dark:border-[#292929] rounded-lg shadow-sm hover:shadow-md transition-shadow focus-within:border-[#161616] dark:focus-within:border-white focus-within:shadow-md h-12">
           <input
             type="text"
             placeholder="Search templates..."
             value={searchInput}
             onChange={e => setSearchInput(e.target.value)}
-            className="flex-1 px-4 h-full text-base text-[#161616] placeholder-[#ABABAB] bg-transparent border-none rounded-lg focus:outline-none"
+            className="flex-1 px-4 h-full text-base text-[#161616] dark:text-white placeholder-[#ABABAB] bg-transparent border-none rounded-lg focus:outline-none"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
           />
           {searchInput && (
@@ -2537,7 +2537,7 @@ export function Templates() {
       {filteredTemplates.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center text-[#ABABAB]">
           <Mail className="w-12 h-12 mb-4 text-[#505050]" />
-          <p className="text-base font-medium mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>No templates found</p>
+          <p className="text-base font-medium mb-2 text-[#161616] dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>No templates found</p>
           <p className="text-sm text-[#505050] mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Try adjusting your search or category filter.</p>
           {(searchInput || selectedCategories.size > 0) && (
             <button
@@ -2562,7 +2562,7 @@ export function Templates() {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                    <div className="text-base font-medium text-[#161616] truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{t.title}</div>
+                    <div className="text-base font-medium text-[#161616] dark:text-white truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{t.title}</div>
                     <span className="text-xs px-2 py-0.5 rounded-md bg-[#FBFBFB] border border-[#E3E3E3] text-[#505050]">
                     {t.category}
                   </span>
@@ -2657,26 +2657,26 @@ export function Templates() {
           onClick={closeTemplateModal}
         >
           <div 
-              className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 relative" 
+              className="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-3xl p-6 relative" 
             style={{ maxHeight: '80vh', overflowY: 'auto', fontFamily: 'var(--font-inter-tight), sans-serif' }} 
             onClick={e => e.stopPropagation()}
           >
             <button 
-                className="absolute top-3 right-3 text-[#ABABAB] hover:text-[#505050] text-2xl" 
+                className="absolute top-3 right-3 text-[#ABABAB] dark:text-[#ABABAB] hover:text-[#505050] dark:hover:text-white text-2xl" 
               onClick={closeTemplateModal} 
               aria-label="Close"
             >
               ×
             </button>
             <div className="flex items-center gap-2 mb-4">
-                <div className="text-base font-medium text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{selectedTemplate.title}</div>
-                <span className="text-xs px-2 py-0.5 rounded-md bg-[#FBFBFB] border border-[#E3E3E3] text-[#505050]">
+                <div className="text-base font-medium text-[#161616] dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>{selectedTemplate.title}</div>
+                <span className="text-xs px-2 py-0.5 rounded-md bg-[#FBFBFB] dark:bg-[#292929] border border-[#E3E3E3] dark:border-[#292929] text-[#505050] dark:text-white">
                 {selectedTemplate.category}
               </span>
               {hasFullAccess && (
               <button
                 className={`ml-2 w-5 h-5 flex items-center justify-center transition ${
-                      favorites.includes(selectedTemplate.id) ? 'text-[#161616]' : 'text-[#ABABAB] hover:text-[#505050]'
+                      favorites.includes(selectedTemplate.id) ? 'text-[#161616] dark:text-white' : 'text-[#ABABAB] dark:text-[#ABABAB] hover:text-[#505050] dark:hover:text-white'
                 }`}
                 onClick={() => handleFavorite(selectedTemplate.id)}
                 aria-label={favorites.includes(selectedTemplate.id) ? 'Unfavorite' : 'Favorite'}
@@ -2690,12 +2690,12 @@ export function Templates() {
             </div>
             <div className="mb-6 space-y-4">
                 <div>
-                  <div className="font-medium text-[#161616] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Subject:</div>
-                  <div className="text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
+                  <div className="font-medium text-[#161616] dark:text-white mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Subject:</div>
+                  <div className="text-base text-[#161616] dark:text-white whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
                       <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.title}</span>
                   </div>
                 </div>
-                <div className="text-base text-[#161616] whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
+                <div className="text-base text-[#161616] dark:text-white whitespace-pre-line" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', ...(!hasFullAccess ? { userSelect: 'none' } : {}) }}>
                     <span style={!hasFullAccess ? { pointerEvents: 'none', filter: 'blur(1.5px)', opacity: 0.7 } : {}}>{selectedTemplate.body}</span>
                 </div>
             </div>
@@ -2703,7 +2703,7 @@ export function Templates() {
               {hasFullAccess && (
               <button
                 onClick={() => handleCopy(selectedTemplate)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#161616] bg-[#161616] text-white hover:bg-[#292929] transition"
+                  className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#161616] dark:border-white bg-[#161616] dark:bg-white text-white dark:text-[#161616] hover:bg-[#292929] dark:hover:bg-[#FBFBFB] transition"
                 style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 <Clipboard className="w-4 h-4" /> Copy
@@ -2711,7 +2711,7 @@ export function Templates() {
               )}
               <button
                 onClick={closeTemplateModal}
-                className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#E3E3E3] bg-white text-[#161616] hover:bg-[#FBFBFB] hover:border-[#ABABAB] transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-none border border-[#E3E3E3] dark:border-[#292929] bg-white dark:bg-[#1a1a1a] text-[#161616] dark:text-white hover:bg-[#FBFBFB] dark:hover:bg-[#292929] hover:border-[#ABABAB] dark:hover:border-[#505050] transition"
                 style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
               >
                 Close

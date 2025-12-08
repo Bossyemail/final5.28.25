@@ -25,7 +25,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-white dark:bg-[#161616] transition-colors">
       <ScrollProgress />
       <main className="flex-1 relative">
         <Hero />

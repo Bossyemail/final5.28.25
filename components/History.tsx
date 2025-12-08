@@ -155,9 +155,9 @@ export function History() {
     return (
       <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
         <div className="max-w-2xl mx-auto py-8">
-          <h2 className="text-2xl font-normal mb-6 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>History</h2>
-          <p className="text-base font-medium mb-2 text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>This feature is only available for Inbox Royalty subscribers.</p>
-          <p className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Please upgrade your plan to access history.</p>
+          <h2 className="text-2xl font-normal mb-6 text-[#161616] dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>History</h2>
+          <p className="text-base font-medium mb-2 text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>This feature is only available for Inbox Royalty subscribers.</p>
+          <p className="text-sm text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Please upgrade your plan to access history.</p>
         </div>
       </div>
     );
@@ -166,7 +166,7 @@ export function History() {
   return (
     <div className="w-full pl-8 pr-8 sm:pl-4 sm:pr-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
       <div className="max-w-4xl mx-auto py-8">
-        <h2 className="text-2xl font-normal mb-6 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>History</h2>
+        <h2 className="text-2xl font-normal mb-6 text-[#161616] dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>History</h2>
         
         {/* Search bar */}
         <div className="relative mb-6">
@@ -176,7 +176,7 @@ export function History() {
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 text-sm text-[#161616] bg-white border border-[#E3E3E3] rounded-2xl focus:outline-none focus:border-[#161616] transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 text-sm text-[#161616] dark:text-white bg-white dark:bg-[#1a1a1a] border border-[#E3E3E3] dark:border-[#292929] rounded-2xl focus:outline-none focus:border-[#161616] dark:focus:border-white transition-colors"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
           />
         </div>
@@ -184,7 +184,7 @@ export function History() {
         {filteredConversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Mail className="w-12 h-12 mb-4 text-[#ABABAB]" />
-            <p className="text-base font-medium mb-2 text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+            <p className="text-base font-medium mb-2 text-[#161616] dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
               {searchQuery ? "No conversations found" : "No conversations yet"}
             </p>
             <p className="text-sm text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
@@ -213,7 +213,7 @@ export function History() {
                       >
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <div className="text-sm font-normal text-[#161616] truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                            <div className="text-sm font-normal text-[#161616] dark:text-white truncate" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
                               {conv.title}
                             </div>
                             <span className="text-xs text-[#ABABAB] whitespace-nowrap" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>

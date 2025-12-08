@@ -14,7 +14,7 @@ const benefits = [
 
 export function WhatItDoes() {
   return (
-    <section className="w-full py-16 md:py-24 text-black bg-white relative">
+    <section className="w-full py-16 md:py-24 text-black dark:text-white bg-white dark:bg-[#161616] relative transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div 
@@ -24,7 +24,7 @@ export function WhatItDoes() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="display-6 sm:display-7 md:display-8 mb-6 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+          <h2 className="display-6 sm:display-7 md:display-8 mb-6 text-black dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
             BossyEmail generates the exact real estate email you need — any scenario, any time.
           </h2>
         </motion.div>
@@ -37,7 +37,7 @@ export function WhatItDoes() {
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          <p className="paragraph-large text-[#161616] mb-8 text-center font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.5em' }}>
+          <p className="paragraph-large text-[#161616] dark:text-white mb-8 text-center font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.5em' }}>
             You get:
           </p>
           
@@ -45,7 +45,7 @@ export function WhatItDoes() {
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
-                className="border border-[#E3E3E3] rounded-none p-4 bg-white hover:border-[#ABABAB] transition-all duration-200 h-full flex items-start"
+                className="border border-[#E3E3E3] dark:border-[#292929] rounded-none p-4 bg-white dark:bg-[#1a1a1a] hover:border-[#ABABAB] dark:hover:border-[#505050] transition-all duration-200 h-full flex items-start"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
@@ -53,9 +53,9 @@ export function WhatItDoes() {
               >
                 <div className="flex items-start gap-3 w-full">
                   <div className="w-5 h-5 border border-[#E3E3E3] rounded-none flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#161616]" strokeWidth={2} />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#161616] dark:text-white" strokeWidth={2} />
                   </div>
-                  <p className="paragraph-default text-[#161616] flex-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em', fontWeight: 400 }}>{benefit}</p>
+                  <p className="paragraph-default text-[#161616] dark:text-white flex-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em', fontWeight: 400 }}>{benefit}</p>
                 </div>
               </motion.div>
             ))}
@@ -70,7 +70,7 @@ export function WhatItDoes() {
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <p className="paragraph-large text-[#161616] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.5em' }}>
+          <p className="paragraph-large text-[#161616] dark:text-white font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500, lineHeight: '1.5em' }}>
             No guesswork. No prompting. No generic AI fluff.
           </p>
         </motion.div>

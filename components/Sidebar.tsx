@@ -38,7 +38,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
         />
         {/* Sidebar Drawer */}
         <aside
-          className="fixed left-0 top-16 h-full w-16 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-white border-r border-[#E3E3E3] backdrop-blur-sm"
+          className="fixed left-0 top-16 h-full w-16 shadow-lg flex flex-col justify-between z-50 transition-all p-0 bg-white dark:bg-[#161616] border-r border-[#E3E3E3] dark:border-[#292929] backdrop-blur-sm"
           tabIndex={-1}
         >
           <nav className="flex-1 py-2 px-1">
@@ -47,7 +47,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('generator')}
-                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Email Generator"
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
@@ -65,7 +65,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('templates')}
-                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Templates"
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
@@ -83,7 +83,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('favorites')}
-                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Favorites"
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
@@ -101,7 +101,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                 <button
                   type="button"
                   onClick={() => onSectionChange && onSectionChange('history')}
-                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'history' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'history' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                     aria-label="History"
                   aria-current={activeSection === 'history' ? 'page' : undefined}
@@ -117,10 +117,10 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               </li>
             </ul>
           </nav>
-          <div className="flex flex-col gap-1.5 py-2 px-2 border-t border-[#E3E3E3]">
-            <SidebarIcon icon={LifeBuoy} label="Support" iconClass="text-[#ABABAB]" strokeWidth={1.5} />
-            <SidebarIcon icon={CreditCard} label="Subscription" iconClass="text-[#ABABAB]" strokeWidth={1.5} />
-            <SidebarIcon icon={User} label="Account" iconClass="text-[#ABABAB]" strokeWidth={1.5} />
+          <div className="flex flex-col gap-1.5 py-2 px-2 border-t border-[#E3E3E3] dark:border-[#292929]">
+            <SidebarIcon icon={LifeBuoy} label="Support" iconClass="text-[#ABABAB] dark:text-[#ABABAB]" strokeWidth={1.5} />
+            <SidebarIcon icon={CreditCard} label="Subscription" iconClass="text-[#ABABAB] dark:text-[#ABABAB]" strokeWidth={1.5} />
+            <SidebarIcon icon={User} label="Account" iconClass="text-[#ABABAB] dark:text-[#ABABAB]" strokeWidth={1.5} />
           </div>
         </aside>
       </div>
@@ -131,7 +131,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
     <>
       {/* Mobile hamburger toggle */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-white text-[#161616] p-2 rounded-none border border-[#E3E3E3] shadow-lg hover:bg-[#FBFBFB] transition-colors"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-[#161616] text-[#161616] dark:text-white p-2 rounded-none border border-[#E3E3E3] dark:border-[#292929] shadow-lg hover:bg-[#FBFBFB] dark:hover:bg-[#292929] transition-colors"
         onClick={() => onClose && onClose()}
         aria-label="Toggle Sidebar"
         tabIndex={0}
@@ -140,7 +140,7 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
       </button>
       {/* Desktop sidebar */}
       <aside
-        className="hidden md:flex fixed top-16 left-0 h-full w-16 shadow-lg flex-col justify-start z-20 transition-all duration-300 p-0 bg-white border-r border-[#E3E3E3]"
+        className="hidden md:flex fixed top-16 left-0 h-full w-16 shadow-lg flex-col justify-start z-20 transition-all duration-300 p-0 bg-white dark:bg-[#161616] border-r border-[#E3E3E3] dark:border-[#292929]"
         aria-label="Sidebar"
         role="navigation"
       >
@@ -151,15 +151,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('generator')}
-                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'generator' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Email Generator"
                   aria-current={activeSection === 'generator' ? 'page' : undefined}
                     tabIndex={0}
                   >
                   <LayoutDashboard 
-                    className="w-6 h-6" 
-                    style={{ color: activeSection === 'generator' ? '#FFFFFF' : '#505050', stroke: activeSection === 'generator' ? '#FFFFFF' : '#505050' }}
+                    className={`w-6 h-6 ${activeSection === 'generator' ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                     aria-hidden="true" 
                     strokeWidth={activeSection === 'generator' ? 2 : 1.5} 
                   />
@@ -169,15 +168,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('templates')}
-                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'templates' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Templates"
                   aria-current={activeSection === 'templates' ? 'page' : undefined}
                     tabIndex={0}
                   >
                   <FileText 
-                    className="w-6 h-6" 
-                    style={{ color: activeSection === 'templates' ? '#FFFFFF' : '#505050', stroke: activeSection === 'templates' ? '#FFFFFF' : '#505050' }}
+                    className={`w-6 h-6 ${activeSection === 'templates' ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                     aria-hidden="true" 
                     strokeWidth={activeSection === 'templates' ? 2 : 1.5} 
                   />
@@ -187,15 +185,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('favorites')}
-                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'favorites' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                   aria-label="Favorites"
                   aria-current={activeSection === 'favorites' ? 'page' : undefined}
                     tabIndex={0}
                   >
                   <Star 
-                    className="w-6 h-6" 
-                    style={{ color: activeSection === 'favorites' ? '#FFFFFF' : '#505050', stroke: activeSection === 'favorites' ? '#FFFFFF' : '#505050' }}
+                    className={`w-6 h-6 ${activeSection === 'favorites' ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                     aria-hidden="true" 
                     strokeWidth={activeSection === 'favorites' ? 2 : 1.5} 
                   />
@@ -205,15 +202,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
                   <button
                     type="button"
                   onClick={() => onSectionChange && onSectionChange('history')}
-                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'history' ? 'bg-[#161616] border-[#161616]' : 'hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]'}`}
+                  className={`flex items-center justify-center w-10 h-10 mx-auto rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === 'history' ? 'bg-[#161616] dark:bg-white border-[#161616] dark:border-white' : 'hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]'}`}
                   style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                     aria-label="History"
                   aria-current={activeSection === 'history' ? 'page' : undefined}
                     tabIndex={0}
                   >
                   <History 
-                    className="w-6 h-6" 
-                    style={{ color: activeSection === 'history' ? '#FFFFFF' : '#505050', stroke: activeSection === 'history' ? '#FFFFFF' : '#505050' }}
+                    className={`w-6 h-6 ${activeSection === 'history' ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                     aria-hidden="true" 
                     strokeWidth={activeSection === 'history' ? 2 : 1.5} 
                   />
@@ -222,19 +218,18 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               </ul>
             </nav>
           {/* Bottom icons */}
-          <div className="flex flex-col gap-1.5 py-1 w-full items-center px-2 mt-auto mb-20 border-t border-[#E3E3E3]" role="navigation" aria-label="Secondary navigation">
+          <div className="flex flex-col gap-1.5 py-1 w-full items-center px-2 mt-auto mb-20 border-t border-[#E3E3E3] dark:border-[#292929]" role="navigation" aria-label="Secondary navigation">
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("support")}
-              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "support" ? "bg-[#161616] border-[#161616]" : "hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "support" ? "bg-[#161616] dark:bg-white border-[#161616] dark:border-white" : "hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]"}`}
                 style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                 aria-label="Support"
                 tabIndex={0}
               title="Support"
               >
               <LifeBuoy 
-                className="w-6 h-6" 
-                style={{ color: activeSection === "support" ? '#FFFFFF' : '#505050', stroke: activeSection === "support" ? '#FFFFFF' : '#505050' }}
+                className={`w-6 h-6 ${activeSection === "support" ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                 aria-hidden="true" 
                 strokeWidth={activeSection === "support" ? 2 : 1.5} 
               />
@@ -242,15 +237,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("subscription")}
-              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "subscription" ? "bg-[#161616] border-[#161616]" : "hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "subscription" ? "bg-[#161616] dark:bg-white border-[#161616] dark:border-white" : "hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]"}`}
                 style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                 aria-label="Subscription"
                 tabIndex={0}
               title="Subscription"
               >
               <CreditCard 
-                className="w-6 h-6" 
-                style={{ color: activeSection === "subscription" ? '#FFFFFF' : '#505050', stroke: activeSection === "subscription" ? '#FFFFFF' : '#505050' }}
+                className={`w-6 h-6 ${activeSection === "subscription" ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                 aria-hidden="true" 
                 strokeWidth={activeSection === "subscription" ? 2 : 1.5} 
               />
@@ -258,15 +252,14 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
               <button
                 type="button"
                 onClick={() => onSectionChange && onSectionChange("account")}
-              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "account" ? "bg-[#161616] border-[#161616]" : "hover:bg-[#FBFBFB] text-[#505050] hover:text-[#161616] hover:border-[#ABABAB]"}`}
+              className={`flex items-center justify-center w-10 h-10 rounded-none border border-[#E3E3E3] dark:border-[#292929] focus:outline-none focus:ring-2 transition-all duration-200 ${activeSection === "account" ? "bg-[#161616] dark:bg-white border-[#161616] dark:border-white" : "hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-[#505050] dark:text-[#ABABAB] hover:text-[#161616] dark:hover:text-white hover:border-[#ABABAB] dark:hover:border-[#505050]"}`}
                 style={{ '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
                 aria-label="Account"
                 tabIndex={0}
               title="Account"
               >
               <User 
-                className="w-6 h-6" 
-                style={{ color: activeSection === "account" ? '#FFFFFF' : '#505050', stroke: activeSection === "account" ? '#FFFFFF' : '#505050' }}
+                className={`w-6 h-6 ${activeSection === "account" ? 'text-white dark:text-[#161616]' : 'text-[#505050] dark:text-[#ABABAB]'}`}
                 aria-hidden="true" 
                 strokeWidth={activeSection === "account" ? 2 : 1.5} 
               />
@@ -281,13 +274,13 @@ export function Sidebar({ mobileOpen = false, onClose, onSectionChange, activeSe
 function SidebarIcon({ icon: Icon, label, iconClass, strokeWidth = 1.5 }: { icon: React.ElementType, label: string, iconClass: string, strokeWidth?: number }) {
   return (
     <button
-      className="flex items-center px-3 py-2 w-full rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] transition-colors group focus:outline-none focus:ring-2"
+      className="flex items-center px-3 py-2 w-full rounded-none border border-[#E3E3E3] dark:border-[#292929] hover:bg-[#FBFBFB] dark:hover:bg-[#292929] transition-colors group focus:outline-none focus:ring-2"
       style={{ fontFamily: 'var(--font-inter-tight), sans-serif', '--tw-ring-color': 'var(--accent-1)' } as React.CSSProperties}
       aria-label={label}
       tabIndex={0}
     >
-      <Icon className={`w-5 h-5 ${iconClass} mr-3`} aria-hidden="true" strokeWidth={strokeWidth} />
-      <span className="text-sm font-medium text-[#505050] group-hover:text-[#161616]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>{label}</span>
+      <Icon className={`w-5 h-5 ${iconClass} dark:text-[#ABABAB] mr-3`} aria-hidden="true" strokeWidth={strokeWidth} />
+      <span className="text-sm font-medium text-[#505050] dark:text-[#ABABAB] group-hover:text-[#161616] dark:group-hover:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>{label}</span>
     </button>
   );
 } 
