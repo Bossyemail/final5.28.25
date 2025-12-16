@@ -53,7 +53,11 @@ export default function AnalyticsPage() {
   useEffect(() => {
     if (!isLoaded) return
     
-    if (!user || user.publicMetadata?.isAdmin !== true) {
+    // Check if user is admin via metadata or email
+    const isAdmin = user?.publicMetadata?.isAdmin === true || 
+                    user?.primaryEmailAddress?.emailAddress === 'aylen@bossyemail.com'
+    
+    if (!user || !isAdmin) {
       router.push('/dashboard')
       return
     }

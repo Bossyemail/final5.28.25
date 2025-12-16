@@ -31,7 +31,8 @@ export async function GET(req: NextRequest) {
 
     // Check if user is admin
     const user = await clerkClient.users.getUser(userId);
-    const isAdmin = user.publicMetadata?.isAdmin === true;
+    const isAdmin = user.publicMetadata?.isAdmin === true || 
+                    user.emailAddresses?.some(email => email.emailAddress === 'aylen@bossyemail.com') === true;
     
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs';
 import fs from 'fs';
 import path from 'path';
+import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit';
 
 // Simple file-based storage for analytics (in production, use a database)
 const ANALYTICS_FILE = path.join(process.cwd(), 'data', 'analytics.json');
@@ -43,6 +44,32 @@ export async function POST(req: NextRequest) {
   try {
     const { userId } = auth();
     const body = await req.json();
+    
+    // Rate limiting for analytics tracking
+    if (userId) {
+      const endpoint = '/api/analytics/track';
+      const rateLimit = checkRateLimit(userId, endpoint, RATE_LIMITS[endpoint]);
+      
+      if (!rateLimit.allowed) {
+        return NextResponse.json(
+          { error: 'Rate limit exceeded' },
+          { status: 429 }
+        );
+      }
+    }
+
+    // Validate event data
+    if (!body.event || typeof body.event !== 'string') {
+      return NextResponse.json({ error: 'Invalid event data' }, { status: 400 });
+    }
+
+    // Limit properties size
+    if (body.properties && typeof body.properties === 'object') {
+      const propsStr = JSON.stringify(body.properties);
+      if (propsStr.length > 5000) {
+        return NextResponse.json({ error: 'Event properties too large' }, { status: 400 });
+      }
+    }
     
     const event = {
       ...body,
