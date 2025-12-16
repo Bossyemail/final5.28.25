@@ -44,20 +44,17 @@ export function FinalCTA() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true, margin: "-50px" }}
         >
-          <p className="text-sm text-[#ABABAB] dark:text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
-            GET STARTED
-          </p>
           <h2 
             className="display-6 sm:display-7 md:display-8 mb-4 text-black dark:text-white"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}
           >
-            Generate your first 3 emails free
+            Stop Rewriting the Same Emails.
           </h2>
           <p 
-            className="paragraph-default text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-8"
+            className="paragraph-small text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-8"
             style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}
           >
-            No credit card. No learning curve. Just clear, professional communication — instantly.
+            Your next email can be done in under a minute.
           </p>
         </motion.div>
         
@@ -75,17 +72,7 @@ export function FinalCTA() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            GENERATE MY FIRST EMAIL
-            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" />
-          </motion.a>
-          <motion.a
-            href="#video-demo"
-            className="bg-white dark:bg-[#161616] hover:bg-[#FBFBFB] dark:hover:bg-[#292929] text-black dark:text-white border border-[#161616] dark:border-white text-sm font-medium px-8 py-4 rounded-none transition-all duration-300 uppercase tracking-wide inline-flex items-center gap-2 group h-12"
-            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            SEE LIVE DEMO
+            Start Your 7-Day Free Trial →
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" />
           </motion.a>
         </motion.div>

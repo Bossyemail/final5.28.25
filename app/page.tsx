@@ -2,10 +2,12 @@
 
 import { Hero } from "@/components/hero"
 import { Why } from "@/components/why"
-import { UseCaseGrid } from "@/components/use-case-grid"
 import { Process } from "@/components/process"
+import { UseCaseGrid } from "@/components/use-case-grid"
+import { BeforeAfter } from "@/components/before-after"
 import { Features } from "@/components/features"
 import { Pricing } from "@/components/pricing"
+import { RiskReversal } from "@/components/risk-reversal"
 import { TeamPricing } from "@/components/team-pricing"
 import { Comparison } from "@/components/comparison"
 import { Testimonials } from "@/components/testimonials"
@@ -30,14 +32,16 @@ export default function Home() {
       <main className="flex-1 relative">
         <Hero />
         <Why />
-        <UseCaseGrid />
         <Process />
+        <UseCaseGrid />
+        <BeforeAfter />
         <section id="features">
           <Features />
         </section>
         <section id="pricing">
           <Pricing />
         </section>
+        <RiskReversal />
         <TeamPricing />
         <Comparison />
         <Testimonials />

@@ -98,16 +98,52 @@ export function Why() {
           viewport={{ once: true }}
         >
           <p className="text-sm text-[#ABABAB] dark:text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
-            WHY THIS EXISTS
+            THE PROBLEM
           </p>
-          <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
-            Deals don't die because of contracts.
+          <h2 className="display-6 sm:display-7 md:display-8 mb-6 text-black dark:text-white" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
+            Deals Don't Fall Apart Because of Contracts.
             <br />
-            They die because of communication.
+            They Fall Apart Because of Communication.
           </h2>
-          <p className="paragraph-default text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-12" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-            Real estate is 10% paperwork and 90% emails:
-          </p>
+          <div className="max-w-4xl mx-auto mb-12">
+            <p className="paragraph-default text-[#505050] dark:text-[#ABABAB] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+              You've sat in this loop:
+            </p>
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-6">
+              {/* Left Column - Questions */}
+              <div className="space-y-3">
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  "Did you get this?"
+                </p>
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  "Can you confirm?"
+                </p>
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  "Please advise…"
+                </p>
+              </div>
+              {/* Right Column - Consequences */}
+              <div className="space-y-3">
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  Each one takes time you don't bill for.
+                </p>
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  Each one introduces uncertainty.
+                </p>
+                <p className="paragraph-default text-[#505050] dark:text-[#ABABAB]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+                  Each one delays the deal.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 space-y-1 text-center">
+              <p className="paragraph-default text-[#161616] dark:text-white font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em', fontWeight: 500 }}>
+                You know this problem.
+              </p>
+              <p className="paragraph-default text-[#161616] dark:text-white font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em', fontWeight: 500 }}>
+                Now let's fix it.
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Main Content Container - 3 Column Grid */}

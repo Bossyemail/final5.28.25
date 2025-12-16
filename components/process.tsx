@@ -8,18 +8,18 @@ import { useRef } from "react"
 const steps = [
   {
     icon: FileText,
-    title: "Pick your scenario",
-    description: "Choose from 200+ common (and insane) real estate situations."
+    title: "Identifies the scenario",
+    description: "BossyEmail recognizes the situation and selects the right template."
   },
   {
     icon: Settings,
-    title: "Add quick details",
-    description: "Names, address, timeline, what's happening."
+    title: "Writes the email for you",
+    description: "Generates complete, professional emails tailored to your specific needs."
   },
   {
     icon: Sparkles,
-    title: "Get a complete, professional real estate email — instantly",
-    description: "Copy. Paste. Send. Look like the agent who has their sh*t together."
+    title: "Keeps the tone professional",
+    description: "Every email maintains the right tone — professional, clear, and effective."
   }
 ]
 
@@ -41,18 +41,23 @@ export function Process() {
         {/* Header */}
         <div className="mb-12">
           <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
-            PROCESS
+            THE MECHANISM
           </p>
           <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
-            How BossyEmail turns chaos into clarity
+            It's Not About AI. It's About Predictability.
           </h2>
-          <p className="paragraph-default text-[#505050] max-w-2xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-            Three simple steps to transform messy, uncertain situations into clear, professional communication.
-          </p>
+          <div className="max-w-2xl">
+            <p className="paragraph-default text-[#505050] mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+              You don't need faster typing.
+            </p>
+            <p className="paragraph-default text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+              You need the right words on the first try.
+            </p>
+          </div>
         </div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 border-t border-l border-[#E3E3E3]">
+        <div className="grid grid-cols-1 md:grid-cols-3 border-t border-l border-[#E3E3E3] mb-8">
           {steps.map((step, index) => (
             <motion.div
               key={index}
@@ -79,6 +84,17 @@ export function Process() {
               </motion.div>
             </motion.div>
           ))}
+        </div>
+        <div className="text-center mb-8 space-y-2">
+          <p className="paragraph-default text-[#505050] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            No blank page.
+          </p>
+          <p className="paragraph-default text-[#505050] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            No guesswork.
+          </p>
+          <p className="paragraph-default text-[#505050] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            Just results.
+          </p>
         </div>
 
         {/* CTA */}

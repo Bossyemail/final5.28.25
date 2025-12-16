@@ -6,34 +6,29 @@ import { TryGeneratorCTA } from "./try-generator-cta"
 
 const features = [
   {
-    icon: Sparkles,
-    title: "AI Email Generator (Real-Estate Fluent)",
-    description: "Generates complete, deal-specific emails — not generic AI fluff."
+    icon: FileText,
+    title: "200+ real-estate email templates",
+    description: "Tailored to real scenarios — inspection issues, missing documents, unresponsive agents, title delays, and more."
   },
   {
-    icon: FileText,
-    title: "300+ Real Estate Templates",
-    description: "Offers, inspection issues, appraisal problems, HOA delays, lender chases, client updates — you name it."
+    icon: Sparkles,
+    title: "Unlimited email generation",
+    description: "Generate as many emails as you need, whenever you need them."
   },
   {
     icon: Brain,
-    title: "Deal-Context Logic",
-    description: "BossyEmail writes differently depending on where you are in the transaction."
+    title: "Professional tone every time",
+    description: "Every email maintains the right tone — professional, clear, and effective."
   },
   {
     icon: Settings,
-    title: "Tone Control",
-    description: "Professional, firm, friendly, neutral, or \"TC magic.\""
+    title: "Coverage for all scenarios",
+    description: "Inspections, missing documents, deadlines, title issues, and more."
   },
   {
     icon: FileCheck,
-    title: "Offer Package Builder",
-    description: "Creates polished, agent-friendly offer emails automatically."
-  },
-  {
-    icon: User,
-    title: "Saved Styles & Signatures",
-    description: "Your tone. Your brand. One click."
+    title: "Regular updates with new use cases",
+    description: "We continuously add new templates and scenarios based on real-world needs."
   }
 ]
 
@@ -45,13 +40,16 @@ export function Features() {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
           <div className="mb-6 md:mb-0">
             <p className="text-sm text-[#ABABAB] uppercase tracking-wide mb-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>
-              FEATURES
+              WHAT YOU ACTUALLY GET
             </p>
             <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
-              Everything you need to communicate like a pro
+              What You Actually Get
             </h2>
+            <p className="paragraph-default text-[#505050] max-w-2xl mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+              This isn't static copy.
+            </p>
             <p className="paragraph-default text-[#505050] max-w-2xl" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-              Powerful tools designed specifically for real estate professionals who want to communicate with confidence.
+              It's a working system that saves you hours.
             </p>
           </div>
         </div>

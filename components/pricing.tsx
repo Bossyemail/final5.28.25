@@ -7,19 +7,16 @@ import { motion } from "framer-motion"
 
 const liteFeatures = [
   "AI Email Generator",
-  "300+ real-estate templates",
   "Tone control",
-  "Generate 3 emails free to start",
   "Email history",
   "Mobile-friendly workflow"
 ]
 
 const royaltyFeatures = [
-  "Unlimited generated emails",
-  "Deal-context logic",
-  "Offer package builder",
-  "Saved styles & signatures",
-  "Priority support"
+  "Unlimited emails",
+  "300+ email templates",
+  "Advanced scenarios",
+  "Priority updates"
 ]
 
 export function Pricing() {
@@ -38,10 +35,10 @@ export function Pricing() {
             PRICING
           </p>
           <h2 className="display-6 sm:display-7 md:display-8 mb-4 text-black" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400, lineHeight: '1.25em', letterSpacing: '-0.02em' }}>
-            Simple, transparent pricing
+            Simple Pricing Designed for Real Workflows
           </h2>
-          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-            Start free. Upgrade only if you love clarity, sanity, and faster closings.
+          <p className="paragraph-default text-[#505050] max-w-2xl mx-auto mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            One saved follow-up email often pays for the subscription.
           </p>
         </motion.div>
 
@@ -63,10 +60,10 @@ export function Pricing() {
                 <span className="paragraph-default text-[#505050] ml-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>/month</span>
               </div>
               <p className="paragraph-default text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-                Perfect for solo agents & new TCs
+                Core email generation
               </p>
               <p className="paragraph-small text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-                Includes:
+                Essential scenarios
               </p>
             </div>
             <div>
@@ -115,11 +112,11 @@ export function Pricing() {
                 <span className="paragraph-default text-[#505050] ml-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>/month</span>
               </div>
               <p className="paragraph-default text-[#505050] mb-6" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-                For agents who want to sound like a 10-year pro
+                Unlimited emails
               </p>
             </div>
             <div>
-              <p className="paragraph-small font-medium text-[#505050] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Everything in Lite, plus:</p>
+              <p className="paragraph-small font-medium text-[#505050] mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}>Includes:</p>
               <ul className="space-y-3 mb-6 text-left">
                 {royaltyFeatures.map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
@@ -140,7 +137,7 @@ export function Pricing() {
           </motion.div>
         </div>
 
-        {/* Bottom CTA */}
+        {/* Value Anchor */}
         <motion.div
           className="text-center mt-12"
           initial={{ opacity: 0, y: 20 }}
@@ -148,16 +145,8 @@ export function Pricing() {
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <a
-            href="#pricing"
-            className="bg-[#161616] dark:bg-white hover:bg-[#292929] dark:hover:bg-[#FBFBFB] text-white dark:text-[#161616] text-sm font-medium px-8 py-4 rounded-none transition-all duration-200 uppercase tracking-wide inline-flex items-center gap-2 mb-4 group h-12"
-            style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 500 }}
-          >
-            GENERATE MY FIRST EMAIL — FREE
-            <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:-rotate-45" />
-          </a>
-          <p className="paragraph-small text-[#505050]" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
-            Cancel anytime. No contracts. No BS.
+          <p className="paragraph-default text-[#505050] font-medium" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', lineHeight: '1.5em' }}>
+            One saved follow-up email often pays for the subscription.
           </p>
         </motion.div>
       </div>
