@@ -72,7 +72,7 @@ export function FinalCTA() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            Start Your 7-Day Free Trial →
+            Start Your 14-Day Free Trial →
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:-rotate-45" />
           </motion.a>
         </motion.div>
