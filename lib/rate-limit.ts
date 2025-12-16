@@ -47,19 +47,19 @@ export interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds
 }
 
-// Default rate limits
+// Default rate limits - Daily limits for better user experience
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   '/api/generate-email': {
-    maxRequests: 100, // 100 emails per hour
-    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 200, // 200 emails per day (generous for legitimate use)
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours (1 day)
   },
   '/api/generate-email-stream': {
-    maxRequests: 100, // 100 emails per hour
-    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 200, // 200 emails per day (generous for legitimate use)
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours (1 day)
   },
   '/api/analytics/track': {
-    maxRequests: 1000, // 1000 events per hour
-    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 5000, // 5000 events per day
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours (1 day)
   },
 };
 
@@ -99,10 +99,10 @@ export function checkRateLimit(
   entry.lastRequest = now;
   limits[key] = entry;
   
-  // Clean up old entries (older than 24 hours)
-  const oneDayAgo = now - 24 * 60 * 60 * 1000;
+  // Clean up old entries (older than 48 hours to account for daily windows)
+  const twoDaysAgo = now - 48 * 60 * 60 * 1000;
   Object.keys(limits).forEach(k => {
-    if (limits[k].resetAt < oneDayAgo) {
+    if (limits[k].resetAt < twoDaysAgo) {
       delete limits[k];
     }
   });

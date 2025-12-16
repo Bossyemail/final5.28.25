@@ -7,15 +7,16 @@ Your BossyEmail app now has comprehensive protection against abuse, scraping, an
 
 ### 1. Rate Limiting
 **Email Generation:**
-- **Regular Users**: 100 emails per hour
-- **Admins**: 500 emails per hour
-- **Analytics Tracking**: 1,000 events per hour
+- **Regular Users**: 200 emails per day (generous for legitimate use)
+- **Admins**: 1,000 emails per day
+- **Analytics Tracking**: 5,000 events per day
 
 **How it works:**
 - Tracks requests per user per endpoint
-- Resets after the time window (1 hour)
+- Daily limits reset at midnight (24-hour rolling window)
 - Returns HTTP 429 (Too Many Requests) when exceeded
 - Includes helpful error messages with reset time
+- Limits are designed to allow normal usage while preventing abuse
 
 ### 2. Abuse Detection
 **Rapid-Fire Protection:**
@@ -64,8 +65,8 @@ You can adjust limits in `/lib/rate-limit.ts`:
 ```typescript
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
   '/api/generate-email': {
-    maxRequests: 100,  // Change this number
-    windowMs: 60 * 60 * 1000, // 1 hour
+    maxRequests: 200,  // Change this number (emails per day)
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours (1 day)
   },
   // ...
 };

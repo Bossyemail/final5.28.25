@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { BriefcaseIcon, SmileIcon } from "lucide-react";
-import { useEmailUsage } from "@/hooks/use-email-usage";
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
 import { analytics } from "@/lib/analytics"
@@ -73,7 +72,6 @@ export function EmailGenerator() {
   const [placeholder, setPlaceholder] = useState(PLACEHOLDERS[0]);
   const placeholderIndex = useRef(0);
   const [typing, setTyping] = useState("");
-  const { incrementUsage } = useEmailUsage();
 
   // Safari-compatible clipboard function
   const copyToClipboard = async (text: string, successMessage = "Copied to clipboard!") => {
@@ -435,7 +433,6 @@ export function EmailGenerator() {
       // Track email generation
       analytics.emailGenerated(bodyWithSignature.length, tone || 'professional');
       
-      await incrementUsage();
       setPrompt("");
     } catch (err: any) {
       console.error('Generation error:', err);
@@ -448,8 +445,12 @@ export function EmailGenerator() {
         errorMessage = "Network error. Please check your connection and try again.";
       } else if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
         errorMessage = "Please sign in to generate emails.";
-      } else if (err.message?.includes('403') || err.message?.includes('limit')) {
-        errorMessage = "You've reached your free email limit. Please subscribe to continue.";
+      } else if (err.message?.includes('403') || err.message?.includes('trial') || err.message?.includes('subscribe')) {
+        errorMessage = err.message || "Start your 14-day free trial to generate unlimited emails. No charge during trial.";
+      } else if (err.message?.includes('429') || err.message?.includes('Rate limit') || err.message?.includes('Daily limit')) {
+        errorMessage = err.message || "Daily limit reached. Your limit resets tomorrow.";
+      } else if (err.message?.includes('500') || err.message?.includes('Internal server error')) {
+        errorMessage = "Server error. Please try again in a moment.";
       }
       
       setError(errorMessage);
@@ -491,7 +492,6 @@ export function EmailGenerator() {
         
         const fallbackMessages = [...newMessages, fallbackAiMsg];
         setMessages(fallbackMessages);
-        await incrementUsage();
         setPrompt("");
         setError("");
       } catch (fallbackErr: any) {
@@ -807,12 +807,19 @@ export function EmailGenerator() {
         {/* Error display */}
         {error && (
           <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-[#161616] dark:text-white">
-            <p className="font-medium text-red-800 dark:text-red-200 mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Something went wrong</p>
-            <p className="text-sm text-red-700 dark:text-red-300" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
-              {error.includes('trial') || error.includes('subscribe') 
-                ? error 
-                : 'Please try again. If the problem persists, refresh the page.'}
+            <p className="font-medium text-red-800 dark:text-red-200 mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+              {error.includes('trial') || error.includes('subscribe') || error.includes('Rate limit') || error.includes('Unauthorized')
+                ? 'Access Restricted'
+                : 'Something went wrong'}
             </p>
+            <p className="text-sm text-red-700 dark:text-red-300" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+              {error}
+            </p>
+            {!error.includes('trial') && !error.includes('subscribe') && !error.includes('Rate limit') && !error.includes('Unauthorized') && (
+              <p className="text-xs text-red-600 dark:text-red-400 mt-2" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                If the problem persists, please refresh the page or contact support.
+              </p>
+            )}
           </div>
         )}
         

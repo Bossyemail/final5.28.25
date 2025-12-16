@@ -30,16 +30,17 @@ export async function POST(req: NextRequest) {
     // Rate limiting (admins have higher limits)
     const endpoint = '/api/generate-email';
     const rateLimitConfig = isAdmin 
-      ? { maxRequests: 500, windowMs: 60 * 60 * 1000 } // Admins: 500/hour
+      ? { maxRequests: 1000, windowMs: 24 * 60 * 60 * 1000 } // Admins: 1000/day
       : RATE_LIMITS[endpoint];
     
     const rateLimit = checkRateLimit(userId, endpoint, rateLimitConfig);
     
     if (!rateLimit.allowed) {
-      const resetTime = new Date(rateLimit.resetAt).toLocaleTimeString();
+      const resetDate = new Date(rateLimit.resetAt);
+      const resetTime = resetDate.toLocaleDateString() + ' at ' + resetDate.toLocaleTimeString();
       return NextResponse.json(
         { 
-          error: `Rate limit exceeded. You've reached the maximum of ${rateLimitConfig.maxRequests} emails per hour. Please try again after ${resetTime}.` 
+          error: `Daily limit reached. You've generated ${rateLimitConfig.maxRequests} emails today. Your limit resets on ${resetTime}.` 
         },
         { 
           status: 429,
@@ -134,7 +135,13 @@ export async function POST(req: NextRequest) {
 
     // No need to track usage count - unlimited during trial and subscription
 
-    return NextResponse.json(json);
+    return NextResponse.json(json, {
+      headers: {
+        'X-RateLimit-Limit': rateLimitConfig.maxRequests.toString(),
+        'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+        'X-RateLimit-Reset': rateLimit.resetAt.toString(),
+      },
+    });
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
