@@ -85,8 +85,42 @@ export function Favorites() {
     threshold: 0.35, // adjust for fuzziness
   });
 
+  // Safari-compatible clipboard function
+  async function copyToClipboardSafely(text: string) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for Safari and older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      // Fallback if clipboard API fails
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  }
+
   function handleCopy(fav: typeof MOCK_FAVORITES[0]) {
-    navigator.clipboard.writeText(`Subject: ${fav.subject}\n\n${fav.body}`);
+    const textToCopy = `Subject: ${fav.subject}\n\n${fav.body}`;
+    copyToClipboardSafely(textToCopy);
     setCopiedId(fav.id);
     setTimeout(() => setCopiedId(null), 1200);
   }

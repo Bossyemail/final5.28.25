@@ -46,7 +46,7 @@ export function Hero() {
                 letterSpacing: '-0.02em'
               }}
             >
-              Write Client-Ready Real Estate Emails in 30 Seconds — Every Time
+              Write Client-Ready Real Estate Emails<br />in 30 Seconds — Every Time
             </h1>
             <p 
               className="paragraph-default text-[#505050] dark:text-[#ABABAB] max-w-2xl mx-auto mb-6 font-normal" 

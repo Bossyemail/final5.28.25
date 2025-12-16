@@ -10,14 +10,17 @@ export async function POST(req: NextRequest) {
 
     // Get user's subscription status
     const user = await clerkClient.users.getUser(userId);
-    const subscription = user.privateMetadata.subscription as any;
-    const emailUsageCount = user.privateMetadata.emailUsageCount as number || 0;
+    const subscription = user.unsafeMetadata?.subscription as any;
     const isAdmin = user.publicMetadata?.isAdmin === true;
 
-    // Admins bypass usage/subscription check
-    if (!isAdmin && emailUsageCount >= 3 && (!subscription || subscription.status !== 'active')) {
+    // Check if user has active subscription or is in trial period
+    const hasAccess = isAdmin || 
+      (subscription && (subscription.status === 'active' || subscription.status === 'trialing'));
+
+    // Users must have active subscription or be in trial to use the generator
+    if (!hasAccess) {
       return NextResponse.json(
-        { error: 'You have reached your free email limit. Please subscribe to continue.' },
+        { error: 'Start your 14-day free trial to generate unlimited emails. No charge during trial.' },
         { status: 403 }
       );
     }
@@ -70,15 +73,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid response from OpenAI.' }, { status: 500 });
     }
 
-    // Update usage count if user is not subscribed
-    if (!subscription || subscription.status !== 'active') {
-      await clerkClient.users.updateUserMetadata(userId, {
-        privateMetadata: {
-          ...user.privateMetadata,
-          emailUsageCount: emailUsageCount + 1,
-        },
-      });
-    }
+    // No need to track usage count - unlimited during trial and subscription
 
     return NextResponse.json(json);
   } catch (error) {

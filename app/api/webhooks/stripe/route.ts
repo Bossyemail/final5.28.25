@@ -17,7 +17,7 @@ async function updateUserSubscription(
 ) {
   try {
     await clerkClient.users.updateUserMetadata(userId, {
-      privateMetadata: {
+      unsafeMetadata: {
         subscription: subscriptionData,
       },
     });
@@ -66,6 +66,40 @@ export async function POST(req: NextRequest) {
 
         await updateUserSubscription(userId, subscriptionData);
         console.log('Subscription created for user:', userId);
+
+        // Track checkout completed and trial started
+        try {
+          const price = subscription.items.data[0].price;
+          const amount = (price.unit_amount || 0) / 100;
+          
+          await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/analytics/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event: 'checkout_completed',
+              properties: {
+                planId: price.id,
+                amount,
+                subscriptionId: subscription.id,
+              },
+              userId,
+              timestamp: Date.now(),
+            }),
+          });
+
+          await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/analytics/track`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event: 'trial_started',
+              properties: { planId: price.id },
+              userId,
+              timestamp: Date.now(),
+            }),
+          });
+        } catch (analyticsError) {
+          console.error('Analytics tracking error:', analyticsError);
+        }
         break;
       }
 

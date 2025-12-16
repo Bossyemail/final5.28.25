@@ -15,6 +15,7 @@ import { BriefcaseIcon, SmileIcon } from "lucide-react";
 import { useEmailUsage } from "@/hooks/use-email-usage";
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "sonner"
+import { analytics } from "@/lib/analytics"
 import { motion } from "framer-motion"
 import { UserButton } from "@clerk/nextjs";
 import ReactMarkdown from "react-markdown";
@@ -73,6 +74,68 @@ export function EmailGenerator() {
   const placeholderIndex = useRef(0);
   const [typing, setTyping] = useState("");
   const { incrementUsage } = useEmailUsage();
+
+  // Safari-compatible clipboard function
+  const copyToClipboard = async (text: string, successMessage = "Copied to clipboard!") => {
+    try {
+      // Try modern clipboard API first
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        toast.success(successMessage, { duration: 2000 });
+      } else {
+        // Fallback for older browsers/Safari
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          toast.success(successMessage, { duration: 2000 });
+        } else {
+          toast.error("Copy failed", {
+            description: "Please select and copy the text manually.",
+            duration: 5000,
+          });
+        }
+      }
+    } catch (err) {
+      // Fallback if clipboard API fails (common in Safari)
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          toast.success(successMessage, { duration: 2000 });
+        } else {
+          toast.error("Copy failed", {
+            description: "Please select and copy the text manually.",
+            duration: 5000,
+          });
+        }
+      } catch (fallbackErr) {
+        toast.error("Copy failed", {
+          description: "Please select and copy the text manually.",
+          duration: 5000,
+        });
+      }
+      
+      document.body.removeChild(textArea);
+    }
+  };
   const [isEditing, setIsEditing] = useState(false);
   const [editSubject, setEditSubject] = useState("");
   const [editBody, setEditBody] = useState("");
@@ -159,39 +222,55 @@ export function EmailGenerator() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load signature and account info from localStorage on mount
+  // Load signature and account info from localStorage on mount (with browser compatibility)
   useEffect(() => {
-    const stored = localStorage.getItem("bossyemail_account");
-    if (stored) {
-      const info = JSON.parse(stored);
-      setSignature(info.signature || "");
-      setAccountName(info.name || "");
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = localStorage.getItem("bossyemail_account");
+        if (stored) {
+          try {
+            const info = JSON.parse(stored);
+            setSignature(info.signature || "");
+            setAccountName(info.name || "");
+          } catch (e) {
+            console.error("Failed to parse account info:", e);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("localStorage not available:", e);
     }
   }, []);
 
   // Helper to get the full signature with all account details
   function getFullSignature() {
-    const stored = localStorage.getItem("bossyemail_account");
-    if (!stored) return "";
-    
     try {
-      const info = JSON.parse(stored);
-      if (!info.signature) return "";
+      if (typeof window === 'undefined' || !window.localStorage) return "";
+      const stored = localStorage.getItem("bossyemail_account");
+      if (!stored) return "";
       
-      let fullSig = info.signature.replace('[Your Name]', info.name || 'Your Name');
-      
-      // Append additional account details if they exist
-      if (info.title) fullSig += `\n${info.title}`;
-      if (info.company) fullSig += `\n${info.company}`;
-      if (info.address) fullSig += `\n${info.address}`;
-      if (info.phone) fullSig += `\nPhone: ${info.phone}`;
-      if (info.office) fullSig += `\nOffice: ${info.office}`;
-      if (info.fax) fullSig += `\nFax: ${info.fax}`;
-      if (info.email) fullSig += `\n${info.email}`;
-      
-      return fullSig;
+      try {
+        const info = JSON.parse(stored);
+        if (!info.signature) return "";
+        
+        let fullSig = info.signature.replace('[Your Name]', info.name || 'Your Name');
+        
+        // Append additional account details if they exist
+        if (info.title) fullSig += `\n${info.title}`;
+        if (info.company) fullSig += `\n${info.company}`;
+        if (info.address) fullSig += `\n${info.address}`;
+        if (info.phone) fullSig += `\nPhone: ${info.phone}`;
+        if (info.office) fullSig += `\nOffice: ${info.office}`;
+        if (info.fax) fullSig += `\nFax: ${info.fax}`;
+        if (info.email) fullSig += `\n${info.email}`;
+        
+        return fullSig;
+      } catch (e) {
+        console.error("Failed to parse account info:", e);
+        return "";
+      }
     } catch (e) {
-      console.error("Failed to parse account info:", e);
+      console.warn("localStorage not available:", e);
       return "";
     }
   }
@@ -353,6 +432,9 @@ export function EmailGenerator() {
       const finalMessages = [...newMessages, finalAiMsg];
       setMessages(finalMessages);
       
+      // Track email generation
+      analytics.emailGenerated(bodyWithSignature.length, tone || 'professional');
+      
       await incrementUsage();
       setPrompt("");
     } catch (err: any) {
@@ -427,11 +509,9 @@ export function EmailGenerator() {
   }
 
   function handleCopy() {
-    navigator.clipboard.writeText(`Subject: ${subject}\n\n${body}`);
-    toast.success("Email copied to clipboard!", {
-      description: "You can now paste it into your email client.",
-      duration: 3000,
-    });
+    const textToCopy = `Subject: ${subject}\n\n${body}`;
+    copyToClipboard(textToCopy, "Email copied to clipboard!");
+    analytics.emailCopied();
   }
 
   function handleSave() {
@@ -537,12 +617,12 @@ export function EmailGenerator() {
     )
   }
 
-  function copyHtmlFromMarkdown(markdown: string) {
+  async function copyHtmlFromMarkdown(markdown: string) {
     const html = typeof marked.parse === 'function' ? marked.parse(markdown) : '';
     if (typeof html === 'string') {
-      navigator.clipboard.writeText(html);
+      await copyToClipboard(html, "HTML copied to clipboard!");
     } else if (html instanceof Promise) {
-      html.then(res => navigator.clipboard.writeText(res));
+      html.then(res => copyToClipboard(res, "HTML copied to clipboard!"));
     }
   }
 
@@ -560,8 +640,7 @@ export function EmailGenerator() {
       } else if (dx < -60) {
         // Swipe left: copy
         if (msg.body) {
-          navigator.clipboard.writeText(msg.body);
-          toast.success('Copied to clipboard!');
+          copyToClipboard(msg.body, 'Copied to clipboard!');
         }
       }
     }
@@ -674,8 +753,7 @@ export function EmailGenerator() {
                             className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                             style={{ width: 36, height: 36 }}
                             onClick={() => {
-                              navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
-                              toast.success('Copied!', { duration: 1200 });
+                              copyToClipboard(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`, 'Copied!');
                             }}
                             title="Copy"
                             type="button"
@@ -728,16 +806,42 @@ export function EmailGenerator() {
               )}
         {/* Error display */}
         {error && (
-                  <div className="mb-4 p-4 bg-[#FBFBFB] dark:bg-[#292929] border border-[#E3E3E3] dark:border-[#292929] rounded-none text-[#161616] dark:text-white">
-            <p className="font-medium">Error:</p>
-            <p>{error}</p>
+          <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-[#161616] dark:text-white">
+            <p className="font-medium text-red-800 dark:text-red-200 mb-1" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Something went wrong</p>
+            <p className="text-sm text-red-700 dark:text-red-300" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+              {error.includes('trial') || error.includes('subscribe') 
+                ? error 
+                : 'Please try again. If the problem persists, refresh the page.'}
+            </p>
           </div>
         )}
         
         {/* Main chat thread (filtered) */}
         {filteredMessages.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center mt-20 mb-8 w-full">
-            <div className="text-2xl font-normal text-[#161616] dark:text-white mb-8" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>How can I help you today?</div>
+            <div className="text-2xl font-normal text-[#161616] dark:text-white mb-4" style={{ fontFamily: 'var(--font-inter-tight), sans-serif', fontWeight: 400 }}>How can I help you today?</div>
+            
+            {/* Quick Start Examples */}
+            <div className="mb-6 w-full max-w-2xl">
+              <p className="text-sm text-[#ABABAB] dark:text-[#ABABAB] mb-3 text-center" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>Try one of these:</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  "Follow up on missing inspection documents",
+                  "Ask for an escrow letter that's late",
+                  "Remind client about deadline approaching",
+                  "Request HOA questionnaire"
+                ].map((example, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setPrompt(example)}
+                    className="px-4 py-2 text-sm text-[#505050] dark:text-[#ABABAB] bg-[#FBFBFB] dark:bg-[#1a1a1a] border border-[#E3E3E3] dark:border-[#292929] rounded-lg hover:border-[#161616] dark:hover:border-white hover:text-[#161616] dark:hover:text-white transition-colors"
+                    style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            </div>
             
             {/* Input form - shown when no messages */}
             <div className="w-full max-w-2xl">
@@ -965,8 +1069,7 @@ export function EmailGenerator() {
                         className="flex items-center justify-center text-[#ABABAB] hover:text-[#161616] rounded-none border border-[#E3E3E3] hover:bg-[#FBFBFB] hover:border-[#ABABAB] p-2 transition"
                         style={{ width: 36, height: 36 }}
                         onClick={() => {
-                          navigator.clipboard.writeText(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`);
-                          toast.success('Copied!', { duration: 1200 });
+                          copyToClipboard(`Subject: ${msg.subject || ''}\n\n${msg.body || ''}`, 'Copied!');
                         }}
                         title="Copy"
                         type="button"

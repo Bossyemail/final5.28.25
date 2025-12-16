@@ -96,6 +96,8 @@ export default function RootLayout({
           colorPrimary: '#161616',
         },
       }}
+      // Ensure compatibility across browsers
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`} style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400 }} suppressHydrationWarning>
         <head>
@@ -103,11 +105,24 @@ export default function RootLayout({
             dangerouslySetInnerHTML={{
               __html: `
                 (function() {
-                  const theme = localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                  if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
+                  try {
+                    var theme = 'light';
+                    if (typeof window !== 'undefined' && window.localStorage) {
+                      theme = localStorage.theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                    } else {
+                      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    if (theme === 'dark') {
+                      document.documentElement.classList.add('dark');
+                    } else {
+                      document.documentElement.classList.remove('dark');
+                    }
+                  } catch (e) {
+                    // Fallback to system preference if localStorage fails
+                    var theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    if (theme === 'dark') {
+                      document.documentElement.classList.add('dark');
+                    }
                   }
                 })();
               `,

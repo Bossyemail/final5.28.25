@@ -18,17 +18,24 @@ export function Account() {
   const [hasChanges, setHasChanges] = useState(false);
   const [initialInfo, setInitialInfo] = useState(DEFAULT);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (with browser compatibility)
   useEffect(() => {
-    const stored = localStorage.getItem("bossyemail_account");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setInfo(parsed);
-        setInitialInfo(parsed);
-      } catch (e) {
-        console.error("Failed to parse stored account info:", e);
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = localStorage.getItem("bossyemail_account");
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            setInfo(parsed);
+            setInitialInfo(parsed);
+          } catch (e) {
+            console.error("Failed to parse stored account info:", e);
+          }
+        }
       }
+    } catch (e) {
+      // localStorage may be disabled or unavailable (private browsing, etc.)
+      console.warn("localStorage not available:", e);
     }
   }, []);
 
@@ -38,10 +45,19 @@ export function Account() {
   }
 
   function handleSave() {
-    localStorage.setItem("bossyemail_account", JSON.stringify(info));
-    setInitialInfo(info);
-    setHasChanges(false);
-    toast.success("Account information saved", { duration: 2000 });
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem("bossyemail_account", JSON.stringify(info));
+        setInitialInfo(info);
+        setHasChanges(false);
+        toast.success("Account information saved", { duration: 2000 });
+      } else {
+        toast.error("Unable to save: localStorage not available", { duration: 3000 });
+      }
+    } catch (e) {
+      console.error("Failed to save account info:", e);
+      toast.error("Failed to save. Please try again.", { duration: 3000 });
+    }
   }
 
   return (

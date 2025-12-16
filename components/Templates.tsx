@@ -2329,26 +2329,85 @@ export function Templates() {
   const [recentlyUsed, setRecentlyUsed] = useState<string[]>([]);
   const [view, setView] = useState<'all' | 'favorites' | 'recent'>('all');
 
-  // Load favorites and recently used from localStorage
+  // Load favorites and recently used from localStorage (with browser compatibility)
   useEffect(() => {
-    const favs = localStorage.getItem("bossyemail_favorites");
-    const recent = localStorage.getItem("bossyemail_recently_used");
-    if (favs) setFavorites(JSON.parse(favs));
-    if (recent) setRecentlyUsed(JSON.parse(recent));
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const favs = localStorage.getItem("bossyemail_favorites");
+        const recent = localStorage.getItem("bossyemail_recently_used");
+        if (favs) {
+          try {
+            setFavorites(JSON.parse(favs));
+          } catch (e) {
+            console.error("Failed to parse favorites:", e);
+          }
+        }
+        if (recent) {
+          try {
+            setRecentlyUsed(JSON.parse(recent));
+          } catch (e) {
+            console.error("Failed to parse recently used:", e);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("localStorage not available:", e);
+    }
   }, []);
 
-  // Save favorites and recently used to localStorage
+  // Save favorites and recently used to localStorage (with browser compatibility)
   useEffect(() => {
-    localStorage.setItem("bossyemail_favorites", JSON.stringify(favorites));
-    localStorage.setItem("bossyemail_recently_used", JSON.stringify(recentlyUsed));
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem("bossyemail_favorites", JSON.stringify(favorites));
+        localStorage.setItem("bossyemail_recently_used", JSON.stringify(recentlyUsed));
+      }
+    } catch (e) {
+      console.warn("Could not save to localStorage:", e);
+    }
   }, [favorites, recentlyUsed]);
+
+  // Safari-compatible clipboard function
+  async function copyToClipboardSafely(text: string) {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for Safari and older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch (err) {
+      // Fallback if clipboard API fails
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  }
 
   function handleCopy(template: typeof MOCK_TEMPLATES[0]) {
     if (!hasFullAccess) {
       alert("This action is only available for Inbox Royalty subscribers.");
       return;
     }
-    navigator.clipboard.writeText(`Subject: ${template.title}\n\n${template.body}`);
+    // Safari-compatible clipboard copy
+    const textToCopy = `Subject: ${template.title}\n\n${template.body}`;
+    copyToClipboardSafely(textToCopy);
     setCopiedId(template.id);
     setTimeout(() => setCopiedId(null), 1200);
     

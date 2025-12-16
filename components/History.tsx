@@ -92,18 +92,25 @@ export function History() {
   const [conversations, setConversations] = useState<Conversation[]>(MOCK_CONVERSATIONS);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // Load conversations from localStorage on mount
+  // Load conversations from localStorage on mount (with browser compatibility)
   React.useEffect(() => {
-    const stored = localStorage.getItem("bossyemail_conversations");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setConversations(parsed);
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = localStorage.getItem("bossyemail_conversations");
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setConversations(parsed);
+            }
+          } catch (e) {
+            console.error("Failed to load conversations:", e);
+          }
         }
-      } catch (e) {
-        console.error("Failed to load conversations:", e);
       }
+    } catch (e) {
+      // localStorage may be disabled or unavailable (private browsing, etc.)
+      console.warn("localStorage not available:", e);
     }
   }, []);
 
@@ -141,7 +148,13 @@ export function History() {
     e.stopPropagation();
     const updated = conversations.filter((conv) => conv.id !== id);
     setConversations(updated);
-    localStorage.setItem("bossyemail_conversations", JSON.stringify(updated));
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem("bossyemail_conversations", JSON.stringify(updated));
+      }
+    } catch (e) {
+      console.warn("Could not save to localStorage:", e);
+    }
   };
 
   const handleConversationClick = (conv: Conversation) => {

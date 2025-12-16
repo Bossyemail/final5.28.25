@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { toast } from "sonner"
 
 interface TeamPricingFormProps {
   open: boolean
@@ -62,7 +63,9 @@ export function TeamPricingForm({ open, onOpenChange }: TeamPricingFormProps) {
       }
     } catch (error) {
       console.error("Error submitting form:", error)
-      alert("There was an error submitting your request. Please try again or contact us directly.")
+      toast.error("There was an error submitting your request. Please try again or contact us directly.", {
+        duration: 5000,
+      })
     } finally {
       setIsSubmitting(false)
     }

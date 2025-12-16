@@ -5,18 +5,39 @@ export default function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // On mount, check localStorage or system preference
-    const dark = localStorage.theme === "dark" ||
-      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
+    // On mount, check localStorage or system preference (with browser compatibility)
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const dark = localStorage.theme === "dark" ||
+          (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        setIsDark(dark);
+        document.documentElement.classList.toggle("dark", dark);
+      } else {
+        // Fallback to system preference if localStorage unavailable
+        const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        setIsDark(dark);
+        document.documentElement.classList.toggle("dark", dark);
+      }
+    } catch (e) {
+      // Fallback to system preference on error
+      const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setIsDark(dark);
+      document.documentElement.classList.toggle("dark", dark);
+    }
   }, []);
 
   const toggle = () => {
     const newDark = !isDark;
     setIsDark(newDark);
     document.documentElement.classList.toggle("dark", newDark);
-    localStorage.theme = newDark ? "dark" : "light";
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.theme = newDark ? "dark" : "light";
+      }
+    } catch (e) {
+      // localStorage may be disabled, but theme toggle still works
+      console.warn("Could not save theme preference:", e);
+    }
   };
 
   return (

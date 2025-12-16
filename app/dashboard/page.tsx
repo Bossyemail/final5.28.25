@@ -13,11 +13,12 @@ import { Support } from "@/components/Support"
 import { SubscriptionButton } from "@/components/subscription-button"
 import { SubscriptionCheck } from "@/components/subscription-check"
 import { Header } from "@/components/header"
-import { useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Menu } from "lucide-react"
+import { Menu, CheckCircle2, X } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function DashboardPage() {
   const { isSignedIn, isLoaded } = useUser()
@@ -25,8 +26,31 @@ export default function DashboardPage() {
   const [activeSection, setActiveSection] = useState("generator")
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+
+  // Check for checkout success or cancel
+  useEffect(() => {
+    const checkout = searchParams.get('checkout')
+    if (checkout === 'success') {
+      setShowSuccessMessage(true)
+      // Remove query param from URL
+      router.replace('/dashboard', { scroll: false })
+      // Auto-hide after 8 seconds (give users time to read)
+      setTimeout(() => setShowSuccessMessage(false), 8000)
+    } else if (checkout === 'cancel') {
+      // Track checkout canceled
+      if (typeof window !== 'undefined') {
+        import('@/lib/analytics').then(({ analytics }) => {
+          analytics.checkoutCanceled('unknown')
+        })
+      }
+      // Silently remove cancel param - don't show error, just let them try again
+      router.replace('/dashboard', { scroll: false })
+    }
+  }, [searchParams, router])
 
   if (!isLoaded) {
     return (
@@ -153,6 +177,37 @@ export default function DashboardPage() {
         role="main"
         aria-live="polite"
       >
+        {/* Success Message */}
+        <AnimatePresence>
+          {showSuccessMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mx-4 mb-4 md:mx-8"
+            >
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <div>
+                    <p className="font-medium text-green-900 dark:text-green-100" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                      Welcome! Your 14-day free trial has started
+                    </p>
+                    <p className="text-sm text-green-700 dark:text-green-300" style={{ fontFamily: 'var(--font-inter-tight), sans-serif' }}>
+                      You now have unlimited access. Start generating your first email below.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowSuccessMessage(false)}
+                  className="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="w-full">
           {activeSection === "generator" && (
             <div role="region" aria-label="Email Generator Section">

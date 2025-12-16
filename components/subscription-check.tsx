@@ -1,5 +1,4 @@
 import { useSubscription } from "@/hooks/use-subscription";
-import { useEmailUsage } from "@/hooks/use-email-usage";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -19,7 +18,6 @@ interface SubscriptionCheckProps {
 
 export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
   const { isSubscribed, isTrialing } = useSubscription();
-  const { hasReachedLimit } = useEmailUsage();
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -28,7 +26,10 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
   const isAdmin = user?.publicMetadata?.isAdmin === true;
 
   useEffect(() => {
-    if (showDialog) setSelectedPlan(null); // Reset selection when modal opens
+    if (showDialog) {
+      // Pre-select Royalty plan (most popular) to reduce friction
+      setSelectedPlan('royalty');
+    }
   }, [showDialog]);
 
   const handleSubscribe = async () => {
@@ -62,21 +63,45 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
     return <>{children}</>;
   }
 
-  if (hasReachedLimit) {
+  // No free tier - users must subscribe to start their 14-day trial
+  if (!isSubscribed && !isTrialing) {
     return (
       <>
-        <div className="flex flex-col items-center justify-center space-y-4 p-8 text-center">
-          <h2 className="text-2xl font-bold text-black font-sans" style={{ fontFamily: 'Inter, sans-serif' }}>Upgrade to Continue</h2>
-          <p className="text-base text-black font-sans max-w-md" style={{ fontFamily: 'Inter, sans-serif' }}>
-            You've reached your free email generation limit. Choose a plan to keep creating professional emails.
-          </p>
+        <div className="flex flex-col items-center justify-center space-y-6 p-8 md:p-12 text-center max-w-2xl mx-auto">
+          <div className="space-y-3">
+            <h2 className="text-3xl md:text-4xl font-bold text-black font-sans" style={{ fontFamily: 'Inter, sans-serif' }}>Start Your 14-Day Free Trial</h2>
+            <p className="text-lg text-black font-sans max-w-lg mx-auto" style={{ fontFamily: 'Inter, sans-serif' }}>
+              Get unlimited access to our email generator for 14 days. No charge during trial. Cancel anytime.
+            </p>
+          </div>
+          
+          {/* Example Preview */}
+          <div className="bg-[#FBFBFB] dark:bg-[#1a1a1a] border border-[#E3E3E3] dark:border-[#292929] rounded-lg p-6 text-left max-w-lg w-full">
+            <p className="text-sm text-[#ABABAB] dark:text-[#ABABAB] mb-2 uppercase tracking-wide" style={{ fontFamily: 'Inter, sans-serif' }}>Example</p>
+            <p className="text-sm text-[#505050] dark:text-[#ABABAB] mb-3" style={{ fontFamily: 'Inter, sans-serif' }}>
+              "Help me follow up on missing inspection documents"
+            </p>
+            <div className="bg-white dark:bg-[#161616] border border-[#E3E3E3] dark:border-[#292929] rounded p-4">
+              <p className="text-xs text-[#ABABAB] dark:text-[#ABABAB] mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>Subject:</p>
+              <p className="text-sm text-[#161616] dark:text-white mb-3" style={{ fontFamily: 'Inter, sans-serif' }}>Follow-Up: Inspection Documents</p>
+              <p className="text-xs text-[#ABABAB] dark:text-[#ABABAB] mb-1" style={{ fontFamily: 'Inter, sans-serif' }}>Body:</p>
+              <p className="text-sm text-[#161616] dark:text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+                Hi [Name],<br />
+                Following up on the inspection documents we discussed. Please send them over so we can proceed...
+              </p>
+            </div>
+          </div>
+
           <button
             onClick={() => setShowDialog(true)}
-            className="!bg-black !text-white rounded-full font-semibold font-sans px-6 py-3 mt-2 shadow hover:!bg-zinc-900 transition-colors"
-            style={{ fontFamily: 'Inter, sans-serif', fontSize: '1.1rem' }}
+            className="!bg-black !text-white rounded-full font-semibold font-sans px-8 py-4 mt-2 shadow hover:!bg-zinc-900 transition-colors text-lg"
+            style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            See Plans
+            Start Free Trial →
           </button>
+          <p className="text-xs text-[#ABABAB] dark:text-[#ABABAB]" style={{ fontFamily: 'Inter, sans-serif' }}>
+            No credit card charged during trial. Cancel anytime.
+          </p>
         </div>
 
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -89,11 +114,16 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
                 Pick Your Plan
               </DialogTitle>
               <DialogDescription 
-                className="text-base sm:text-lg text-zinc-600 text-center mb-8 mx-auto"
+                className="text-base sm:text-lg text-zinc-600 text-center mb-6 mx-auto"
                 style={{ fontFamily: 'Inter, sans-serif', maxWidth: 420, fontWeight: 400, lineHeight: 1.5 }}
               >
-                Get unlimited access to our smart email generator and more.<br />Choose the plan that fits your workflow.
+                Start your 14-day free trial. No charge during trial. Cancel anytime.
               </DialogDescription>
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 mb-4 mx-6">
+                <p className="text-sm text-green-800 dark:text-green-200 text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
+                  ✓ 14 days free • ✓ Unlimited emails • ✓ Cancel anytime
+                </p>
+              </div>
             </DialogHeader>
             <form className="flex flex-col gap-6 mt-2 px-2 pb-2 w-full" onSubmit={e => { e.preventDefault(); handleSubscribe(); }}>
               {/* Plan Options */}
@@ -148,7 +178,7 @@ export function SubscriptionCheck({ children }: SubscriptionCheckProps) {
                 style={{ fontFamily: 'Inter, sans-serif', boxShadow: 'none' }}
                 disabled={!selectedPlan || isLoading}
               >
-                {isLoading ? 'Loading...' : 'Subscribe'}
+                {isLoading ? 'Loading...' : 'Start 14-Day Free Trial →'}
               </Button>
               {/* Legal Text */}
               <div className="text-xs text-zinc-500 text-center mt-2 mb-1" style={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.6 }}>
